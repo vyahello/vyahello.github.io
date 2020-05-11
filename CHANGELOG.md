@@ -5,4 +5,8 @@ Versions
 ========
 _Release date: 11.05.2020_
 
-- Distribute initial version of a site
+- Deploy initial blog version
+- Introduce readme documentation
+- Introduce blog license
+- Include recent changes for a blog
+- Describe authors for a blog
