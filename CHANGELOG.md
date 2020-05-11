@@ -1,6 +1,12 @@
 Versions
 ========
 
+0.0.2
+
+_Release date: 11.05.2020_
+
+- Move social icons to the top
+
 0.0.1
 ========
 _Release date: 11.05.2020_
