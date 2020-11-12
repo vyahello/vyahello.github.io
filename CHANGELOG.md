@@ -1,8 +1,14 @@
 Versions
 ========
 
-0.0.2
+0.0.3
+=========
+_Release date: 12.11.2020_
 
+- Refresh portfolio structure
+
+0.0.2
+=========
 _Release date: 11.05.2020_
 
 - Move social icons to the top

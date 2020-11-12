@@ -1,115 +1,234 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<title>@vyahello</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-		<link rel="stylesheet" href="assets/css/main.css" />
-		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
-	</head>
-	<body class="is-preload">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Metadata of the Webpage -->
+    <!-- Character-set Metadata -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <!-- Viewport Metadata -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Description Metadata-->
+    <meta name="description" content="Portfolio Website" />
+    <!-- Author Metadata -->
+    <meta name="author" content="Vladimir Yahello" />
+    <!-- Webpage Logo -->
+    <link rel="shortcut icon" href="./assets/img/favicon.ico" />
+    <!-- Webpage Title -->
+    <title>Vladimir Yahello</title>
 
-		<!-- Wrapper -->
-			<div id="wrapper" class="fade-in">
+    <!-- Import CSS: Main Stylesheet -->
+    <link rel="stylesheet" href="./assets/css/main.css" />
+  </head>
 
-				<!-- Intro -->
-					<div id="intro">
-						<h2>Vladimir Yahello</h2>
-						<ul class="icons">
-							<li><a href="https://github.com/vyahello" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-							<li><a href="https://www.linkedin.com/in/volodymyr-yahello-821746127/" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
-							<li><a href="https://twitter.com/vyahello" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-						</ul>
-					</div>
+  <body>
+    <div id="particles-js">
+      <div class="header">
+        <h1>
+          <span class="site-title">Vladimir Yahello</span>
+          <span class="site-description"
+            >SDET • Automation Engineer</span
+          >
+        </h1>
+        <div class="header-icons">
+          <a
+            aria-label="My LinkedIn Profile"
+            target="_blank"
+            href="https://www.linkedin.com/in/volodymyr-yahello-821746127/"
+          >
+            <i class="icon fa fa-linkedin" aria-hidden="true"></i>
+          </a>
+          <a
+            aria-label="My Github Profile"
+            target="_blank"
+            href="https://github.com/vyahello"
+          >
+            <i class="icon fa fa-github-alt" aria-hidden="true"></i>
+          </a>
 
-				<!-- Main -->
-					<div id="main">
+          <a
+            aria-label="My Twitter Profile"
+            target="_blank"
+            href="https://twitter.com/vyahello"
+          >
+            <i class="icon fa fa-twitter" aria-hidden="true"></i>
+          </a>
+                    <a
+            aria-label="My Stackoverflow Profile"
+            target="_blank"
+            href="https://stackoverflow.com/users/7636378/vladimir-yahello"
+          >
+            <i class="icon fa fa-stack-overflow" aria-hidden="true"></i>
+          </a>
 
-						<!-- Featured Post -->
-							<article class="post featured">
-									<div><img src="images/pic01.jpg" alt="" />
-									<p>Hey there 👋, my name is Vladimir Yahello (<a href="https://github.com/vyahello">@vyahello</a>) and I am a passionate SDET/Python engineer with 4+ years of commercial experience.
-										Admire automating stuff (python, linux, networking, qa, ci) 🚀. Strive for better code quality. <br>
-										Tend to contribute to open source in spare time. Always looking for challenges and breathtaking ideas 💡. <br>
-										Please don't hesitate to reach me out!
-									</p>
-									</div>
-							</article>
 
-						<!-- Posts -->
-							<section class="posts">
-								</article>
-								<article>
-									<header>
-										<span class="date">May 11, 2020</span>
-										<h2>Punishment for bad python code</h2>
-									</header>
-									<div class="image fit"><img src="images/pic03.jpg" alt="" /></div>
-									<p>I am a big fan of clean and precise pythonic code. 
-										But sometimes I observe once developers came from other languages (Java, javaScript, C#, etc.) they tend to write code far away from pythonic style that is based on <a href="https://www.python.org/dev/peps/pep-0008">PEP-8</a> conventions.
-										That's why <i><strong>enforce-pep8</strong></i> python package is built to perform overall python code diagnostics.
-									</p>
-									<ul class="actions special">
-										<li><a href="https://upymake.github.io/enforce-pep8" class="button">See more</a></li>
-									</ul>
-								</article>
-								<article>
-									<header>
-										<span class="date">May 08, 2020</span>
-										<h2>How to build pytest plugin</h2>
-									</header>
-									<div class="image fit"><img src="images/pic02.jpg" alt="" /></div>
-									<p><a href="https://docs.pytest.org/en/latest/contents.html">Pytest</a> is a decent python testing framework. It allows python developers to extend basic functionality with custom plugins.
-										 As a result new pytest command line options are applicable once plugin is properly structured.
-										 Emoji support is a funny starting point to comprehend pytest plugins.</p>
-									<ul class="actions special">
-										<li><a href="https://vyahello.github.io/pytest-emoji-output" class="button">See more</a></li>
-									</ul>
-							</section>
+<!--          <a-->
+<!--            aria-label="My Résumé"-->
+<!--            target="_blank"-->
+<!--            href=""-->
+<!--          >-->
+<!--            <i class="icon fa fa fa-file-pdf-o" aria-hidden="true"></i>-->
+<!--          </a>-->
+          <a
+            aria-label="Send Email"
+            href="mailto:vyahello@gmail.com"
+            target="_blank"
+            ><i class="icon fa fa-envelope"></i
+          ></a>
+        </div>
+        <div class="header-links">
+          <a class="link" href="#about" data-scroll>About Me</a>
+          <a class="link" href="#projects" data-scroll>Projects</a>
+        </div>
+      </div>
+      <a class="down" href="#about" data-scroll
+        ><i class="icon fa fa-chevron-down" aria-hidden="true"></i
+      ></a>
+    </div>
 
-					</div>
+    <!-- About Section -->
+    <section id="about">
+      <!-- User Introduction-->
+      <div class="user-details">
+        <h1>My Story</h1>
+        <img
+          src="./assets/img/me.jpg"
+          alt="Professional Me"
+          width="20%"
+        />
+        <p>
+          Hey there 👋, glad to meet you! I am a passionate SDET/Python/QA engineer with over 4 years of commercial experience.
+          Admire automating stuff (python, linux, networking, qa, ci) 🚀. Strive for better code quality and test coverage.
+          Tend to contribute to open source in spare time. Always looking for challenges and breathtaking ideas 💡.
+          Please don't hesitate to reach me out!
+        </p>
+      </div>
 
-				<!-- Footer -->
-					<footer id="footer">
-						<section class="split contact">
-							<section class="alt">
-								<h3>Address</h3>
-								<p>Ukraine, Lviv</p>
-							</section>
-							<section>
-								<h3>Phone</h3>
-								<p>+380-931-403-184</p>
-							</section>
-							<section>
-								<h3>Email</h3>
-								<p><a href="gmail.com">vyahello@gmail.com</a></p>
-							</section>
-							<section>
-								<h3>Social</h3>
-								<ul class="icons alt">
-									<li><a href="https://github.com/vyahello" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-									<li><a href="https://www.linkedin.com/in/volodymyr-yahello-821746127/" class="icon brands fa-linkedin"><span class="label">Linkedin</span></a></li>
-									<li><a href="https://twitter.com/vyahello" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-								</ul>
-							</section>
-						</section>
-					</footer>
+      <!-- User Specifics -->
+      <div class="user">
+        <!-- Technology Stack #1: Languages -->
+        <div class="tech">
+          <h2>Languages</h2>
+          <i class="devicon-python-plain-wordmark colored"></i>
+          <i style="font-size:30px"><b>bash</b></i>
+          <p>
+            Preferred languages for system programming and automation.
+          </p>
+        </div>
 
-				<!-- Copyright -->
-					<div id="copyright">
-						<ul><li>&copy; Vladimir Yahello</li><li>Design: <a href="https://html5up.net">HTML5 UP</a></li></ul>
-					</div>
+        <!-- Technology Stack #2: Tools -->
+        <div class="tech">
+          <h2>Tools & Testing</h2>
+          <i class="devicon-linux-plain"></i>
+          <i class="devicon-docker-plain colored"></i>
+          <i class="devicon-git-plain-wordmark colored"></i>
+          <i class="devicon-travis-plain-wordmark"></i>
+          <i style="font-size:30px"><b>jenkins</b></i>
+          <i style="font-size:30px"><b>pytest</b></i>
+          <i style="font-size:30px"><b>pyats</b></i>
+<!--          <i style="font-size:30px"><b>selenium</b></i>-->
+          <p>
+            Preferred tools for development and testing.
+          </p>
+        </div>
 
-			</div>
+        <!-- Technology Stack #3: Web -->
+        <div class="tech">
+          <h2>Web</h2>
+          <i style="font-size:30px"><b>flask</b></i>
+          <i class="devicon-flask-plain colored"></i>
+          <i class="devicon-django-plain-wordmark colored"></i>
+          <i class="devicon-html5-plain-wordmark colored"></i>
+          <i class="devicon-css3-plain-wordmark colored"></i>
+          <i class="devicon-javascript-plain colored"></i>
+          <p>
+            Preferred technologies for back-end & front-end development.
+          </p>
+        </div>
+      </div>
+    </section>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+    <!-- Projects Section -->
+    <section id="projects">
+      <div class="user-details">
+        <h1>Featured Projects</h1>
+      </div>
 
-	</body>
+      <div class="user-projects">
+        <div class="images-right">
+          <img
+            alt="Pytest plugin"
+            src="./assets/img/pytest.jpg"
+          />
+        </div>
+        <div class="contents-right" style="text-align: center;">
+          <h3>How to build a pytest plugin</h3>
+            <img
+              height="32"
+              width="32"
+              src="https://unpkg.com/simple-icons@3.4.0/icons/python.svg"
+              style="
+                filter: invert(96%) sepia(47%) saturate(4151%)
+                  hue-rotate(338deg) brightness(100%) contrast(95%);
+              "
+            />
+          <p style="text-align: justify;">
+          <a href="https://docs.pytest.org/en/latest/contents.html">Pytest</a> is a decent python testing framework. It allows python developers to extend basic functionality with custom plugins.
+            As a result new pytest command line options are applicable once plugin is properly structured.
+            Emoji support is a funny starting point to comprehend pytest plugins.
+          </p>
+          <a
+            class="project-link"
+            target="_blank"
+            href="https://vyahello.github.io/pytest-emoji-output/"
+            >Check it out!</a
+          >
+        </div>
+
+      <div class="user-projects">
+        <div class="images-right">
+          <img
+            alt="Punishment for bad python code"
+            src="./assets/img/enforce.jpg"
+          />
+        </div>
+        <div class="contents" style="text-align: center;">
+          <h3>Punishment for bad python code</h3>
+          <div>
+            <img
+              height="32"
+              width="32"
+              src="https://unpkg.com/simple-icons@3.4.0/icons/python.svg"
+              style="
+                filter: invert(96%) sepia(47%) saturate(4151%)
+                  hue-rotate(338deg) brightness(100%) contrast(95%);
+              "
+            />
+          </div>
+          <p style="text-align: justify;">
+            I am a big fan of clean and precise pythonic code.
+            But sometimes I observe once developers came from other languages (Java, javaScript, C#, etc.) they tend to write code far away from pythonic style that is based on <a href="https://www.python.org/dev/peps/pep-0008">PEP-8</a> conventions.
+            That's why <i><strong>enforce-pep8</strong></i> python package is built to perform overall python code diagnostics.
+          </p>
+          <a
+            class="project-link"
+            target="_blank"
+            href="https://upymake.github.io/enforce-pep8/"
+            >Check it out!</a
+          >
+        </div>
+      </div>
+
+    <footer class="footer">
+      <p>&copy; Vladimir Yahello, 2020</p>
+    </footer>
+
+    <!-- Import JS: Particles Theme -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Import JS: Sweet Scroll -->
+    <script src="./assets/js/sweet-scroll.min.js"></script>
+    <!-- Import JS: Google Analytics -->
+    <script src="./assets/js/google-analytics.js"></script>
+    <!-- Import JS: Main Script -->
+    <script src="./assets/js/main.js"></script>
+  </body>
 </html>
