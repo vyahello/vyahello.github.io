@@ -1,6 +1,9 @@
-# Blog
+[![Repository Status](https://img.shields.io/badge/Repository%20Status-Maintained-dark%20green.svg)](https://vyahello.github.io)
+[![Website Status](https://img.shields.io/badge/Website%20Status-Online-green)](https://vyahello.github.io)
 
-> A list of sources for personal blog site (https://vyahello.github.io)
+# Personal portfolio
+
+> A list of sources for personal portfolio site (https://vyahello.github.io)
 
 ## Tools
 
@@ -26,9 +29,12 @@ You can reach out me at:
 * [https://www.linkedin.com/in/volodymyr-yahello-821746127](https://www.linkedin.com/in/volodymyr-yahello-821746127)
 
 ### Contributing
-1. clone the repository
-2. configure Git for the first time after cloning with your `name` and `email`
-3. `pip install -r requirements.txt` to install all project dependencies
-4. `pip install -r requirements-dev.txt` to install all development project dependencies
 
-**[⬆ back to top](#blog)**
+1. Clone the repository
+2. Configure `git` for the first time after cloning with your `name` and `email`
+3. Create your feature branch (`git checkout -b feature/fooBar`)
+4. Commit your changes (`git commit -am 'Add some fooBar'`)
+5. Push to the branch (`git push origin feature/fooBar`)
+6. Create a new Pull Request
+
+**[⬆ back to top](#personal-portfolio)**
