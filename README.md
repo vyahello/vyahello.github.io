@@ -3,7 +3,7 @@
 
 # Personal portfolio
 
-> A list of sources for personal portfolio site (https://vyahello.github.io)
+> A list of sources for personal portfolio site (https://vyahello.com)
 
 ## Tools
 
