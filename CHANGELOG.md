@@ -1,6 +1,14 @@
 Versions
 ========
 
+0.0.4
+=========
+_Release date: 07.06.2021_
+
+- Update tools logos
+- Move resume.pdf file to root
+- Update CV content
+
 0.0.3
 =========
 _Release date: 12.11.2020_
