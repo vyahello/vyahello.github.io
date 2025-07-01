@@ -1,6 +1,13 @@
 Versions
 ========
 
+1.0.0
+=========
+
+_Release date: 01.07.2025_
+
+- Use new host domain *vyahello.pro*
+
 0.0.4
 =========
 _Release date: 07.06.2021_
