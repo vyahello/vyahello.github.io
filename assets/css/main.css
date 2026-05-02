@@ -1,6 +1,7 @@
 /*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */
 @import url(https://fonts.googleapis.com/css?family=Nunito+Sans);
 @import url(https://fonts.googleapis.com/css?family=Rubik);
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
 html {
     line-height: 1.15;
@@ -13,7 +14,8 @@ body {
     padding: 0;
     font-size: 100%;
     line-height: 1.5;
-    color: #555;
+    color: #c8ddc8;
+    background-color: #0a0a0a;
     font-family: 'Nunito Sans', sans-serif
 }
 
@@ -4789,7 +4791,7 @@ strong {
     margin-top: 1em;
     padding-top: 1em;
     line-height: 1.25;
-    color: #333
+    color: #00ff41
 }
 
 h2 {
@@ -4821,11 +4823,11 @@ a img {
 }
 
 #particles-js {
-    background: #1488CC;
+    background: #020c02;
     /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #2B32B2, #1488CC);
+    background: -webkit-linear-gradient(to bottom right, #000500, #011001, #020c02);
     /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #2B32B2, #1488CC);
+    background: linear-gradient(to bottom right, #000500, #011001, #020c02);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
     display: flex;
@@ -4860,13 +4862,17 @@ a img {
     font-size: 35px;
     display: block;
     line-height: 1;
-    color: #fff;
+    color: #00ff41;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    text-shadow: 0 0 20px rgba(0, 255, 65, 0.7), 0 0 40px rgba(0, 255, 65, 0.3);
+    letter-spacing: 2px;
 }
 
 @media only screen and (min-width:550px) {
     .header .site-title {
         margin: 0;
-        font-size: 100px
+        font-size: 100px;
+        letter-spacing: 4px
     }
 }
 
@@ -4874,8 +4880,10 @@ a img {
     font-size: 20px;
     display: block;
     line-height: 1;
-    color: #fff;
-    margin-top: 10px
+    color: #00e676;
+    margin-top: 10px;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    letter-spacing: 1px;
 }
 
 @media only screen and (min-width:550px) {
@@ -4926,8 +4934,10 @@ a img {
 
 .header-icons .icon:active,
 .header-icons .icon:hover {
-    color: #1488CC;
-    background: #fff
+    color: #000;
+    background: #00ff41;
+    border-color: #00ff41;
+    box-shadow: 0 0 14px rgba(0, 255, 65, 0.6)
 }
 
 @media only screen and (min-width:550px) {
@@ -4967,7 +4977,7 @@ a img {
 .down .icon:hover,
 .footer a:active,
 .footer a:hover {
-    color: #4b5664
+    color: #00ff41
 }
 
 #about {
@@ -5041,7 +5051,7 @@ a img {
 }
 
 .user-projects li {
-    color: #1488CC;
+    color: #00ff41;
     font-size: 1.1rem
 }
 
@@ -5083,37 +5093,42 @@ a img {
 .project-link {
     display: inline-block;
     margin: 10px 0;
-    padding: 5px;
-    color: #1488CC;
+    padding: 8px 18px;
+    color: #00ff41;
     background-color: transparent;
-    border: 1px solid #1488CC;
-    border-radius: 10px;
+    border: 1px solid #00ff41;
+    border-radius: 4px;
     text-align: center;
     outline: 0;
     text-decoration: none;
     cursor: pointer;
-    transition: color .3s ease-out, background-color .3s ease-out, border-color .3s ease-out
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+    transition: color .3s ease-out, background-color .3s ease-out, border-color .3s ease-out, box-shadow .3s ease-out
 }
 
 .project-link:active,
 .project-link:hover {
-    background-color: #5347a8;
-    border-color: #5347a8;
-    color: #fff;
-    transition: color .3s ease-in, background-color .3s ease-in, border-color .3s ease-in
+    background-color: #00ff41;
+    border-color: #00ff41;
+    color: #000;
+    box-shadow: 0 0 16px rgba(0, 255, 65, 0.5);
+    transition: color .3s ease-in, background-color .3s ease-in, border-color .3s ease-in, box-shadow .3s ease-in
 }
 
 .footer {
-    background: #1488CC;
+    background: #020c02;
     /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #2B32B2, #1488CC);
+    background: -webkit-linear-gradient(to right, #010801, #020c02);
     /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #2B32B2, #1488CC);
+    background: linear-gradient(to right, #010801, #020c02);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     padding: 10px 0;
     margin-top: 100px;
     text-align: center;
-    color: #fff
+    color: #00ff41;
+    border-top: 1px solid rgba(0, 255, 65, 0.2)
 }
 
 .footer .love {
@@ -5128,45 +5143,319 @@ a img {
 .section-card {
     margin: 40px 0 10px;
     padding: 25px;
-    border-radius: 12px;
-    background: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    background: #0d150d;
+    border: 1px solid rgba(0, 255, 65, 0.2);
+    box-shadow: 0 0 24px rgba(0, 255, 65, 0.04);
 }
 
 .section-card h2 {
     margin-top: 0;
-    color: #000;
+    padding-top: 0;
+    color: #00ff41;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
 }
 
 .highlight-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
 }
 
 .highlight-item {
-    background: #fff;
-    border: 1px solid rgba(20, 136, 204, 0.15);
-    border-radius: 10px;
-    padding: 16px;
+    background: #111811;
+    border: 1px solid rgba(0, 255, 65, 0.18);
+    border-radius: 6px;
+    padding: 18px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.highlight-item:hover {
+    border-color: rgba(0, 255, 65, 0.5);
+    box-shadow: 0 0 18px rgba(0, 255, 65, 0.1);
 }
 
 .highlight-item h3 {
     margin: 0 0 8px;
-    font-size: 1.1rem;
-    color: #000;
+    padding-top: 0;
+    font-size: 1.05rem;
+    color: #00ff41;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+}
+
+.highlight-item h3::before {
+    content: '> ';
+    color: rgba(0, 255, 65, 0.4);
+    font-weight: normal;
+}
+
+.project-card-body h3::before {
+    content: '> ';
+    color: rgba(0, 255, 65, 0.4);
+    font-weight: normal;
 }
 
 .highlight-item p {
     margin: 0;
     font-size: 0.95rem;
+    color: #9fb89f;
+    line-height: 1.6;
 }
 
 .experience-list {
     margin: 0;
-    padding-left: 20px;
+    padding-left: 0;
+    list-style: none;
 }
 
 .experience-list li {
     margin: 10px 0;
+    padding-left: 22px;
+    position: relative;
+    color: #9fb89f;
+    line-height: 1.6;
+}
+
+.experience-list li::before {
+    content: '>';
+    color: #00ff41;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+/* ── Profile image glow ── */
+.user-details img {
+    border-radius: 50%;
+    border: 3px solid rgba(0, 255, 65, 0.35);
+    box-shadow: 0 0 24px rgba(0, 255, 65, 0.18);
+}
+
+/* ── Navigation link hover ── */
+.header-links .link {
+    transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+.header-links .link:hover {
+    color: #00ff41;
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.6);
+}
+
+/* ── In-content links (project descriptions, about) ── */
+#about a,
+#projects p a {
+    color: #00e676;
+    text-decoration: underline dotted;
+}
+
+#about a:hover,
+#projects p a:hover {
+    color: #00ff41;
+    text-decoration: underline;
+}
+
+/* ── About paragraph text ── */
+#about .user-details p {
+    color: #9fb89f;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+/* ── Tech section label text ── */
+.user p {
+    color: #9fb89f;
+}
+
+/* ── Make uncoloured devicons visible on dark bg ── */
+.devicon-linux-plain,
+.devicon-jenkins-line {
+    color: #c8ddc8;
+}
+
+/* ── Security FA icons in tech section ── */
+.tech .fa-shield,
+.tech .fa-bug,
+.tech .fa-crosshairs,
+.tech .fa-lock {
+    color: #00ff41;
+}
+
+/* ── Project description paragraph text ── */
+.user-projects p {
+    color: #9fb89f;
+    line-height: 1.7;
+}
+
+/* ── Project image subtle glow ── */
+.user-projects img {
+    border: 1px solid rgba(0, 255, 65, 0.15);
+    box-shadow: 0 0 16px rgba(0, 255, 65, 0.06);
+}
+
+/* ── Hacker-style // prefix on every section heading ── */
+.about-intro-card h1::before,
+.section-card > h2::before,
+.user-details h1::before {
+    content: '// ';
+    color: rgba(0, 255, 65, 0.4);
+    font-weight: normal;
+    letter-spacing: 0;
+}
+
+/* ── Section h1 headings (About me, Pet projects) ── */
+.about-intro-card h1,
+.user-details h1 {
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    letter-spacing: 2px;
+}
+
+/* ── Footer copyright text ── */
+.footer p {
+    color: #00e676;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    font-size: 0.9rem;
+}
+
+/* ═══════════════════════════════════
+   About intro card
+═══════════════════════════════════ */
+.about-intro-card {
+    background: #0d150d;
+    border: 1px solid rgba(0, 255, 65, 0.2);
+    border-radius: 8px;
+    padding: 36px 40px;
+    text-align: center;
+    margin-bottom: 0;
+    box-shadow: 0 0 24px rgba(0, 255, 65, 0.04);
+}
+
+.about-avatar {
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    margin: 0 auto 20px;
+    border: 3px solid rgba(0, 255, 65, 0.35);
+    box-shadow: 0 0 28px rgba(0, 255, 65, 0.2);
+}
+
+.about-intro-card h1 {
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 20px;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    color: #00ff41;
+    letter-spacing: 2px;
+}
+
+.about-intro-card p {
+    color: #9fb89f;
+    line-height: 1.8;
+    font-size: 1rem;
+    max-width: 680px;
+    margin: 0 auto 12px;
+    text-align: left;
+}
+
+/* ═══════════════════════════════════
+   Projects card grid
+═══════════════════════════════════ */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 22px;
+    margin-top: 8px;
+}
+
+.project-card {
+    background: #0d150d;
+    border: 1px solid rgba(0, 255, 65, 0.18);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s ease;
+}
+
+.project-card:hover {
+    border-color: rgba(0, 255, 65, 0.5);
+    box-shadow: 0 0 28px rgba(0, 255, 65, 0.1);
+    transform: translateY(-4px);
+}
+
+.project-card-image {
+    width: 100%;
+    height: 210px;
+    overflow: hidden;
+    background: #0a0f0a;
+    flex-shrink: 0;
+}
+
+.project-card-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    object-position: center;
+    filter: brightness(0.78) saturate(0.65) contrast(1.08);
+    transition: filter 0.35s ease;
+}
+
+.project-card:hover .project-card-image img {
+    filter: brightness(0.88) saturate(0.85) contrast(1.05);
+}
+
+.project-card-body {
+    padding: 20px 22px 22px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.project-card-body h3 {
+    margin: 0;
+    padding: 0;
+    color: #00ff41;
+    font-family: 'Share Tech Mono', 'Courier New', monospace;
+    font-size: 0.96rem;
+    line-height: 1.4;
+}
+
+.project-card-body p {
+    color: #9fb89f;
+    font-size: 0.91rem;
+    line-height: 1.68;
+    margin: 0;
+    flex: 1;
+}
+
+.project-card-body p a {
+    color: #00e676;
+    text-decoration: underline dotted;
+}
+
+.project-card-body p a:hover {
+    color: #00ff41;
+    text-decoration: underline;
+}
+
+.project-card-body .project-link {
+    align-self: flex-start;
+    margin: 4px 0 0;
+    font-size: 0.82rem;
+    padding: 6px 14px;
+}
+
+/* ── Restyle #projects container to not interfere with grid ── */
+#projects {
+    display: block;
+}
+
+/* ── Tech-stack section-card h2 spacing fix ── */
+.section-card > h2:first-child {
+    margin-top: 0;
+    padding-top: 0;
 }
