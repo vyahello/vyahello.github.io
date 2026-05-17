@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Політика конфіденційності Penni. Penni зберігає всі дані локально на твоєму iPhone. Без серверів, акаунтів, аналітики чи третіх сторін.">
+    <meta name="theme-color" content="#FF7A4D" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1A1714" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    <link rel="canonical" href="https://vyahello.pro/penni/uk/privacy.html">
+    <link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/privacy.html">
+    <link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/privacy.html">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+
+    <title>Конфіденційність — Penni</title>
+
+    <style>
+        :root {
+            --coral: #FF7A4D; --coral-dark: #E25C2F; --coral-light: #FFE4D8;
+            --bg: #FAF7F2; --text-primary: #1F1B17; --text-secondary: #6B6259; --text-tertiary: #A39A8E;
+            --card: #FFFFFF; --hairline: rgba(31, 27, 23, 0.07);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #1A1714; --text-primary: #F5F1EC; --text-secondary: #A39A8E; --text-tertiary: #6B6259; --card: #262220; --hairline: rgba(255, 255, 255, 0.08); }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+        .header { padding: 20px 0; border-bottom: 1px solid var(--hairline); position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); z-index: 100; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.3px; }
+        .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 2px 8px rgba(255, 122, 77, 0.25); }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .back-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .back-link:hover { color: var(--coral); }
+        .lang-switch { display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; background: var(--card); border-radius: 100px; border: 1px solid var(--hairline); }
+        .lang-switch a { color: var(--text-secondary); text-decoration: none; }
+        .lang-switch a.active { color: var(--coral); }
+
+        .doc { padding: 56px 0 80px; }
+        .doc h1 { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 12px; }
+        @media (max-width: 540px) { .doc h1 { font-size: 32px; letter-spacing: -0.6px; } }
+        .doc .meta { font-size: 14px; color: var(--text-tertiary); margin-bottom: 36px; }
+        .doc h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin-top: 40px; margin-bottom: 14px; }
+        .doc p { font-size: 16px; color: var(--text-primary); margin-bottom: 16px; }
+        .doc ul { margin-bottom: 16px; padding-left: 24px; }
+        .doc li { font-size: 16px; color: var(--text-primary); margin-bottom: 8px; }
+        .doc a { color: var(--coral); text-decoration: none; font-weight: 500; }
+        .doc a:hover { text-decoration: underline; }
+
+        .highlight-box { background: var(--card); padding: 24px 28px; border-radius: 14px; margin: 28px 0; border-left: 4px solid var(--coral); }
+        .highlight-box p:last-child { margin-bottom: 0; }
+
+        .data-table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; background: var(--card); border-radius: 14px; overflow: hidden; box-shadow: 0 1px 0 var(--hairline), 0 4px 16px rgba(31, 27, 23, 0.04); }
+        .data-table th, .data-table td { padding: 14px 18px; text-align: left; font-size: 14px; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table th { background: color-mix(in srgb, var(--card) 80%, var(--text-primary)); font-weight: 600; color: var(--text-primary); font-size: 13px; letter-spacing: 0.2px; text-transform: uppercase; }
+        @media (prefers-color-scheme: dark) {
+            .data-table th { background: var(--card); }
+        }
+        .data-table td { color: var(--text-secondary); }
+        .data-table td strong { color: var(--text-primary); font-weight: 600; }
+        .badge-no { color: #1D9E75; font-weight: 600; }
+
+        .footer { padding: 40px 0 60px; text-align: center; border-top: 1px solid var(--hairline); }
+        .footer-text { font-size: 13px; color: var(--text-tertiary); }
+        .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+        .footer-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .footer-link:hover { color: var(--coral); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Penni — головна">
+            <img class="brand-icon" src="../assets/apple-touch-icon.png" alt="" width="36" height="36">
+            Penni
+        </a>
+        <div class="header-right">
+            <a class="back-link" href="index.html">← На головну</a>
+            <span class="lang-switch" aria-label="Мова">
+                <a href="../privacy.html">EN</a> · <a class="active" href="privacy.html">UA</a>
+            </span>
+        </div>
+    </div>
+</header>
+
+<main class="doc">
+    <div class="container">
+
+        <h1>Політика конфіденційності</h1>
+        <div class="meta">Дата набрання чинності: 18 травня 2026 · Останнє оновлення: 18 травня 2026</div>
+
+        <div class="highlight-box">
+            <p><strong>Коротко:</strong> Penni не збирає, не передає й не зберігає жодних персональних даних поза твоїм iPhone. Ми не маємо серверів, не створюємо акаунтів, не використовуємо аналітику, відстеження чи рекламу. Твої дані залишаються на твоєму пристрої.</p>
+        </div>
+
+        <h2>Хто ми</h2>
+        <p>Penni розроблено та опубліковано Володимиром Яхелло — незалежним розробником з України. Ця політика описує як iOS-додаток Penni поводиться з даними користувача.</p>
+        <p>З будь-якими питаннями щодо приватності пиши на <a href="mailto:vyahello@gmail.com">vyahello@gmail.com</a>.</p>
+
+        <h2>Які дані ми збираємо</h2>
+        <p>Жодних. Penni не збирає персональної інформації ні з тебе, ні з твого пристрою.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Категорія</th>
+                    <th>Збирається?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Контактна інформація</strong> (ім'я, email, телефон)</td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Здоров'я та фітнес</strong></td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Фінансова інформація</strong> (твої витрати)</td><td class="badge-no">Тільки на твоєму пристрої</td></tr>
+                <tr><td><strong>Геолокація</strong></td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Чутливі дані</strong></td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Контакти</strong></td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Користувацький контент</strong> (фото, повідомлення)</td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Історія пошуку чи браузера</strong></td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Ідентифікатори</strong> (Device ID, Advertising ID)</td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Дані використання</strong> (аналітика, crash-логи)</td><td class="badge-no">Ні</td></tr>
+                <tr><td><strong>Діагностика</strong></td><td class="badge-no">Ні</td></tr>
+            </tbody>
+        </table>
+
+        <p>Це відповідає мітці <strong>"Data Not Collected"</strong> на сторінці Penni в App Store.</p>
+
+        <h2>Дані що зберігаються на пристрої</h2>
+        <p>Витрати, бюджети, шаблони, категорії та налаштування, які ти вводиш у Penni, зберігаються виключно на твоєму iPhone через стандартні механізми iOS:</p>
+        <ul>
+            <li>UserDefaults — для налаштувань додатка (наприклад, валюта за замовчуванням, прапорець завершення onboarding)</li>
+            <li>Локальні JSON-файли у приватному sandbox додатка — для витрат, бюджетів, шаблонів та власних категорій</li>
+        </ul>
+        <p>Ці дані захищені iOS sandbox-ом — інші додатки не мають до них доступу. Вони включені у стандартні резервні копії iPhone (iCloud Backup чи зашифровані локальні бекапи), якщо ти увімкнув ці бекапи у Налаштуваннях iOS. У нас немає доступу до цих бекапів — Apple їх з нами не ділиться.</p>
+
+        <h2>Коли ти видаляєш додаток</h2>
+        <p>Коли ти видаляєш Penni зі свого iPhone, усі дані що зберігаються додатком повністю та одразу видаляються iOS. У нас немає копій, серверних бекапів чи способу відновити видалені дані — бо вони ніколи не були на наших серверах.</p>
+
+        <h2>Експорт даних</h2>
+        <p>Ти можеш експортувати всі витрати у формат CSV у будь-який момент через <em>Налаштування → Експортувати у CSV</em>. Експорт використовує стандартний share sheet iOS — ти сам вибираєш куди файл піде (email, AirDrop, Files, third-party хмара, тощо). Penni не контролює і не спостерігає куди ти відправляєш експортований файл.</p>
+
+        <h2>Дозволи</h2>
+        <p>Penni не запитує доступу до чутливих ресурсів iOS. Додаток не має доступу до твоєї геолокації, контактів, камери, фото, мікрофона, даних здоров'я, датчиків руху, календаря, нагадувань, push-сповіщень чи фонового оновлення.</p>
+
+        <h2>Сторонні сервіси та SDK</h2>
+        <p>Penni не інтегрується з жодними сторонніми сервісами, аналітичними платформами, crash-репортерами чи рекламними мережами. Додаток використовує тільки first-party фреймворки Apple (SwiftUI, UIKit, Foundation, Charts, App Intents). Жодних third-party Swift packages не включено.</p>
+
+        <h2>Доступ до інтернету</h2>
+        <p>Penni не робить мережевих запитів під час нормальної роботи. Додаток працює повністю офлайн. Йому не потрібне інтернет-з'єднання для запуску, запису витрат, перегляду статистики чи будь-якої іншої функції.</p>
+
+        <h2>Конфіденційність дітей</h2>
+        <p>Penni свідомо не збирає персональної інформації ні з кого, включно з дітьми до 13 років. Оскільки Penni не збирає жодних даних, додаток підходить для користувачів будь-якого віку та відповідає вимогам U.S. Children's Online Privacy Protection Act (COPPA).</p>
+
+        <h2>Твої права за GDPR (ЄС) та CCPA (Каліфорнія)</h2>
+        <p>Оскільки Penni не збирає, не зберігає й не обробляє жодних персональних даних поза твоїм пристроєм, у нас немає даних до яких можна було б отримати доступ, виправити, видалити, перенести чи обмежити. Усі дані під твоїм контролем на твоєму iPhone. Ти можеш видалити їх у будь-який момент через <em>Налаштування → Стерти усі дані</em> чи видаливши додаток.</p>
+
+        <h2>Зміни цієї політики</h2>
+        <p>Якщо ми коли-небудь оновимо цю політику, дата "Останнє оновлення" вгорі сторінки буде змінена. Суттєві зміни також будуть зазначені у release notes App Store при наступному оновленні додатка.</p>
+
+        <h2>Контакти</h2>
+        <p>Для питань щодо цієї політики чи того як Penni поводиться з даними:</p>
+        <ul>
+            <li><strong>Розробник:</strong> Володимир Яхелло (незалежний розробник, Україна)</li>
+            <li><strong>Email:</strong> <a href="mailto:vyahello@gmail.com">vyahello@gmail.com</a></li>
+            <li><strong>Про розробника:</strong> <a href="https://vyahello.pro">vyahello.pro</a></li>
+        </ul>
+
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <a class="footer-link" href="index.html">Головна</a>
+            <a class="footer-link" href="support.html">Підтримка</a>
+            <a class="footer-link" href="https://vyahello.pro">Про розробника</a>
+        </div>
+        <p class="footer-text">© 2026 Volodymyr Yahello · Зроблено з турботою в Україні 🇺🇦</p>
+    </div>
+</footer>
+
+</body>
+</html>

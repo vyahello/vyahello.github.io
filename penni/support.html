@@ -8,6 +8,8 @@
     <meta name="theme-color" content="#1A1714" media="(prefers-color-scheme: dark)">
     <meta name="color-scheme" content="light dark">
     <link rel="canonical" href="https://vyahello.pro/penni/support.html">
+    <link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/support.html">
+    <link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/support.html">
 
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
@@ -52,8 +54,12 @@
         .header-inner { display: flex; align-items: center; justify-content: space-between; }
         .brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.3px; }
         .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 2px 8px rgba(255, 122, 77, 0.25); }
+        .header-right { display: flex; align-items: center; gap: 16px; }
         .back-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
         .back-link:hover { color: var(--coral); }
+        .lang-switch { display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; background: var(--card); border-radius: 100px; border: 1px solid var(--hairline); }
+        .lang-switch a { color: var(--text-secondary); text-decoration: none; }
+        .lang-switch a.active { color: var(--coral); }
 
         .doc { padding: 56px 0 60px; }
         .doc h1 { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 14px; }
@@ -104,7 +110,12 @@
             <img class="brand-icon" src="assets/apple-touch-icon.png" alt="" width="36" height="36">
             Penni
         </a>
-        <a class="back-link" href="index.html">← Back to home</a>
+        <div class="header-right">
+            <a class="back-link" href="index.html">← Back to home</a>
+            <span class="lang-switch" aria-label="Language">
+                <a class="active" href="support.html">EN</a> · <a href="uk/support.html">UA</a>
+            </span>
+        </div>
     </div>
 </header>
 

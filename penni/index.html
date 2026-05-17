@@ -9,6 +9,9 @@
     <meta name="color-scheme" content="light dark">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://vyahello.pro/penni/">
+    <link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/">
+    <link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/">
+    <link rel="alternate" hreflang="x-default" href="https://vyahello.pro/penni/">
 
     <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
@@ -143,7 +146,11 @@
             border-radius: 9px;
             box-shadow: 0 2px 8px rgba(255, 122, 77, 0.25);
         }
-        .nav-links { display: flex; gap: 28px; }
+        .nav-links { display: flex; gap: 24px; }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .lang-switch { display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; background: var(--card); border-radius: 100px; border: 1px solid var(--hairline); }
+        .lang-switch a { color: var(--text-secondary); text-decoration: none; }
+        .lang-switch a.active { color: var(--coral); }
         .nav-link {
             color: var(--text-secondary);
             text-decoration: none;
@@ -419,11 +426,16 @@
             <img class="brand-icon" src="assets/apple-touch-icon.png" alt="" width="36" height="36">
             Penni
         </a>
-        <nav class="nav-links" aria-label="Primary">
-            <a class="nav-link" href="#features">Features</a>
-            <a class="nav-link" href="#privacy">Privacy</a>
-            <a class="nav-link" href="support.html">Support</a>
-        </nav>
+        <div class="header-right">
+            <nav class="nav-links" aria-label="Primary">
+                <a class="nav-link" href="#features">Features</a>
+                <a class="nav-link" href="#privacy">Privacy</a>
+                <a class="nav-link" href="support.html">Support</a>
+            </nav>
+            <span class="lang-switch" aria-label="Language">
+                <a class="active" href="index.html">EN</a> · <a href="uk/">UA</a>
+            </span>
+        </div>
     </div>
 </header>
 

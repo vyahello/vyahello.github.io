@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Penni — приватний трекер витрат для iPhone. Облік у 3 валютах. Усе залишається на твоєму телефоні — без хмари, без акаунтів, без відстеження.">
+    <meta name="theme-color" content="#FF7A4D" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1A1714" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://vyahello.pro/penni/uk/">
+    <link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/">
+    <link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/">
+    <link rel="alternate" hreflang="x-default" href="https://vyahello.pro/penni/">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+    <link rel="mask-icon" href="../assets/apple-touch-icon.png" color="#FF7A4D">
+
+    <meta property="og:title" content="Penni — Приватний трекер витрат для iPhone">
+    <meta property="og:description" content="Облік витрат у 3 валютах на твоєму iPhone. Локально. Без акаунтів, без серверів, без відстеження.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://vyahello.pro/penni/uk/">
+    <meta property="og:image" content="https://vyahello.pro/penni/assets/icon-512.png">
+    <meta property="og:image:width" content="512">
+    <meta property="og:image:height" content="512">
+    <meta property="og:locale" content="uk_UA">
+    <meta property="og:locale:alternate" content="en_US">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Penni — Приватний трекер витрат для iPhone">
+    <meta name="twitter:description" content="Облік витрат у 3 валютах. Усе залишається на твоєму iPhone.">
+    <meta name="twitter:image" content="https://vyahello.pro/penni/assets/icon-512.png">
+
+    <title>Penni — Приватний трекер витрат для iPhone</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Penni",
+      "description": "Приватний локальний трекер витрат для iOS з підтримкою кількох валют, місячних бюджетів, статистики, шаблонів та Швидких дій.",
+      "operatingSystem": "iOS 16.6+",
+      "applicationCategory": "FinanceApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Volodymyr Yahello",
+        "url": "https://vyahello.pro"
+      },
+      "url": "https://vyahello.pro/penni/uk/",
+      "image": "https://vyahello.pro/penni/assets/icon-512.png",
+      "inLanguage": "uk"
+    }
+    </script>
+
+    <style>
+        :root {
+            --coral: #FF7A4D;
+            --coral-dark: #E25C2F;
+            --coral-light: #FFE4D8;
+            --bg: #FAF7F2;
+            --text-primary: #1F1B17;
+            --text-secondary: #6B6259;
+            --text-tertiary: #A39A8E;
+            --card: #FFFFFF;
+            --card-elevated: #FFFFFF;
+            --hairline: rgba(31, 27, 23, 0.07);
+            --shadow-sm: 0 1px 0 rgba(31, 27, 23, 0.04), 0 4px 16px rgba(31, 27, 23, 0.04);
+            --shadow-lg: 0 4px 16px rgba(31, 27, 23, 0.06), 0 24px 60px rgba(31, 27, 23, 0.08);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1A1714;
+                --text-primary: #F5F1EC;
+                --text-secondary: #A39A8E;
+                --text-tertiary: #6B6259;
+                --card: #262220;
+                --card-elevated: #2E2A28;
+                --hairline: rgba(255, 255, 255, 0.08);
+                --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+                --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.4), 0 24px 60px rgba(0, 0, 0, 0.4);
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+        img { max-width: 100%; display: block; }
+        a { color: var(--coral); }
+
+        .skip-link { position: absolute; left: -9999px; top: 8px; background: var(--coral); color: white; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 600; z-index: 1000; }
+        .skip-link:focus { left: 8px; }
+
+        .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+        .header {
+            padding: 20px 0;
+            border-bottom: 1px solid var(--hairline);
+            position: sticky; top: 0;
+            background: color-mix(in srgb, var(--bg) 92%, transparent);
+            backdrop-filter: saturate(180%) blur(20px);
+            -webkit-backdrop-filter: saturate(180%) blur(20px);
+            z-index: 100;
+        }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.3px; }
+        .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 2px 8px rgba(255, 122, 77, 0.25); }
+        .header-right { display: flex; align-items: center; gap: 20px; }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; }
+        .nav-link:hover { color: var(--coral); }
+        .lang-switch { display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; background: var(--card); border-radius: 100px; border: 1px solid var(--hairline); }
+        .lang-switch a { color: var(--text-secondary); text-decoration: none; }
+        .lang-switch a.active { color: var(--coral); }
+        @media (max-width: 540px) {
+            .nav-links { gap: 14px; }
+            .nav-link { font-size: 13px; }
+        }
+
+        .hero { padding: 80px 0 40px; text-align: center; }
+        .hero-badge { display: inline-block; background: var(--coral-light); color: var(--coral-dark); font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 100px; letter-spacing: 0.4px; text-transform: uppercase; margin-bottom: 24px; }
+        @media (prefers-color-scheme: dark) {
+            .hero-badge { background: rgba(255, 122, 77, 0.18); color: #FF8A5E; }
+        }
+        .hero-title { font-size: 64px; font-weight: 700; letter-spacing: -1.6px; line-height: 1.05; margin-bottom: 24px; }
+        .hero-title .accent { color: var(--coral); }
+        @media (max-width: 768px) {
+            .hero { padding: 56px 0 32px; }
+            .hero-title { font-size: 40px; letter-spacing: -1px; }
+        }
+        .hero-subtitle { font-size: 20px; color: var(--text-secondary); max-width: 600px; margin: 0 auto 36px; line-height: 1.5; }
+        @media (max-width: 768px) { .hero-subtitle { font-size: 17px; } }
+
+        .cta-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+        .btn-primary, .btn-secondary { display: inline-flex; align-items: center; justify-content: center; gap: 10px; text-decoration: none; font-weight: 600; font-size: 16px; padding: 14px 28px; border-radius: 100px; transition: transform 0.15s ease, box-shadow 0.15s ease; }
+        .btn-primary { background: var(--coral); color: white; box-shadow: 0 6px 20px rgba(255, 122, 77, 0.3); }
+        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(255, 122, 77, 0.4); }
+        .btn-secondary { background: transparent; color: var(--text-primary); border: 1.5px solid var(--hairline); }
+        .btn-secondary:hover { background: var(--card); border-color: transparent; }
+
+        .showcase { padding: 40px 0 100px; display: flex; justify-content: center; }
+        .phone-frame {
+            width: 280px; padding: 12px;
+            background: linear-gradient(180deg, #2A2622, #1A1714);
+            border-radius: 48px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+        .phone-frame img { border-radius: 36px; display: block; }
+        @media (max-width: 540px) {
+            .phone-frame { width: 240px; padding: 10px; border-radius: 40px; }
+            .phone-frame img { border-radius: 30px; }
+            .showcase { padding: 32px 0 64px; }
+        }
+
+        .section { padding: 80px 0; }
+        @media (max-width: 768px) { .section { padding: 56px 0; } }
+        .section-title { font-size: 40px; font-weight: 700; letter-spacing: -1px; text-align: center; margin-bottom: 14px; }
+        @media (max-width: 768px) { .section-title { font-size: 32px; } }
+        .section-subtitle { font-size: 17px; color: var(--text-secondary); text-align: center; max-width: 560px; margin: 0 auto 56px; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px; }
+        .feature-card { background: var(--card); border-radius: 18px; padding: 28px; box-shadow: var(--shadow-sm); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .feature-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+        .feature-icon { display: inline-flex; align-items: center; justify-content: center; width: 48px; height: 48px; background: var(--coral-light); color: var(--coral); border-radius: 12px; font-size: 24px; margin-bottom: 18px; }
+        @media (prefers-color-scheme: dark) {
+            .feature-icon { background: rgba(255, 122, 77, 0.18); color: #FF8A5E; }
+        }
+        .feature-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.2px; }
+        .feature-desc { font-size: 15px; color: var(--text-secondary); line-height: 1.55; }
+
+        .gallery { background: var(--card); border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); }
+        .gallery-strip { display: flex; gap: 24px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 16px 24px 32px; margin: 0 -24px; scrollbar-width: thin; -webkit-overflow-scrolling: touch; }
+        .gallery-strip::-webkit-scrollbar { height: 6px; }
+        .gallery-strip::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 100px; }
+        .gallery-item { flex: 0 0 220px; scroll-snap-align: start; }
+        .gallery-item .phone-frame { width: 220px; padding: 8px; border-radius: 36px; }
+        .gallery-item .phone-frame img { border-radius: 28px; }
+        .gallery-caption { text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+
+        .privacy-band { background: linear-gradient(180deg, var(--card), color-mix(in srgb, var(--coral) 4%, var(--card))); padding: 80px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); text-align: center; }
+        .privacy-inner { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+        .privacy-title { font-size: 36px; font-weight: 700; letter-spacing: -0.8px; margin-bottom: 18px; }
+        @media (max-width: 768px) { .privacy-title { font-size: 28px; } }
+        .privacy-text { font-size: 17px; color: var(--text-secondary); line-height: 1.6; }
+        .privacy-checks { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 32px; }
+        .check-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--coral-light); color: var(--coral-dark); padding: 10px 18px; border-radius: 100px; font-size: 14px; font-weight: 600; }
+        @media (prefers-color-scheme: dark) {
+            .check-pill { background: rgba(255, 122, 77, 0.18); color: #FF8A5E; }
+        }
+
+        .footer { padding: 48px 0 64px; text-align: center; border-top: 1px solid var(--hairline); }
+        .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+        .footer-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .footer-link:hover { color: var(--coral); }
+        .footer-text { font-size: 13px; color: var(--text-tertiary); }
+    </style>
+</head>
+<body>
+
+<a class="skip-link" href="#main">Перейти до контенту</a>
+
+<header class="header">
+    <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Penni — головна">
+            <img class="brand-icon" src="../assets/apple-touch-icon.png" alt="" width="36" height="36">
+            Penni
+        </a>
+        <div class="header-right">
+            <nav class="nav-links" aria-label="Головна навігація">
+                <a class="nav-link" href="#features">Можливості</a>
+                <a class="nav-link" href="#privacy">Приватність</a>
+                <a class="nav-link" href="support.html">Підтримка</a>
+            </nav>
+            <span class="lang-switch" aria-label="Мова">
+                <a href="../">EN</a> · <a class="active" href="index.html">UA</a>
+            </span>
+        </div>
+    </div>
+</header>
+
+<main id="main">
+
+<section class="hero">
+    <div class="container">
+        <span class="hero-badge">Скоро у App Store</span>
+        <h1 class="hero-title">
+            Відстежуй гроші.<br>
+            <span class="accent">Тримай їх приватно.</span>
+        </h1>
+        <p class="hero-subtitle">
+            Penni — це трекер витрат, який живе тільки на твоєму iPhone.
+            Жодних акаунтів. Жодної хмари. Жодного відстеження. Тільки ти та твої цифри.
+        </p>
+        <div class="cta-row">
+            <a class="btn-primary" href="mailto:vyahello@gmail.com?subject=Penni%20-%20cповістити%20при%20запуску" aria-label="Сповістити коли Penni вийде у App Store">
+                Сповістити при запуску
+            </a>
+            <a class="btn-secondary" href="#features">Дізнатись більше</a>
+        </div>
+    </div>
+</section>
+
+<section class="showcase" aria-label="Перегляд додатка Penni">
+    <div class="phone-frame">
+        <img src="../assets/screens/uk/01-expenses.png" alt="Екран Витрати у Penni: загальна сума за місяць у гривнях, денні підсумки та список останніх витрат, згрупованих за днем" width="256" height="555">
+    </div>
+</section>
+
+<section id="features" class="section">
+    <div class="container">
+        <h2 class="section-title">Все потрібне. Нічого зайвого.</h2>
+        <p class="section-subtitle">Створено для тих, хто хоче знати куди йдуть гроші, не віддаючи контроль над ними нікому.</p>
+        <div class="features-grid">
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">💸</div>
+                <h3 class="feature-title">Три валюти</h3>
+                <p class="feature-desc">UAH, USD, EUR — окремий облік для кожної. Без курсів, без конвертацій, без сюрпризів.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🎯</div>
+                <h3 class="feature-title">Місячні бюджети</h3>
+                <p class="feature-desc">Встанови ліміт для кожної валюти. Стеж за прогресом — і дихай легше до кінця місяця.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">⚡</div>
+                <h3 class="feature-title">Швидкі дії</h3>
+                <p class="feature-desc">Long-press по іконці додатка — і запиши витрату одним тапом просто з Home Screen.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">📊</div>
+                <h3 class="feature-title">Візуальна аналітика</h3>
+                <p class="feature-desc">Donut-діаграми за категоріями, стовпчики за днями. Шаблони витрат видно за секунди.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">🌙</div>
+                <h3 class="feature-title">Темний режим</h3>
+                <p class="feature-desc">Адаптується автоматично. Виглядає правильно і о 9 ранку, і опівночі.</p>
+            </article>
+            <article class="feature-card">
+                <div class="feature-icon" aria-hidden="true">📤</div>
+                <h3 class="feature-title">CSV-експорт</h3>
+                <p class="feature-desc">Твої дані — твої. Експортуй у CSV будь-коли і забери куди завгодно.</p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<section class="gallery section" aria-label="Галерея скриншотів">
+    <div class="container">
+        <h2 class="section-title">Подивись як це працює</h2>
+        <p class="section-subtitle">Справжні скриншоти з додатка — без маркетингових прикрас та мокапів.</p>
+    </div>
+    <div class="container">
+        <div class="gallery-strip" role="list">
+            <div class="gallery-item" role="listitem">
+                <div class="phone-frame">
+                    <img src="../assets/screens/uk/01-expenses.png" alt="Вкладка Витрати: сума за місяць і витрати, згруповані за днями" width="204" height="442" loading="lazy">
+                </div>
+                <p class="gallery-caption">Витрати · Огляд місяця</p>
+            </div>
+            <div class="gallery-item" role="listitem">
+                <div class="phone-frame">
+                    <img src="../assets/screens/uk/02-statistics.png" alt="Вкладка Статистика: donut-діаграма за категоріями та стовпчики за днями" width="204" height="442" loading="lazy">
+                </div>
+                <p class="gallery-caption">Статистика · Розбивка витрат</p>
+            </div>
+            <div class="gallery-item" role="listitem">
+                <div class="phone-frame">
+                    <img src="../assets/screens/uk/03-budget.png" alt="Вкладка Бюджет: прогрес-бар для кожної валюти" width="204" height="442" loading="lazy">
+                </div>
+                <p class="gallery-caption">Бюджет · Прогрес по валютах</p>
+            </div>
+            <div class="gallery-item" role="listitem">
+                <div class="phone-frame">
+                    <img src="../assets/screens/uk/05-add-expense.png" alt="Аркуш додавання витрати з полем суми та сіткою категорій" width="204" height="442" loading="lazy">
+                </div>
+                <p class="gallery-caption">Додавання · Категорії одним тапом</p>
+            </div>
+            <div class="gallery-item" role="listitem">
+                <div class="phone-frame">
+                    <img src="../assets/screens/uk/04-settings.png" alt="Вкладка Налаштування: керування даними, приватність та підтримка" width="204" height="442" loading="lazy">
+                </div>
+                <p class="gallery-caption">Налаштування · Приватність першою</p>
+            </div>
+            <div class="gallery-item" role="listitem">
+                <div class="phone-frame">
+                    <img src="../assets/screens/uk/06-privacy.png" alt="Сторінка приватності всередині додатка — коротко, без жаргону" width="204" height="442" loading="lazy">
+                </div>
+                <p class="gallery-caption">Приватність · Чесно і коротко</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="privacy" class="privacy-band">
+    <div class="privacy-inner">
+        <h2 class="privacy-title">Приватність — це не функція. Це фундамент.</h2>
+        <p class="privacy-text">
+            Penni ніколи не передає твої дані нікуди. Жодних серверів. Жодних акаунтів. Жодної аналітики. Твої витрати живуть на твоєму iPhone — і тільки на ньому. Видалиш додаток — даних не лишиться, по-справжньому.
+        </p>
+        <div class="privacy-checks">
+            <span class="check-pill">✓ Без серверів</span>
+            <span class="check-pill">✓ Без акаунтів</span>
+            <span class="check-pill">✓ Без відстеження</span>
+            <span class="check-pill">✓ Без реклами</span>
+            <span class="check-pill">✓ Працює офлайн</span>
+        </div>
+        <p style="margin-top: 32px; font-size: 14px;">
+            <a href="privacy.html" style="color: var(--coral); text-decoration: none; font-weight: 600;">Читати повну політику конфіденційності →</a>
+        </p>
+    </div>
+</section>
+
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <a class="footer-link" href="privacy.html">Конфіденційність</a>
+            <a class="footer-link" href="support.html">Підтримка</a>
+            <a class="footer-link" href="https://vyahello.pro">Про розробника</a>
+        </div>
+        <p class="footer-text">© 2026 Volodymyr Yahello · Зроблено з турботою в Україні 🇺🇦</p>
+    </div>
+</footer>
+
+</body>
+</html>

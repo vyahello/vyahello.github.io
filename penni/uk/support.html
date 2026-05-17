@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Підтримка Penni — допомога, FAQ та контакт для iOS-трекера витрат Penni.">
+    <meta name="theme-color" content="#FF7A4D" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1A1714" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    <link rel="canonical" href="https://vyahello.pro/penni/uk/support.html">
+    <link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/support.html">
+    <link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/support.html">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+
+    <title>Підтримка — Penni</title>
+
+    <style>
+        :root {
+            --coral: #FF7A4D; --coral-dark: #E25C2F; --coral-light: #FFE4D8;
+            --bg: #FAF7F2; --text-primary: #1F1B17; --text-secondary: #6B6259; --text-tertiary: #A39A8E;
+            --card: #FFFFFF; --hairline: rgba(31, 27, 23, 0.07);
+            --shadow-sm: 0 1px 0 rgba(31, 27, 23, 0.04), 0 4px 16px rgba(31, 27, 23, 0.04);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root { --bg: #1A1714; --text-primary: #F5F1EC; --text-secondary: #A39A8E; --text-tertiary: #6B6259; --card: #262220; --hairline: rgba(255, 255, 255, 0.08); --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2); }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.6; }
+        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+        .header { padding: 20px 0; border-bottom: 1px solid var(--hairline); position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); z-index: 100; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.3px; }
+        .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 2px 8px rgba(255, 122, 77, 0.25); }
+        .header-right { display: flex; align-items: center; gap: 16px; }
+        .back-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .back-link:hover { color: var(--coral); }
+        .lang-switch { display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; background: var(--card); border-radius: 100px; border: 1px solid var(--hairline); }
+        .lang-switch a { color: var(--text-secondary); text-decoration: none; }
+        .lang-switch a.active { color: var(--coral); }
+
+        .doc { padding: 56px 0 60px; }
+        .doc h1 { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 14px; }
+        @media (max-width: 540px) { .doc h1 { font-size: 32px; letter-spacing: -0.6px; } }
+        .doc .lede { font-size: 18px; color: var(--text-secondary); margin-bottom: 36px; }
+
+        .contact-card { background: var(--card); padding: 28px 32px; border-radius: 18px; margin-bottom: 36px; box-shadow: var(--shadow-sm); }
+        .contact-card h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 14px; }
+        .contact-card .email-link { display: inline-flex; align-items: center; gap: 8px; color: var(--coral); text-decoration: none; font-size: 18px; font-weight: 600; }
+        .contact-card .email-link:hover { text-decoration: underline; }
+        .contact-card .sla { color: var(--text-secondary); font-size: 14px; margin-top: 8px; }
+
+        .section-title { font-size: 24px; font-weight: 700; letter-spacing: -0.4px; margin: 32px 0 12px; }
+
+        .faq-item { border-bottom: 1px solid var(--hairline); padding: 22px 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 8px; color: var(--text-primary); }
+        .faq-answer { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+        .faq-answer a { color: var(--coral); text-decoration: none; font-weight: 500; }
+        .faq-answer a:hover { text-decoration: underline; }
+
+        .footer { padding: 40px 0 60px; text-align: center; border-top: 1px solid var(--hairline); }
+        .footer-text { font-size: 13px; color: var(--text-tertiary); }
+        .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+        .footer-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .footer-link:hover { color: var(--coral); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Penni — головна">
+            <img class="brand-icon" src="../assets/apple-touch-icon.png" alt="" width="36" height="36">
+            Penni
+        </a>
+        <div class="header-right">
+            <a class="back-link" href="index.html">← На головну</a>
+            <span class="lang-switch" aria-label="Мова">
+                <a href="../support.html">EN</a> · <a class="active" href="support.html">UA</a>
+            </span>
+        </div>
+    </div>
+</header>
+
+<main class="doc">
+    <div class="container">
+
+        <h1>Підтримка</h1>
+        <p class="lede">Питання, баг чи побажання? Penni розроблений одним розробником — і кожне повідомлення читається особисто.</p>
+
+        <div class="contact-card">
+            <h2>Зв'язатись</h2>
+            <a class="email-link" href="mailto:vyahello@gmail.com?subject=Penni%20-%20підтримка">
+                ✉️ vyahello@gmail.com
+            </a>
+            <p class="sla">Відповідь протягом 48 годин у робочі дні (Пн–Пт, Київський час). Bug-репорти у пріоритеті.</p>
+        </div>
+
+        <h2 class="section-title">Системні вимоги</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 24px;">Penni вимагає iPhone з iOS 16.6 або новіше. Інтернет-з'єднання не потрібне. Підтримка iPad запланована на майбутню версію.</p>
+
+        <h2 class="section-title">Часті питання</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">Чи синхронізується Penni між моїм iPhone та іншими пристроями?</div>
+            <div class="faq-answer">Ні. Penni навмисно локальний — твої дані живуть на одному iPhone і нікуди не передаються. У майбутній версії можливо додамо iCloud sync, але тільки як суворий user-controlled opt-in. Спершу — приватність.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Що буде якщо я загублю iPhone або видалю Penni?</div>
+            <div class="faq-answer">Дані про витрати зникнуть. Сильно рекомендуємо регулярно експортувати у CSV (<em>Налаштування → Експортувати у CSV</em>) і тримати бекап десь у безпеці — email, Files app, iCloud Drive тощо. Дані Penni також входять у стандартні бекапи iPhone (iCloud Backup або зашифровані локальні бекапи), якщо вони увімкнені в Налаштуваннях iOS.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Як швидко додати витрату?</div>
+            <div class="faq-answer">Зроби long-press на іконці Penni на Home Screen. З'явиться меню з двома твоїми найчастішими шаблонами плюс пунктом "Додати витрату". Тапни шаблон — і витрата записана миттєво, без потреби відкривати додаток.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Чому Penni не конвертує валюти?</div>
+            <div class="faq-answer">Курси змінюються постійно і залежать від того де ти міняєш гроші. Конвертовані тотали були б або неточні, або потребували онлайн-запитів — а це конфліктує з нашим offline-first дизайном. Замість цього Penni веде облік кожної валюти окремо — ти завжди бачиш реальні цифри.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Чи можна додавати власні категорії?</div>
+            <div class="faq-answer">Так. Йди у <em>Налаштування → Категорії → +</em>. Можеш вибрати ім'я, іконку та колір для кожної кастомної категорії. Дефолтні категорії не можна редагувати чи видаляти, але можна повністю ігнорувати і використовувати тільки свої.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Як видалити усі мої дані?</div>
+            <div class="faq-answer">Відкрий <em>Налаштування → Стерти усі дані</em> і підтверди. Це повністю видаляє всі витрати, бюджети, шаблони та кастомні категорії. Дію не можна скасувати. Альтернативно — видалення додатка з iOS видаляє всі дані автоматично.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Penni безкоштовний? Чи буде платна версія?</div>
+            <div class="faq-answer">Так, Penni безкоштовний — без реклами, підписок та in-app purchases. Платної версії не планується. Якщо колись щось зміниться, наявні функції залишаться безкоштовними.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Я знайшов баг. Що робити?</div>
+            <div class="faq-answer">Будь ласка, напиши на <a href="mailto:vyahello@gmail.com?subject=Penni%20bug">vyahello@gmail.com</a>: (1) що ти робив, (2) що очікував, (3) що сталось замість того, (4) версія iOS та модель пристрою. Скриншоти дуже допомагають. Bug-репорти отримують підтвердження того ж дня коли можливо.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Куди надсилати feature-запити?</div>
+            <div class="faq-answer">Email <a href="mailto:vyahello@gmail.com?subject=Penni%20-%20запит%20функції">vyahello@gmail.com</a> з тим що хочеш бачити і чому. Реальний фідбек формує roadmap.</div>
+        </div>
+
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <a class="footer-link" href="index.html">Головна</a>
+            <a class="footer-link" href="privacy.html">Конфіденційність</a>
+            <a class="footer-link" href="https://vyahello.pro">Про розробника</a>
+        </div>
+        <p class="footer-text">© 2026 Volodymyr Yahello · Зроблено з турботою в Україні 🇺🇦</p>
+    </div>
+</footer>
+
+</body>
+</html>
