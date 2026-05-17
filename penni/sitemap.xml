@@ -4,7 +4,7 @@
     <url>
         <loc>https://vyahello.pro/penni/</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/"/>
         <xhtml:link rel="alternate" hreflang="x-default" href="https://vyahello.pro/penni/"/>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
@@ -12,31 +12,31 @@
     <url>
         <loc>https://vyahello.pro/penni/privacy.html</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/privacy.html"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/privacy.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/privacy.html"/>
         <changefreq>yearly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
         <loc>https://vyahello.pro/penni/support.html</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/support.html"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/support.html"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/support.html"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://vyahello.pro/penni/uk/</loc>
+        <loc>https://vyahello.pro/penni/ua/</loc>
         <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/uk/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/"/>
         <changefreq>monthly</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://vyahello.pro/penni/uk/privacy.html</loc>
+        <loc>https://vyahello.pro/penni/ua/privacy.html</loc>
         <changefreq>yearly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://vyahello.pro/penni/uk/support.html</loc>
+        <loc>https://vyahello.pro/penni/ua/support.html</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
