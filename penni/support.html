@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Penni Support — help, FAQ and contact for the Penni iOS expense tracker app.">
+    <meta name="theme-color" content="#FF7A4D" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1A1714" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    <link rel="canonical" href="https://vyahello.pro/penni/support.html">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+    <title>Support — Penni</title>
+
+    <style>
+        :root {
+            --coral: #FF7A4D;
+            --coral-dark: #E25C2F;
+            --coral-light: #FFE4D8;
+            --bg: #FAF7F2;
+            --text-primary: #1F1B17;
+            --text-secondary: #6B6259;
+            --text-tertiary: #A39A8E;
+            --card: #FFFFFF;
+            --hairline: rgba(31, 27, 23, 0.07);
+            --shadow-sm: 0 1px 0 rgba(31, 27, 23, 0.04), 0 4px 16px rgba(31, 27, 23, 0.04);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1A1714;
+                --text-primary: #F5F1EC;
+                --text-secondary: #A39A8E;
+                --text-tertiary: #6B6259;
+                --card: #262220;
+                --hairline: rgba(255, 255, 255, 0.08);
+                --shadow-sm: 0 1px 0 rgba(0, 0, 0, 0.3), 0 4px 16px rgba(0, 0, 0, 0.2);
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+        .header { padding: 20px 0; border-bottom: 1px solid var(--hairline); position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); z-index: 100; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.3px; }
+        .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 2px 8px rgba(255, 122, 77, 0.25); }
+        .back-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .back-link:hover { color: var(--coral); }
+
+        .doc { padding: 56px 0 60px; }
+        .doc h1 { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 14px; }
+        @media (max-width: 540px) { .doc h1 { font-size: 32px; letter-spacing: -0.6px; } }
+        .doc .lede { font-size: 18px; color: var(--text-secondary); margin-bottom: 36px; }
+
+        .contact-card {
+            background: var(--card);
+            padding: 28px 32px;
+            border-radius: 18px;
+            margin-bottom: 36px;
+            box-shadow: var(--shadow-sm);
+        }
+        .contact-card h2 { font-size: 20px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 14px; }
+        .contact-card .email-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            color: var(--coral); text-decoration: none;
+            font-size: 18px; font-weight: 600;
+        }
+        .contact-card .email-link:hover { text-decoration: underline; }
+        .contact-card .sla {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+        .section-title { font-size: 24px; font-weight: 700; letter-spacing: -0.4px; margin: 32px 0 12px; }
+
+        .faq-item { border-bottom: 1px solid var(--hairline); padding: 22px 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-question { font-size: 17px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 8px; color: var(--text-primary); }
+        .faq-answer { font-size: 15px; color: var(--text-secondary); line-height: 1.6; }
+        .faq-answer a { color: var(--coral); text-decoration: none; font-weight: 500; }
+        .faq-answer a:hover { text-decoration: underline; }
+
+        .footer { padding: 40px 0 60px; text-align: center; border-top: 1px solid var(--hairline); }
+        .footer-text { font-size: 13px; color: var(--text-tertiary); }
+        .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+        .footer-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .footer-link:hover { color: var(--coral); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Penni — home">
+            <img class="brand-icon" src="assets/apple-touch-icon.png" alt="" width="36" height="36">
+            Penni
+        </a>
+        <a class="back-link" href="index.html">← Back to home</a>
+    </div>
+</header>
+
+<main class="doc">
+    <div class="container">
+
+        <h1>Support</h1>
+        <p class="lede">Got a question, found a bug, or have a suggestion? Penni is built by a single developer — and every message is read personally.</p>
+
+        <div class="contact-card">
+            <h2>Get in touch</h2>
+            <a class="email-link" href="mailto:vyahello@gmail.com?subject=Penni%20support">
+                ✉️ vyahello@gmail.com
+            </a>
+            <p class="sla">Response within 48 hours on business days (Mon–Fri, Kyiv time). Bug reports get priority.</p>
+        </div>
+
+        <h2 class="section-title">App requirements</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 24px;">Penni requires an iPhone running iOS 16.6 or later. No internet connection required. iPad support is planned for a future version.</p>
+
+        <h2 class="section-title">Frequently asked questions</h2>
+
+        <div class="faq-item">
+            <div class="faq-question">Does Penni sync between my iPhone and other devices?</div>
+            <div class="faq-answer">No. Penni is intentionally local-only — your data lives on a single iPhone and never leaves it. We may add optional iCloud sync in a future version, but only as a strict user-controlled opt-in. Privacy first.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">What happens if I lose my iPhone or uninstall Penni?</div>
+            <div class="faq-answer">Your expense data is gone. We strongly recommend exporting to CSV regularly (<em>Settings → Export to CSV</em>) and keeping a backup somewhere safe — your email, Files app, iCloud Drive, etc. Penni's data is also included in your standard iPhone backups (iCloud Backup or encrypted Mac/Finder backups) if you have those enabled in iOS Settings.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">How do I add an expense quickly?</div>
+            <div class="faq-answer">Long-press the Penni icon on your Home Screen. You'll see your two most-used templates plus an "Add expense" shortcut. Tap a template to record that expense instantly — no need to open the app.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Why doesn't Penni convert between currencies?</div>
+            <div class="faq-answer">Currency rates change constantly and depend on where you exchange. Converted totals would either be inaccurate or require live network requests — which conflicts with Penni's offline-first design. Instead, Penni tracks each currency separately so you always see real numbers.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Can I add custom categories?</div>
+            <div class="faq-answer">Yes. Go to <em>Settings → Categories → +</em>. You can choose a name, icon and color for each custom category. Default categories cannot be edited or deleted, but you can ignore them entirely and use only your own.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">How do I delete all my data?</div>
+            <div class="faq-answer">Open <em>Settings → Reset all data</em> and confirm. This permanently removes all expenses, budgets, templates and custom categories. The action cannot be undone. Alternatively, deleting the app from iOS removes all data automatically.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Is Penni free? Will there be a paid version?</div>
+            <div class="faq-answer">Yes, Penni is free with no ads, no subscriptions, and no in-app purchases. There are no current plans for a paid version. If that ever changes, existing features will remain free.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">I found a bug. What should I do?</div>
+            <div class="faq-answer">Please email <a href="mailto:vyahello@gmail.com?subject=Penni%20bug%20report">vyahello@gmail.com</a> with: (1) what you did, (2) what you expected, (3) what happened instead, and (4) your iOS version and device model. Screenshots help a lot. Bug reports get a same-day acknowledgment whenever possible.</div>
+        </div>
+
+        <div class="faq-item">
+            <div class="faq-question">Where can I send feature requests?</div>
+            <div class="faq-answer">Email <a href="mailto:vyahello@gmail.com?subject=Penni%20feature%20request">vyahello@gmail.com</a> with what you'd like to see and why. Real user feedback shapes the roadmap.</div>
+        </div>
+
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <a class="footer-link" href="index.html">Home</a>
+            <a class="footer-link" href="privacy.html">Privacy Policy</a>
+            <a class="footer-link" href="https://vyahello.pro">About developer</a>
+        </div>
+        <p class="footer-text">© 2026 Volodymyr Yahello · Made with care in Ukraine 🇺🇦</p>
+    </div>
+</footer>
+
+</body>
+</html>

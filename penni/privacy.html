@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Penni Privacy Policy. Penni stores all data locally on your iPhone. No servers, no accounts, no tracking, no analytics, no third-party SDKs.">
+    <meta name="theme-color" content="#FF7A4D" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#1A1714" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+    <link rel="canonical" href="https://vyahello.pro/penni/privacy.html">
+
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+
+    <title>Privacy Policy — Penni</title>
+
+    <style>
+        :root {
+            --coral: #FF7A4D;
+            --coral-dark: #E25C2F;
+            --coral-light: #FFE4D8;
+            --bg: #FAF7F2;
+            --text-primary: #1F1B17;
+            --text-secondary: #6B6259;
+            --text-tertiary: #A39A8E;
+            --card: #FFFFFF;
+            --hairline: rgba(31, 27, 23, 0.07);
+        }
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1A1714;
+                --text-primary: #F5F1EC;
+                --text-secondary: #A39A8E;
+                --text-tertiary: #6B6259;
+                --card: #262220;
+                --hairline: rgba(255, 255, 255, 0.08);
+            }
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .container { max-width: 720px; margin: 0 auto; padding: 0 24px; }
+
+        .header { padding: 20px 0; border-bottom: 1px solid var(--hairline); position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); z-index: 100; }
+        .header-inner { display: flex; align-items: center; justify-content: space-between; }
+        .brand { display: flex; align-items: center; gap: 12px; font-size: 18px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.3px; }
+        .brand-icon { width: 36px; height: 36px; border-radius: 9px; box-shadow: 0 2px 8px rgba(255, 122, 77, 0.25); }
+        .back-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .back-link:hover { color: var(--coral); }
+
+        .doc { padding: 56px 0 80px; }
+        .doc h1 { font-size: 42px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; margin-bottom: 12px; }
+        @media (max-width: 540px) { .doc h1 { font-size: 32px; letter-spacing: -0.6px; } }
+        .doc .meta { font-size: 14px; color: var(--text-tertiary); margin-bottom: 36px; }
+        .doc h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.3px; margin-top: 40px; margin-bottom: 14px; color: var(--text-primary); }
+        .doc p { font-size: 16px; color: var(--text-primary); margin-bottom: 16px; }
+        .doc ul { margin-bottom: 16px; padding-left: 24px; }
+        .doc li { font-size: 16px; color: var(--text-primary); margin-bottom: 8px; }
+        .doc a { color: var(--coral); text-decoration: none; font-weight: 500; }
+        .doc a:hover { text-decoration: underline; }
+
+        .highlight-box {
+            background: var(--card);
+            padding: 24px 28px;
+            border-radius: 14px;
+            margin: 28px 0;
+            border-left: 4px solid var(--coral);
+        }
+        .highlight-box p:last-child { margin-bottom: 0; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0 24px;
+            background: var(--card);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 1px 0 var(--hairline), 0 4px 16px rgba(31, 27, 23, 0.04);
+        }
+        .data-table th, .data-table td {
+            padding: 14px 18px;
+            text-align: left;
+            font-size: 14px;
+            border-bottom: 1px solid var(--hairline);
+            vertical-align: top;
+        }
+        .data-table tr:last-child td { border-bottom: none; }
+        .data-table th {
+            background: color-mix(in srgb, var(--card) 80%, var(--text-primary));
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 13px;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+        }
+        @media (prefers-color-scheme: dark) {
+            .data-table th { background: var(--card); }
+        }
+        .data-table td { color: var(--text-secondary); }
+        .data-table td strong { color: var(--text-primary); font-weight: 600; }
+        .badge-no { color: #1D9E75; font-weight: 600; }
+
+        .footer { padding: 40px 0 60px; text-align: center; border-top: 1px solid var(--hairline); }
+        .footer-text { font-size: 13px; color: var(--text-tertiary); }
+        .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
+        .footer-link { color: var(--text-secondary); text-decoration: none; font-size: 14px; }
+        .footer-link:hover { color: var(--coral); }
+    </style>
+</head>
+<body>
+
+<header class="header">
+    <div class="container header-inner">
+        <a href="index.html" class="brand" aria-label="Penni — home">
+            <img class="brand-icon" src="assets/apple-touch-icon.png" alt="" width="36" height="36">
+            Penni
+        </a>
+        <a class="back-link" href="index.html">← Back to home</a>
+    </div>
+</header>
+
+<main class="doc">
+    <div class="container">
+
+        <h1>Privacy Policy</h1>
+        <div class="meta">Effective date: May 18, 2026 · Last updated: May 18, 2026</div>
+
+        <div class="highlight-box">
+            <p><strong>The short version:</strong> Penni does not collect, transmit, or store any personal data outside of your iPhone. We operate no servers, we have no user accounts, and we use no analytics, tracking or advertising of any kind. Your data stays on your device.</p>
+        </div>
+
+        <h2>Who we are</h2>
+        <p>Penni is developed and published by Volodymyr Yahello, an independent developer based in Ukraine. This privacy policy describes how the Penni iOS application handles user data.</p>
+        <p>For any privacy-related question, contact <a href="mailto:vyahello@gmail.com">vyahello@gmail.com</a>.</p>
+
+        <h2>Data we collect</h2>
+        <p>None. Penni does not collect any personal information from you or your device.</p>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Collected?</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td><strong>Contact info</strong> (name, email, phone)</td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Health & fitness</strong></td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Financial info</strong> (your expense data)</td><td class="badge-no">Stays on your device only</td></tr>
+                <tr><td><strong>Location</strong></td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Sensitive info</strong></td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Contacts</strong></td><td class="badge-no">No</td></tr>
+                <tr><td><strong>User content</strong> (photos, messages)</td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Browsing or search history</strong></td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Identifiers</strong> (device ID, advertising ID)</td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Usage data</strong> (analytics, crash logs)</td><td class="badge-no">No</td></tr>
+                <tr><td><strong>Diagnostics</strong></td><td class="badge-no">No</td></tr>
+            </tbody>
+        </table>
+
+        <p>This corresponds to <strong>"Data Not Collected"</strong> on Penni's App Store privacy label.</p>
+
+        <h2>Data stored on your device</h2>
+        <p>The expenses, budgets, templates, categories and preferences you enter in Penni are saved exclusively on your iPhone using standard iOS storage:</p>
+        <ul>
+            <li>UserDefaults — used for app preferences (e.g. default currency, onboarding completion flag)</li>
+            <li>Local JSON files in the app's private sandbox — used for expenses, budgets, templates, custom categories</li>
+        </ul>
+        <p>This data is protected by iOS sandboxing — no other app can read it. It is included in your standard iPhone backups (iCloud Backup / iTunes encrypted backup) only if you have those backups enabled in iOS Settings. We have no access to those backups; Apple does not share them with us.</p>
+
+        <h2>When you delete the app</h2>
+        <p>When you uninstall Penni from your iPhone, all data stored by the app is permanently and immediately removed by iOS. We have no copies, no server backups, and no way to recover deleted data — because the data was never on our servers in the first place.</p>
+
+        <h2>Data export</h2>
+        <p>You can export all your expenses to CSV format at any time via <em>Settings → Export to CSV</em>. The export uses iOS's standard share sheet, so you choose where the file goes (email, AirDrop, Files app, third-party cloud storage, etc.). Penni does not control or observe where you send the exported file.</p>
+
+        <h2>Permissions</h2>
+        <p>Penni does not request access to any sensitive iOS resources. The app does not access your location, contacts, camera, photos, microphone, health data, motion sensors, calendar, reminders, push notifications or background app refresh.</p>
+
+        <h2>Third-party services and SDKs</h2>
+        <p>Penni integrates with no third-party services, no analytics platforms, no crash reporters and no advertising networks. The app uses only Apple's first-party frameworks (SwiftUI, UIKit, Foundation, Charts, App Intents). No third-party Swift packages are bundled.</p>
+
+        <h2>Network access</h2>
+        <p>Penni makes no network requests during normal operation. The app works fully offline. It does not require an internet connection to launch, record expenses, view statistics, or perform any other function.</p>
+
+        <h2>Children's privacy</h2>
+        <p>Penni does not knowingly collect personal information from anyone, including children under 13. Because Penni does not collect any data, the app is appropriate for users of any age and complies with the U.S. Children's Online Privacy Protection Act (COPPA).</p>
+
+        <h2>Your rights under GDPR (EU) and CCPA (California)</h2>
+        <p>Because Penni does not collect, store or process any personal data outside of your device, there is no data to access, correct, delete, port or restrict on our side. All data is under your control on your iPhone. You can delete it at any time via <em>Settings → Reset all data</em> or by uninstalling the app.</p>
+
+        <h2>Changes to this policy</h2>
+        <p>If we ever update this privacy policy, the "Last updated" date at the top of this page will be revised. Material changes will also be communicated in App Store release notes when the next app version is published.</p>
+
+        <h2>Contact</h2>
+        <p>For questions about this privacy policy or how Penni handles data:</p>
+        <ul>
+            <li><strong>Developer:</strong> Volodymyr Yahello (independent developer, Ukraine)</li>
+            <li><strong>Email:</strong> <a href="mailto:vyahello@gmail.com">vyahello@gmail.com</a></li>
+            <li><strong>More about the developer:</strong> <a href="https://vyahello.pro">vyahello.pro</a></li>
+        </ul>
+
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <a class="footer-link" href="index.html">Home</a>
+            <a class="footer-link" href="support.html">Support</a>
+            <a class="footer-link" href="https://vyahello.pro">About developer</a>
+        </div>
+        <p class="footer-text">© 2026 Volodymyr Yahello · Made with care in Ukraine 🇺🇦</p>
+    </div>
+</footer>
+
+</body>
+</html>
