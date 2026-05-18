@@ -10,16 +10,16 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://vyahello.pro/penni/privacy.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/privacy.html"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/privacy.html"/>
+        <loc>https://vyahello.pro/penni/privacy/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/privacy/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/privacy/"/>
         <changefreq>yearly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://vyahello.pro/penni/support.html</loc>
-        <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/support.html"/>
-        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/support.html"/>
+        <loc>https://vyahello.pro/penni/support/</loc>
+        <xhtml:link rel="alternate" hreflang="en" href="https://vyahello.pro/penni/support/"/>
+        <xhtml:link rel="alternate" hreflang="uk" href="https://vyahello.pro/penni/ua/support/"/>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
@@ -31,12 +31,12 @@
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://vyahello.pro/penni/ua/privacy.html</loc>
+        <loc>https://vyahello.pro/penni/ua/privacy/</loc>
         <changefreq>yearly</changefreq>
         <priority>0.8</priority>
     </url>
     <url>
-        <loc>https://vyahello.pro/penni/ua/support.html</loc>
+        <loc>https://vyahello.pro/penni/ua/support/</loc>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>

@@ -17,6 +17,8 @@
     <link rel="icon" type="image/png" sizes="192x192" href="../assets/icon-192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
     <link rel="mask-icon" href="../assets/apple-touch-icon.png" color="#FF7A4D">
+    <link rel="image_src" href="https://vyahello.pro/penni/assets/icon-512.png">
+    <link rel="preload" as="image" href="../assets/screens/ua/01-expenses.png" fetchpriority="high">
 
     <meta property="og:title" content="Penni — Приватний трекер витрат для iPhone">
     <meta property="og:description" content="Облік витрат у 3 валютах на твоєму iPhone. Локально. Без акаунтів, без серверів, без відстеження.">
@@ -123,9 +125,12 @@
         .lang-switch { display: inline-flex; gap: 6px; font-size: 12px; font-weight: 600; padding: 5px 10px; background: var(--card); border-radius: 100px; border: 1px solid var(--hairline); }
         .lang-switch a { color: var(--text-secondary); text-decoration: none; }
         .lang-switch a.active { color: var(--coral); }
+        @media (max-width: 640px) {
+            .nav-links { display: none; }
+        }
         @media (max-width: 540px) {
-            .nav-links { gap: 14px; }
-            .nav-link { font-size: 13px; }
+            .brand { font-size: 16px; gap: 10px; }
+            .brand-icon { width: 32px; height: 32px; }
         }
 
         .hero { padding: 80px 0 40px; text-align: center; }
@@ -159,9 +164,7 @@
         }
         .phone-frame img { border-radius: 36px; display: block; }
         @media (max-width: 540px) {
-            .phone-frame { width: 240px; padding: 10px; border-radius: 40px; }
-            .phone-frame img { border-radius: 30px; }
-            .showcase { padding: 32px 0 64px; }
+            .showcase { display: none; }
         }
 
         .section { padding: 80px 0; }
@@ -189,6 +192,17 @@
         .gallery-item .phone-frame img { border-radius: 28px; }
         .gallery-caption { text-align: center; margin-top: 14px; font-size: 13px; color: var(--text-secondary); font-weight: 500; }
 
+        .midpoint-cta { padding: 24px 0 56px; }
+        .midpoint-card { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 28px 32px; background: var(--card); border-radius: 22px; box-shadow: var(--shadow-sm); border: 1px solid var(--hairline); }
+        .midpoint-text { flex: 1; min-width: 0; }
+        .midpoint-title { font-size: 22px; font-weight: 700; letter-spacing: -0.4px; margin-bottom: 4px; }
+        .midpoint-sub { font-size: 14px; color: var(--text-secondary); line-height: 1.45; }
+        .midpoint-btn { white-space: nowrap; padding: 12px 22px; font-size: 15px; }
+        @media (max-width: 640px) {
+            .midpoint-card { flex-direction: column; align-items: flex-start; padding: 24px; }
+            .midpoint-btn { width: 100%; }
+        }
+
         .privacy-band { background: linear-gradient(180deg, var(--card), color-mix(in srgb, var(--coral) 4%, var(--card))); padding: 80px 0; border-top: 1px solid var(--hairline); border-bottom: 1px solid var(--hairline); text-align: center; }
         .privacy-inner { max-width: 720px; margin: 0 auto; padding: 0 24px; }
         .privacy-title { font-size: 36px; font-weight: 700; letter-spacing: -0.8px; margin-bottom: 18px; }
@@ -199,6 +213,9 @@
         @media (prefers-color-scheme: dark) {
             .check-pill { background: rgba(255, 122, 77, 0.18); color: #FF8A5E; }
         }
+
+        .privacy-verify { margin-top: 32px; padding: 16px 22px; background: color-mix(in srgb, var(--bg) 60%, transparent); border: 1px solid var(--hairline); border-radius: 14px; font-size: 14px; color: var(--text-secondary); line-height: 1.6; max-width: 560px; margin-left: auto; margin-right: auto; }
+        .privacy-verify strong { color: var(--text-primary); font-weight: 600; }
 
         .footer { padding: 48px 0 64px; text-align: center; border-top: 1px solid var(--hairline); }
         .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 14px; flex-wrap: wrap; }
@@ -213,7 +230,7 @@
 
 <header class="header">
     <div class="container header-inner">
-        <a href="index.html" class="brand" aria-label="Penni — головна">
+        <a href="./" class="brand" aria-label="Penni — головна">
             <img class="brand-icon" src="../assets/apple-touch-icon.png" alt="" width="36" height="36">
             Penni
         </a>
@@ -221,10 +238,10 @@
             <nav class="nav-links" aria-label="Головна навігація">
                 <a class="nav-link" href="#features">Можливості</a>
                 <a class="nav-link" href="#privacy">Приватність</a>
-                <a class="nav-link" href="support.html">Підтримка</a>
+                <a class="nav-link" href="support/">Підтримка</a>
             </nav>
             <span class="lang-switch" aria-label="Мова">
-                <a href="../index.html">EN</a> · <a class="active" href="index.html">UA</a>
+                <a href="../">EN</a> · <a class="active" href="./">UA</a>
             </span>
         </div>
     </div>
@@ -254,7 +271,7 @@
 
 <section class="showcase" aria-label="Перегляд додатка Penni">
     <div class="phone-frame">
-        <img src="../assets/screens/ua/01-expenses.png" alt="Екран Витрати у Penni: загальна сума за місяць у гривнях, денні підсумки та список останніх витрат, згрупованих за днем" width="256" height="555">
+        <img src="../assets/screens/ua/01-expenses.png" alt="Екран Витрати у Penni: загальна сума за місяць у гривнях, денні підсумки та список останніх витрат, згрупованих за днем" width="256" height="556" fetchpriority="high" decoding="async">
     </div>
 </section>
 
@@ -306,40 +323,54 @@
         <div class="gallery-strip" role="list">
             <div class="gallery-item" role="listitem">
                 <div class="phone-frame">
-                    <img src="../assets/screens/ua/01-expenses.png" alt="Вкладка Витрати: сума за місяць і витрати, згруповані за днями" width="204" height="442" loading="lazy">
+                    <img src="../assets/screens/ua/01-expenses.png" alt="Вкладка Витрати: сума за місяць і витрати, згруповані за днями" width="204" height="443" loading="lazy">
                 </div>
                 <p class="gallery-caption">Витрати · Огляд місяця</p>
             </div>
             <div class="gallery-item" role="listitem">
                 <div class="phone-frame">
-                    <img src="../assets/screens/ua/02-statistics.png" alt="Вкладка Статистика: donut-діаграма за категоріями та стовпчики за днями" width="204" height="442" loading="lazy">
+                    <img src="../assets/screens/ua/02-statistics.png" alt="Вкладка Статистика: donut-діаграма за категоріями та стовпчики за днями" width="204" height="443" loading="lazy">
                 </div>
                 <p class="gallery-caption">Статистика · Розбивка витрат</p>
             </div>
             <div class="gallery-item" role="listitem">
                 <div class="phone-frame">
-                    <img src="../assets/screens/ua/03-budget.png" alt="Вкладка Бюджет: прогрес-бар для кожної валюти" width="204" height="442" loading="lazy">
+                    <img src="../assets/screens/ua/03-budget.png" alt="Вкладка Бюджет: прогрес-бар для кожної валюти" width="204" height="443" loading="lazy">
                 </div>
                 <p class="gallery-caption">Бюджет · Прогрес по валютах</p>
             </div>
             <div class="gallery-item" role="listitem">
                 <div class="phone-frame">
-                    <img src="../assets/screens/ua/05-add-expense.png" alt="Аркуш додавання витрати з полем суми та сіткою категорій" width="204" height="442" loading="lazy">
+                    <img src="../assets/screens/ua/05-add-expense.png" alt="Аркуш додавання витрати з полем суми та сіткою категорій" width="204" height="443" loading="lazy">
                 </div>
                 <p class="gallery-caption">Додавання · Категорії одним тапом</p>
             </div>
             <div class="gallery-item" role="listitem">
                 <div class="phone-frame">
-                    <img src="../assets/screens/ua/04-settings.png" alt="Вкладка Налаштування: керування даними, приватність та підтримка" width="204" height="442" loading="lazy">
+                    <img src="../assets/screens/ua/04-settings.png" alt="Вкладка Налаштування: керування даними, приватність та підтримка" width="204" height="443" loading="lazy">
                 </div>
                 <p class="gallery-caption">Налаштування · Приватність першою</p>
             </div>
             <div class="gallery-item" role="listitem">
                 <div class="phone-frame">
-                    <img src="../assets/screens/ua/06-privacy.png" alt="Сторінка приватності всередині додатка — коротко, без жаргону" width="204" height="442" loading="lazy">
+                    <img src="../assets/screens/ua/06-privacy.png" alt="Сторінка приватності всередині додатка — коротко, без жаргону" width="204" height="443" loading="lazy">
                 </div>
                 <p class="gallery-caption">Приватність · Чесно і коротко</p>
             </div>
+        </div>
+    </div>
+</section>
+
+<section class="midpoint-cta" aria-label="Сповіщення про запуск">
+    <div class="container">
+        <div class="midpoint-card">
+            <div class="midpoint-text">
+                <h3 class="midpoint-title">Penni вже на підході.</h3>
+                <p class="midpoint-sub">Дізнайся першим коли застосунок з'явиться в App Store. Один лист, без спаму, без списків розсилки.</p>
+            </div>
+            <a class="btn-primary midpoint-btn" href="mailto:vyahello@gmail.com?subject=Penni%20-%20cповістити%20при%20запуску" aria-label="Сповістити коли Penni вийде у App Store">
+                Сповістити при запуску
+            </a>
         </div>
     </div>
 </section>
@@ -357,8 +388,11 @@
             <span class="check-pill">✓ Без реклами</span>
             <span class="check-pill">✓ Працює офлайн</span>
         </div>
-        <p style="margin-top: 32px; font-size: 14px;">
-            <a href="privacy.html" style="color: var(--coral); text-decoration: none; font-weight: 600;">Читати повну політику конфіденційності →</a>
+        <p class="privacy-verify">
+            Не вір на слово — відкрий <strong>Налаштування iPhone → Конфіденційність і безпека → Звіт про конфіденційність застосунків</strong> після кількох днів користування. Побачиш нуль вихідних мережевих запитів від Penni. Тому що їх немає.
+        </p>
+        <p style="margin-top: 24px; font-size: 14px;">
+            <a href="privacy/" style="color: var(--coral); text-decoration: none; font-weight: 600;">Читати повну політику конфіденційності →</a>
         </p>
     </div>
 </section>
@@ -368,8 +402,8 @@
 <footer class="footer">
     <div class="container">
         <div class="footer-links">
-            <a class="footer-link" href="privacy.html">Конфіденційність</a>
-            <a class="footer-link" href="support.html">Підтримка</a>
+            <a class="footer-link" href="privacy/">Конфіденційність</a>
+            <a class="footer-link" href="support/">Підтримка</a>
             <a class="footer-link" href="https://vyahello.pro">Про розробника</a>
         </div>
         <p class="footer-text">© 2026 Volodymyr Yahello · Зроблено з турботою в Україні 🇺🇦</p>
