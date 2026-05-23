@@ -7,6 +7,7 @@ import { initReveal }      from './reveal.js';
 import { initUI }          from './ui.js';
 import { initCountdown }   from './countdown.js';
 import { initCalligraphy } from './calligraphy.js';
+import { initRSVP }        from './rsvp.js';
 
 function boot() {
   initHero();
@@ -14,7 +15,8 @@ function boot() {
   initUI();
   initCountdown();    // async, fetches data/event.json
   initCalligraphy();
-  // Stage 5+ adds: initRSVP, …
+  initRSVP();
+  // Stage 6+ replaces RSVP submit with Apps Script POST.
 }
 
 if (document.readyState === 'loading') {
