@@ -196,3 +196,85 @@
   opacity: 0.7;
   animation: bob 2.2s ease-in-out infinite;
 }
+
+/* ============================================================
+   Shared section primitives (used by §2–§14)
+   ============================================================ */
+
+/* Reveal-on-scroll: starts invisible, slides up when JS adds .is-visible */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger helpers — apply to children of a parent .reveal-stagger */
+.reveal-stagger > .reveal:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger > .reveal:nth-child(2) { transition-delay: 0.15s; }
+.reveal-stagger > .reveal:nth-child(3) { transition-delay: 0.25s; }
+.reveal-stagger > .reveal:nth-child(4) { transition-delay: 0.35s; }
+.reveal-stagger > .reveal:nth-child(5) { transition-delay: 0.45s; }
+.reveal-stagger > .reveal:nth-child(6) { transition-delay: 0.55s; }
+.reveal-stagger > .reveal:nth-child(7) { transition-delay: 0.65s; }
+.reveal-stagger > .reveal:nth-child(8) { transition-delay: 0.75s; }
+
+/* ---- Section frame: shared layout for all non-Hero sections ---- */
+
+.section {
+  position: relative;
+  padding: var(--s-9) var(--s-5);
+  background: var(--cream-soft);
+  color: var(--ink-deep);
+}
+
+/* Alternating dark/cream so sections don't all blur together */
+.section.section--dark {
+  background: linear-gradient(180deg, #2a1a08 0%, #1a0f04 100%);
+  color: var(--cream);
+}
+
+.section__inner {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.section__eyebrow {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin: 0 0 var(--s-4);
+}
+
+.section__title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(28px, 4.5vw, 44px);
+  line-height: 1.1;
+  margin: 0 0 var(--s-5);
+  letter-spacing: var(--tracking-wide);
+}
+
+.section__lead {
+  font-family: var(--font-display);
+  font-size: clamp(18px, 2vw, 22px);
+  line-height: 1.5;
+  font-style: italic;
+  margin: 0 auto;
+  max-width: 560px;
+}
+
+/* Hairline gold divider used between sections (decorative) */
+.divider {
+  width: 60px;
+  height: 1px;
+  margin: var(--s-6) auto;
+  background: linear-gradient(90deg, transparent, var(--gold-warm), transparent);
+}
