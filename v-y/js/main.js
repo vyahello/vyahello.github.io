@@ -4,11 +4,13 @@
 
 import { initHero }   from './hero.js';
 import { initReveal } from './reveal.js';
+import { initUI }     from './ui.js';
 
 function boot() {
   initHero();
   initReveal();
-  // Stage 3+ adds: initUI (scroll progress + scroll-to-top), initCountdown, initRSVP, …
+  initUI();
+  // Stage 4+ adds: initCountdown, initRSVP, …
 }
 
 if (document.readyState === 'loading') {
