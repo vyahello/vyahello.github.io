@@ -1,0 +1,36 @@
+/* ============================================================
+   base.css — body reset and layout container
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--gold-deep);  /* prevents flash before .hero paints */
+  color: var(--cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Snap is set up now; Stage 3 sections will use scroll-snap-align */
+  scroll-snap-type: y proximity;
+}
+
+body {
+  min-height: 100svh;
+  overflow-x: hidden;          /* parallax may push elements; never show horizontal scrollbar */
+}
+
+/* Reduced-motion: turn off all animations + transforms.
+   Required by spec §14 (risk: slow devices). */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
