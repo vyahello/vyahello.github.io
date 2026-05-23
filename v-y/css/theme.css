@@ -1,0 +1,64 @@
+/* ============================================================
+   theme.css — Luxe Gold design tokens
+   Source: docs/superpowers/specs/2026-05-23-wedding-invite-design.md §2
+   ============================================================ */
+
+:root {
+  /* --- Gold palette --- */
+  --gold-deep:    #7a4f15;   /* deepest bronze */
+  --gold-mid:     #8a5b1c;   /* mid bronze */
+  --gold-warm:    #c89542;   /* warm gold (primary) */
+  --gold-bright:  #e2b65c;   /* highlight gold */
+  --gold-glow:    #ffe2a0;   /* engraved highlight */
+  --gold-light:   #fff5cc;   /* near-white gold */
+
+  /* --- Cream / text --- */
+  --cream:        #fff5d8;   /* on-gold text */
+  --cream-soft:   #fdf5e1;   /* paper background */
+  --ink-deep:     #3a2a10;   /* on-cream text */
+  --ink-mid:      #4a3416;   /* secondary text on cream */
+
+  /* --- Primary surface gradient --- */
+  --gold-surface: linear-gradient(135deg,
+                    var(--gold-deep) 0%,
+                    var(--gold-warm) 50%,
+                    var(--gold-mid) 100%);
+
+  /* --- Engraved-text gradient (use as background + clip on text) --- */
+  --engrave: linear-gradient(180deg,
+               var(--gold-light) 0%,
+               var(--gold-glow) 45%,
+               var(--gold-deep) 100%);
+
+  /* --- Typography --- */
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-body:    'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* --- Spacing scale (4px base) --- */
+  --s-1:  4px;
+  --s-2:  8px;
+  --s-3:  12px;
+  --s-4:  16px;
+  --s-5:  24px;
+  --s-6:  32px;
+  --s-7:  48px;
+  --s-8:  64px;
+  --s-9:  96px;
+
+  /* --- Radii --- */
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+
+  /* --- Letter-spacing presets (luxury feels wide) --- */
+  --tracking-tight:  -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide:    0.08em;
+  --tracking-wider:   0.18em;
+  --tracking-widest:  0.32em;
+
+  /* --- Shadows --- */
+  --shadow-deep: 0 30px 80px rgba(60, 40, 10, 0.35);
+  --shadow-soft: 0 4px 14px rgba(60, 40, 10, 0.15);
+}

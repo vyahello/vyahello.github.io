@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Володимир та Юстина · 17.07.2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap">
+
+  <link rel="stylesheet" href="css/theme.css">
+
+  <style>
+    /* Stage-1-only inline styles — moved to base.css in Stage 2 */
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      background: var(--gold-surface);
+      color: var(--cream);
+      font-family: var(--font-body);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .smoke {
+      padding: var(--s-7) var(--s-5);
+    }
+    .smoke .eyebrow {
+      font-family: var(--font-body);
+      font-size: 12px;
+      letter-spacing: var(--tracking-widest);
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin: 0 0 var(--s-5);
+    }
+    .smoke .names {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(40px, 7vw, 72px);
+      line-height: 1;
+      margin: 0;
+      background: var(--engrave);
+      -webkit-background-clip: text;
+              background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: var(--tracking-wide);
+    }
+    .smoke .amp {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(20px, 2.5vw, 28px);
+      margin: var(--s-3) 0;
+      opacity: 0.9;
+    }
+    .smoke .date {
+      font-family: var(--font-body);
+      font-size: 14px;
+      letter-spacing: var(--tracking-widest);
+      margin-top: var(--s-5);
+      opacity: 0.85;
+    }
+    .smoke .status {
+      margin-top: var(--s-8);
+      font-family: var(--font-body);
+      font-size: 11px;
+      letter-spacing: var(--tracking-wider);
+      text-transform: uppercase;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+<body>
+  <main class="smoke">
+    <p class="eyebrow">дорогі наші рідні</p>
+    <h1 class="names">Володимир</h1>
+    <p class="amp">та</p>
+    <h1 class="names">Юстина</h1>
+    <p class="date">17 · 07 · 2026</p>
+    <p class="status">Stage 1 · Foundation OK</p>
+  </main>
+</body>
+</html>
