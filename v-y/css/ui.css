@@ -1,0 +1,48 @@
+/* ============================================================
+   ui.css — global overlay chrome (scroll progress bar,
+   scroll-to-top button). Behaviour driven by js/ui.js.
+   ============================================================ */
+
+/* ---- Scroll progress bar ---- */
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;             /* JS sets this to a percentage */
+  background: linear-gradient(90deg, var(--gold-glow), var(--gold-warm), var(--gold-deep));
+  z-index: 999;
+  pointer-events: none;
+  transition: width 0.05s linear;
+}
+
+/* ---- Scroll-to-top button ---- */
+
+.scroll-top {
+  position: fixed;
+  right: var(--s-5);
+  bottom: var(--s-5);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gold-warm);
+  color: var(--cream);
+  border: 1px solid var(--gold-glow);
+  cursor: pointer;
+  z-index: 998;
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+  box-shadow: var(--shadow-soft);
+}
+.scroll-top.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.scroll-top:hover {
+  background: var(--gold-deep);
+}
