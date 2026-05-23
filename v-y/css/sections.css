@@ -472,3 +472,55 @@
   text-transform: uppercase;
   opacity: 0.5;
 }
+
+/* ============================================================
+   §5 Countdown — tick animation on value change
+   ============================================================ */
+.countdown__num.tick {
+  animation: flip 0.4s ease-in-out;
+}
+
+/* ============================================================
+   Hero — SVG calligraphy (Stage 4)
+   ============================================================ */
+
+/* Wrapper that holds both letter h1 and calligraphy SVG stacked */
+.hero .name-stack {
+  position: relative;
+  display: inline-block;
+}
+
+/* Once .calli-active is on the hero, the letter h1 fades out */
+.hero.calli-active .name { transition: opacity 1.2s ease 0.2s; opacity: 0; }
+
+/* The calligraphy SVG starts hidden; fades in then draws */
+.hero .name-calli {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+}
+.hero.calli-active .name-calli {
+  animation: calliFadeIn 1.2s ease 0.2s forwards;
+}
+
+/* The text inside the SVG: outline stroke, no fill at first */
+.hero .name-calli text {
+  font-family: var(--font-display);
+  font-style: italic;
+  fill: transparent;
+  stroke: var(--gold-glow);
+  stroke-width: 0.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1600;
+  stroke-dashoffset: 1600;
+}
+/* When the hero is calli-active, draw the stroke then fill */
+.hero.calli-active .name-calli text {
+  animation:
+    draw     3.2s ease-out 0.4s forwards,
+    calliFill 0.8s ease-out 3.4s forwards;
+}
