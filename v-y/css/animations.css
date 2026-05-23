@@ -37,3 +37,27 @@
   0%, 100% { transform: translate(-50%, 0); }
   50%      { transform: translate(-50%, 6px); }
 }
+
+/* Countdown tick — quick vertical squash on number change */
+@keyframes flip {
+  0%   { transform: scaleY(1);   filter: none; }
+  50%  { transform: scaleY(0.1); filter: blur(2px); }
+  100% { transform: scaleY(1);   filter: none; }
+}
+
+/* Calligraphy stroke-on — pairs with stroke-dasharray on SVG text */
+@keyframes draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Calligraphy SVG fade-in (when letter-by-letter is finishing) */
+@keyframes calliFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Calligraphy final fill after stroke completes — gives the inked-on look */
+@keyframes calliFill {
+  from { fill: transparent; }
+  to   { fill: var(--gold-glow); }
+}
