@@ -210,19 +210,82 @@
     </div>
   </section>
 
-  <!-- §8 RSVP — placeholder (real multi-step form lands in Stage 5) -->
+  <!-- §8 RSVP — multi-step form (Stage 5; submits locally to console.log, real POST in Stage 6) -->
   <section id="rsvp" class="section reveal">
     <div class="section__inner">
       <p class="section__eyebrow" style="opacity:.6">підтвердження присутності</p>
-      <h2 class="section__title" style="color:var(--cream)">Чи будеш з нами?</h2>
-      <p class="section__lead" style="opacity:.85">
-        Будь ласка, дай нам знати — це допоможе у плануванні.
-      </p>
-      <div class="rsvp__actions">
-        <button type="button" class="btn btn--solid" disabled aria-disabled="true">Так, з радістю</button>
-        <button type="button" class="btn btn--ghost-light" disabled aria-disabled="true">Не зможу</button>
+
+      <div class="rsvp__progress" aria-hidden="true">
+        <span class="rsvp__progress-bar" data-rsvp-bar></span>
       </div>
-      <p class="section__eyebrow" style="opacity:.5; margin-top: var(--s-6)">форма зʼявиться у наступному оновленні</p>
+
+      <form class="rsvp__form" novalidate>
+
+        <!-- Step 0 · Attendance -->
+        <fieldset class="rsvp__step is-active" data-step="0">
+          <h2 class="section__title" style="color:var(--cream)">Чи будеш з нами?</h2>
+          <div class="rsvp__actions">
+            <button type="button" class="btn btn--solid"       data-attending="true">Так, з радістю</button>
+            <button type="button" class="btn btn--ghost-light" data-attending="false">Не зможу</button>
+          </div>
+        </fieldset>
+
+        <!-- Step 1 · Seats (skipped if not attending) -->
+        <fieldset class="rsvp__step" data-step="1">
+          <h2 class="section__title" style="color:var(--cream)">Скільки вас буде?</h2>
+          <div class="stepper">
+            <button type="button" class="stepper__btn" data-stepper="-1" aria-label="менше">−</button>
+            <span class="stepper__value" data-rsvp-seats>2</span>
+            <button type="button" class="stepper__btn" data-stepper="+1" aria-label="більше">+</button>
+          </div>
+          <div class="rsvp__nav">
+            <button type="button" class="btn"        data-rsvp-prev>Назад</button>
+            <button type="button" class="btn btn--solid" data-rsvp-next>Далі</button>
+          </div>
+        </fieldset>
+
+        <!-- Step 2 · Food (skipped if not attending) -->
+        <fieldset class="rsvp__step" data-step="2">
+          <h2 class="section__title" style="color:var(--cream)">Що з їжею?</h2>
+          <div class="chips">
+            <button type="button" class="chip" data-food="meat">мʼясо</button>
+            <button type="button" class="chip" data-food="fish">риба</button>
+            <button type="button" class="chip" data-food="vegetarian">вегетеріанство</button>
+            <button type="button" class="chip" data-food="no-restriction">без обмежень</button>
+          </div>
+          <label class="rsvp__field">
+            <span class="rsvp__label">алергії або особливі побажання</span>
+            <input type="text" class="input" data-rsvp-allergies placeholder="наприклад: без горіхів">
+          </label>
+          <div class="rsvp__nav">
+            <button type="button" class="btn"        data-rsvp-prev>Назад</button>
+            <button type="button" class="btn btn--solid" data-rsvp-next>Далі</button>
+          </div>
+        </fieldset>
+
+        <!-- Step 3 · Wishes (everyone) -->
+        <fieldset class="rsvp__step" data-step="3">
+          <h2 class="section__title" style="color:var(--cream)">Побажання молодятам</h2>
+          <label class="rsvp__field">
+            <span class="rsvp__label">опціонально</span>
+            <textarea class="textarea" data-rsvp-wishes rows="4" placeholder="напишіть кілька теплих слів"></textarea>
+          </label>
+          <div class="rsvp__nav">
+            <button type="button" class="btn"        data-rsvp-prev>Назад</button>
+            <button type="button" class="btn btn--solid" data-rsvp-submit>Відправити</button>
+          </div>
+        </fieldset>
+
+        <!-- Step 4 · Success -->
+        <fieldset class="rsvp__step" data-step="4">
+          <div class="rsvp__success">
+            <div class="rsvp__heart" aria-hidden="true">♥</div>
+            <h2 class="section__title" style="color:var(--cream)">Дякуємо!</h2>
+            <p class="section__lead" style="opacity:.9">Чекаємо тебе.</p>
+          </div>
+        </fieldset>
+
+      </form>
     </div>
   </section>
 
