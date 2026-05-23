@@ -524,3 +524,63 @@
     draw     3.2s ease-out 0.4s forwards,
     calliFill 0.8s ease-out 3.4s forwards;
 }
+
+/* ============================================================
+   §8 RSVP — multi-step form (Stage 5)
+   ============================================================ */
+#rsvp .rsvp__form {
+  max-width: 480px;
+  margin: 0 auto;
+  border: none;
+  padding: 0;
+}
+#rsvp .rsvp__step {
+  display: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  animation: fadeUp 0.45s ease forwards;
+}
+#rsvp .rsvp__step.is-active { display: block; }
+
+#rsvp .rsvp__nav {
+  display: flex;
+  gap: var(--s-3);
+  justify-content: center;
+  margin-top: var(--s-5);
+  flex-wrap: wrap;
+}
+
+#rsvp .rsvp__field {
+  display: block;
+  text-align: left;
+  margin-top: var(--s-4);
+}
+#rsvp .rsvp__label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  opacity: 0.7;
+  margin-bottom: var(--s-2);
+}
+
+#rsvp .chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+}
+
+#rsvp .rsvp__success {
+  text-align: center;
+  padding: var(--s-5) 0;
+}
+#rsvp .rsvp__heart {
+  font-size: 32px;
+  color: var(--gold-glow);
+  margin: 0 0 var(--s-4);
+  animation: bob 1.6s ease-in-out infinite;
+}
