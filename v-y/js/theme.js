@@ -29,7 +29,7 @@ export function resolveInitialTheme({ search = window.location.search, storage =
   return DEFAULT_THEME;
 }
 
-/** Apply a theme: set data-theme on <body>, sync dot UI, persist. */
+/** Apply a theme: set data-theme on <body>, sync dot UI, persist, broadcast. */
 export function applyTheme(theme) {
   const t = isValidTheme(theme) ? theme : DEFAULT_THEME;
   document.body.setAttribute('data-theme', t);
@@ -39,6 +39,7 @@ export function applyTheme(theme) {
     dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
   }
   try { window.localStorage.setItem(STORAGE_KEY, t); } catch { /* ignore */ }
+  document.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: t } }));
 }
 
 /** Browser entry — read initial theme, render it, wire dot clicks. */
