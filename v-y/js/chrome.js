@@ -104,26 +104,62 @@ function attachMusicToggle(btn) {
    ============================================================ */
 
 const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 12 10 18 20 6"/></svg>';
+const COPIED_DISPLAY_MS = 2000;
+
+/** Copy `text` to clipboard. Tries the async Clipboard API first,
+    then the legacy execCommand path. Returns true on success. */
+async function copyToClipboard(text) {
+  if (navigator.clipboard?.writeText) {
+    try { await navigator.clipboard.writeText(text); return true; }
+    catch { /* fall through to legacy */ }
+  }
+  // Legacy fallback — works in non-secure contexts and older browsers.
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); }
+  catch { /* unsupported — give up */ }
+  document.body.removeChild(ta);
+  return ok;
+}
+
+function flashCopiedFeedback(btn) {
+  const originalHtml = btn.innerHTML;
+  btn.innerHTML = CHECK_SVG;
+  btn.classList.add('copied');
+  setTimeout(() => {
+    btn.innerHTML = originalHtml;
+    btn.classList.remove('copied');
+  }, COPIED_DISPLAY_MS);
+}
 
 function attachShareButton(btn) {
   if (!btn) return;
+
   btn.addEventListener('click', async () => {
     const url  = window.location.href;
     const data = { ...SHARE_DATA, url };
 
-    if (navigator.share) {
-      try { await navigator.share(data); } catch { /* user cancelled — fine */ }
-      return;
+    // Try native share sheet first (mobile-primary path).
+    if (typeof navigator.share === 'function') {
+      try {
+        await navigator.share(data);
+        return;                         // OS handled the share — done.
+      } catch (err) {
+        // User cancelled the share sheet — that's a normal "no-op" exit,
+        // not a reason to also copy to clipboard. Bail.
+        if (err && err.name === 'AbortError') return;
+        // Any other failure: fall through to the clipboard fallback below.
+      }
     }
 
-    if (navigator.clipboard) {
-      try {
-        await navigator.clipboard.writeText(url);
-        const original = btn.innerHTML;
-        btn.innerHTML = CHECK_SVG;
-        setTimeout(() => { btn.innerHTML = original; }, 1500);
-      } catch { /* clipboard denied — silent */ }
-    }
+    // No Web Share, or share threw a non-cancel error → copy URL.
+    const copied = await copyToClipboard(url);
+    if (copied) flashCopiedFeedback(btn);
   });
 }
 
