@@ -40,7 +40,7 @@ async function loadConfig() {
 /** Fetch guest + any existing RSVP. Returns null on any failure. */
 async function fetchGuest(slug, appsScriptUrl) {
   try {
-    const url = `${appsScriptUrl}?g=${encodeURIComponent(slug)}`;
+    const url = `${appsScriptUrl}?slug=${encodeURIComponent(slug)}`;
     const res = await fetch(url, { method: 'GET' });
     const data = await res.json();
     return data?.ok ? data : null;
@@ -87,6 +87,6 @@ export async function initGuest() {
   const data = await fetchGuest(slug, cfg.appsScriptUrl);
   if (!data) return;
   document.dispatchEvent(new CustomEvent(EVENT_NAME, {
-    detail: { slug, guest: data.guest, rsvp: data.rsvp },
+    detail: { slug, guest: data.guest, rsvp: data.reply || data.rsvp || null },
   }));
 }
