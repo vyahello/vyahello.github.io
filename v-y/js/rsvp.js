@@ -131,7 +131,8 @@ function readGuestNames(list) {
     .filter(Boolean);
 }
 
-/** Replace all rows in the guest list with the provided names. */
+/** Replace all rows in the guest list with the provided names (used to
+    restore a previously-saved RSVP). */
 function setHousehold(list, addBtn, names) {
   list.innerHTML = '';
   if (Array.isArray(names) && names.length) {
@@ -141,6 +142,19 @@ function setHousehold(list, addBtn, names) {
   if (list.querySelectorAll('.guest-row').length === 0) {
     addGuestRow(list, addBtn, { focus: false });
   }
+  renumberGuestRows(list, addBtn);
+}
+
+/**
+ * Expand the form to match the expected household size — adds empty rows
+ * (no values, no auto-filled names) so the guest sees "we're expecting N
+ * of you" but still types their own full name + surname.
+ * Never shrinks an already-larger list.
+ */
+function setHouseholdRowCount(list, addBtn, count) {
+  const target = Math.max(1, Math.min(Number(count) || 0, MAX_GUESTS));
+  const current = list.querySelectorAll('.guest-row').length;
+  for (let i = current; i < target; i++) addGuestRow(list, addBtn, { focus: false });
   renumberGuestRows(list, addBtn);
 }
 
@@ -300,13 +314,17 @@ export function initRSVP() {
     state.slug = slug || null;
     state.displayName = guest?.display_name || null;
 
-    // Pre-fill household from guest defaults (rsvp data wins if present).
+    // Pre-fill ROW COUNT only — empty inputs so the guest writes their own
+    // full name + surname. household_default's purpose is to hint at the
+    // expected family size, not to dictate names.
     if (Array.isArray(guest?.household_default) && guest.household_default.length) {
-      setHousehold(list, addBtn, guest.household_default);
+      setHouseholdRowCount(list, addBtn, guest.household_default.length);
     }
 
     if (rsvp) {
       state.submittedAt = rsvp.submitted_at || null;
+      // Restoring previous answer DOES fill values — that's the guest's
+      // own data from a prior submit, not couple's guess.
       restoreFormFromRsvp(form, list, addBtn, rsvp);
       // Show "already replied" confirmation — user can hit "Змінити" to edit.
       showConfirmation(form, confirm, rsvp.attending, { isExisting: true });
