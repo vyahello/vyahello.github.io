@@ -21,11 +21,12 @@
   padding-right:  28px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  /* `gap` is the floor — flex still adds remaining space via space-between
-     on tall viewports, but on short screens (iPhone with toolbar) this
-     guarantees we never crash the eyebrow into the names. */
-  gap: clamp(56px, 7vh, 110px);
+  /* Only 2 children now (.hero-top-wrap + .hero-center). hero-center grows
+     to fill the remaining height and centres its own content. Scroll cue
+     moved out of hero into a fixed-position .scroll-indicator (see
+     globals.css) so it stays visible on every viewport size. */
+  justify-content: flex-start;
+  gap: clamp(40px, 5vh, 80px);
   text-align: center;
   border-bottom: 1px solid var(--line);
   overflow: hidden;
@@ -53,10 +54,14 @@
   color: var(--ink-soft);
 }
 
-/* ---- Center stack ---- */
+/* ---- Center stack ----
+   `flex: 1` makes it absorb the remaining hero height, then its own
+   `justify-content: center` vertically centres the names + rings + date. */
 .hero-center {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: center;
   gap: 26px;
   align-items: center;
 }
@@ -185,32 +190,6 @@
 }
 .add-cal svg { width: 12px; height: 12px; }
 
-/* ---- Bottom: scroll cue + pulsing line ---- */
-.hero-bottom {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-}
-.scroll-cue {
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-}
-.scroll-line {
-  width: 1px;
-  height: 56px;
-  background: linear-gradient(to bottom, var(--accent), transparent);
-  animation: heroScrollPulse 2s var(--easing) infinite;
-  transform-origin: top;
-}
-@keyframes heroScrollPulse {
-  0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
-  50%      { transform: scaleY(1);   opacity: 1; }
-}
-
 /* ---- Staggered fade-up reveal for non-letter blocks
         once curtain dispatches `curtain:lifted` and hero.js sets .intro-done ---- */
 .hero.intro-done .hero-top-wrap,
@@ -218,8 +197,7 @@
 .hero.intro-done .hero-rings,
 .hero.intro-done .hero-date,
 .hero.intro-done .hero-place,
-.hero.intro-done .add-cal,
-.hero.intro-done .hero-bottom {
+.hero.intro-done .add-cal {
   animation: heroIntroUp 1.2s var(--easing) backwards;
 }
 .hero.intro-done .hero-top-wrap { animation-delay: 0.10s; }
@@ -228,7 +206,6 @@
 .hero.intro-done .hero-date     { animation-delay: 1.25s; }
 .hero.intro-done .hero-place    { animation-delay: 1.38s; }
 .hero.intro-done .add-cal       { animation-delay: 1.50s; }
-.hero.intro-done .hero-bottom   { animation-delay: 1.65s; }
 
 @keyframes heroIntroUp {
   0%   { opacity: 0; transform: translateY(40px); filter: blur(6px); }
@@ -248,12 +225,10 @@
   .hero.intro-done .hero-rings,
   .hero.intro-done .hero-date,
   .hero.intro-done .hero-place,
-  .hero.intro-done .add-cal,
-  .hero.intro-done .hero-bottom {
+  .hero.intro-done .add-cal {
     animation: none !important;
     opacity: 1;
     transform: none;
     filter: none;
   }
-  .scroll-line { animation: none; transform: scaleY(1); opacity: 0.6; }
 }

@@ -73,6 +73,21 @@ function attachFloatingMono(badge, hero) {
   onScroll();
 }
 
+/* ---- Floating scroll indicator ----
+   Fades out the moment the user starts scrolling — its job (invite scroll)
+   is done. Listener is `once: true` so it self-detaches. */
+function attachScrollIndicator(indicator) {
+  if (!indicator) return;
+  const hide = () => {
+    if (window.scrollY > 24) indicator.classList.add('hidden');
+  };
+  // Defer slightly — we don't want layout-driven scrollY blips during boot to
+  // hide the indicator before it's even visible.
+  setTimeout(() => {
+    window.addEventListener('scroll', hide, { passive: true });
+  }, 500);
+}
+
 /* ---- Swatch shimmer ----
    When the dress-code palette enters the viewport, add .shimmering
    so swatchPop + shine sweep animate sequentially (CSS-driven).
@@ -99,4 +114,5 @@ export function initGlobals() {
   attachCursorGlow(document.getElementById('cursorGlow'));
   attachFloatingMono(document.getElementById('floatingMono'), document.getElementById('hero'));
   attachSwatchShimmer(document.getElementById('swatches'));
+  attachScrollIndicator(document.getElementById('scrollIndicator'));
 }
