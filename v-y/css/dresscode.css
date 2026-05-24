@@ -64,14 +64,14 @@
    ============================================================ */
 
 .sw-champagne {
-  background-color: #8a6332;
+  background-color: #c4b08b;
   background-image:
-    radial-gradient(ellipse 80%  65% at 28% 22%, rgba(255, 238, 195, 0.75), transparent 60%),
-    radial-gradient(ellipse 45%  35% at 42% 38%, rgba(255, 235, 185, 0.35), transparent 65%),
-    radial-gradient(ellipse 100% 18% at 55% 50%, rgba(255, 245, 210, 0.25), transparent 70%),
-    radial-gradient(ellipse 80%  70% at 80% 82%, rgba( 20,  10,   2, 0.75), transparent 60%),
-    radial-gradient(ellipse 50%  40% at 50% 88%, rgba( 40,  22,   5, 0.50), transparent 60%),
-    linear-gradient(140deg, #d6aa6e 0%, #845628 65%, #4a2e10 100%);
+    radial-gradient(ellipse 80%  65% at 28% 22%, rgba(255, 248, 230, 0.85), transparent 60%),
+    radial-gradient(ellipse 45%  35% at 42% 38%, rgba(255, 244, 220, 0.45), transparent 65%),
+    radial-gradient(ellipse 100% 18% at 55% 50%, rgba(255, 250, 235, 0.30), transparent 70%),
+    radial-gradient(ellipse 80%  70% at 80% 82%, rgba( 90,  72,  45, 0.45), transparent 60%),
+    radial-gradient(ellipse 50%  40% at 50% 88%, rgba(110,  90,  60, 0.30), transparent 60%),
+    linear-gradient(140deg, #ece0c5 0%, #b8a380 65%, #7e6c4c 100%);
 }
 
 .sw-pink {
