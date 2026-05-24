@@ -4,6 +4,36 @@
    album" feel.
    ============================================================ */
 
+/* Section-divider SVG — small botanical "leaf on a vine" that draws
+   itself on intersect. Inserted before each non-hero section's eyebrow
+   so the layout reads like turning pages of a wedding album. */
+const DIVIDER_SVG_HTML =
+  '<svg class="flourish flourish-divider" viewBox="0 0 240 18" aria-hidden="true">' +
+    '<path d="M0 9 C 60 9, 90 5, 110 5 Q 122 5, 124 9 Q 126 13, 138 13 C 160 13, 190 9, 240 9"/>' +
+    '<circle class="leaf" cx="122" cy="9" r="1.8"/>' +
+  '</svg>';
+
+function insertSectionDividers() {
+  for (const section of document.querySelectorAll('.section')) {
+    if (section.id === 'hero') continue;
+    // Skip if section already has any flourish (Invitation already has one).
+    const inner = section.querySelector('.section__inner');
+    if (!inner) continue;
+    if (inner.querySelector('.flourish')) continue;
+    inner.insertAdjacentHTML('afterbegin', DIVIDER_SVG_HTML);
+  }
+  // Calibrate stroke-dasharray for newly-inserted paths (invitation.js
+  // already calibrated its own flourish before we ran).
+  for (const p of document.querySelectorAll('.flourish-divider path')) {
+    try {
+      const len = p.getTotalLength();
+      p.style.strokeDasharray  = String(len);
+      p.style.strokeDashoffset = String(len);
+      p.parentElement.style.setProperty('--len', String(len));
+    } catch { /* hidden / detached SVGs — ignore */ }
+  }
+}
+
 /**
  * Walk a title element's DOM, splitting every text node into per-character
  * <span class="title-char" style="--ci: N"> wrappers. Element children
@@ -62,6 +92,9 @@ export function initReveal() {
   // Pre-split every section title once on boot — cheaper than splitting
   // on intersect, no flash of unstyled text, lets CSS handle the rest.
   for (const t of document.querySelectorAll('.section__title')) splitTitleChars(t);
+
+  // Insert botanical dividers above each (non-hero) section.
+  insertSectionDividers();
 
   const observer = new IntersectionObserver(
     (entries) => {

@@ -81,6 +81,17 @@
 }
 .flourish.drawn .leaf { opacity: 0.9; }
 
+/* Compact variant used as a section divider (auto-inserted by reveal.js
+   at the top of every non-hero section). Lighter, smaller, lower-key. */
+.flourish-divider {
+  margin: 0 auto 22px;
+  width: clamp(160px, 36vw, 240px);
+  height: 14px;
+  opacity: 0.65;
+}
+.flourish-divider path { stroke-width: 0.8; }
+.flourish-divider.drawn { opacity: 0.85; }
+
 /* Reduced motion: show the path complete, no draw animation. */
 @media (prefers-reduced-motion: reduce) {
   .flourish path { stroke-dashoffset: 0; transition: none; }
