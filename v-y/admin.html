@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Статистика · В&Ю</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Italiana&family=Inter:wght@300;400;500&display=swap">
+
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/ui.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body data-theme="cream">
+
+  <!-- back-to-invitation monogram -->
+  <a class="floating-mono brand-mono show" href="./" aria-label="Повернутись до запрошення">В<span class="amp-char">&amp;</span>Ю</a>
+
+  <!-- top-right theme switcher (shares theme.js with the invitation) -->
+  <div class="float-controls">
+    <div class="theme-dots" role="tablist" aria-label="Тема">
+      <button class="theme-dot is-active" data-theme-dot="cream"  aria-label="Cream"  aria-pressed="true"></button>
+      <button class="theme-dot"           data-theme-dot="gold"   aria-label="Gold"   aria-pressed="false"></button>
+      <button class="theme-dot"           data-theme-dot="dark"   aria-label="Dark"   aria-pressed="false"></button>
+    </div>
+  </div>
+
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <main class="admin-main">
+
+    <header class="admin-hero">
+      <p class="admin-eyebrow">Лише для організаторів</p>
+      <h1 class="admin-title">Статистика</h1>
+      <p class="admin-sub" id="adminSub">Перевірка токена…</p>
+    </header>
+
+    <!-- LOCKED STATE (no token / wrong token) -->
+    <section class="admin-locked" id="adminLocked" hidden>
+      <div class="admin-card admin-locked-card">
+        <div class="admin-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="5" y="11" width="14" height="9" rx="1.5"/>
+            <path d="M8 11V7a4 4 0 0 1 8 0v4"/>
+          </svg>
+        </div>
+        <p class="admin-locked-text" id="adminLockedText">
+          Введіть токен доступу.
+        </p>
+        <form class="admin-token-form" id="adminTokenForm" autocomplete="off">
+          <label for="adminTokenInput" class="sr-only">Токен</label>
+          <input
+            id="adminTokenInput"
+            name="token"
+            type="text"
+            inputmode="text"
+            spellcheck="false"
+            autocapitalize="off"
+            autocorrect="off"
+            placeholder="Токен"
+            required>
+          <button type="submit" class="admin-btn">Відкрити</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- DASHBOARD (filled when API returns ok) -->
+    <section class="admin-dash" id="adminDash" hidden>
+
+      <div class="admin-grid">
+        <!-- Summary -->
+        <article class="admin-card admin-summary">
+          <h2 class="admin-card-title">Підсумок</h2>
+          <div class="admin-stat-row">
+            <div class="admin-stat">
+              <span class="admin-stat-num" id="statInvited">—</span>
+              <span class="admin-stat-lbl">Запрошено</span>
+            </div>
+            <div class="admin-stat">
+              <span class="admin-stat-num" id="statResponded">—</span>
+              <span class="admin-stat-lbl">Відповіли</span>
+            </div>
+            <div class="admin-stat">
+              <span class="admin-stat-num" id="statPending">—</span>
+              <span class="admin-stat-lbl">Не відповіли</span>
+            </div>
+            <div class="admin-stat">
+              <span class="admin-stat-num" id="statRate">—</span>
+              <span class="admin-stat-lbl">% відгуку</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Attending breakdown -->
+        <article class="admin-card admin-attend">
+          <h2 class="admin-card-title">По відповідях</h2>
+          <div class="admin-pills">
+            <div class="admin-pill is-yes">
+              <span class="admin-pill-num" id="cntYes">—</span>
+              <span class="admin-pill-lbl">Так</span>
+            </div>
+            <div class="admin-pill is-maybe">
+              <span class="admin-pill-num" id="cntMaybe">—</span>
+              <span class="admin-pill-lbl">Можемо</span>
+            </div>
+            <div class="admin-pill is-no">
+              <span class="admin-pill-num" id="cntNo">—</span>
+              <span class="admin-pill-lbl">Ні</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Headcount -->
+        <article class="admin-card admin-headcount">
+          <h2 class="admin-card-title">Очікувана к-сть людей</h2>
+          <p class="admin-card-hint">З колонки «Гості» вкладки Відповіді — реальна, з урахуванням додавання/прибирання.</p>
+          <div class="admin-stat-row">
+            <div class="admin-stat">
+              <span class="admin-stat-num" id="hcConfirmed">—</span>
+              <span class="admin-stat-lbl">Точно</span>
+            </div>
+            <div class="admin-stat">
+              <span class="admin-stat-num" id="hcMaybe">—</span>
+              <span class="admin-stat-lbl">Можуть</span>
+            </div>
+            <div class="admin-stat admin-stat-total">
+              <span class="admin-stat-num" id="hcTotal">—</span>
+              <span class="admin-stat-lbl">Всього</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Pending list -->
+        <article class="admin-card admin-pending">
+          <h2 class="admin-card-title">Хто ще не відповів</h2>
+          <ul class="admin-list" id="pendingList">
+            <li class="admin-list-empty">—</li>
+          </ul>
+        </article>
+
+        <!-- Recent replies -->
+        <article class="admin-card admin-recent">
+          <h2 class="admin-card-title">Останні відповіді</h2>
+          <ul class="admin-list admin-list-recent" id="recentList">
+            <li class="admin-list-empty">—</li>
+          </ul>
+        </article>
+      </div>
+
+      <p class="admin-meta" id="adminMeta">Оновлено: —</p>
+    </section>
+
+    <!-- HARD ERROR (network / server) -->
+    <section class="admin-error" id="adminError" hidden>
+      <div class="admin-card">
+        <p class="admin-err-text" id="adminErrText">Не вдалось завантажити статистику.</p>
+        <button class="admin-btn admin-btn-ghost" id="adminRetry">Спробувати ще раз</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
