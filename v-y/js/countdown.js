@@ -1,19 +1,20 @@
 /* ============================================================
-   countdown.js — flip-clock ticker driven by event.json
+   countdown.js — calendar + 4-cell ticker
+     1. On first viewport entry, roll up 0 → target over 1.5s
+        (cubic ease-out) for all four cells.
+     2. After rollup, drop to 1s tick refreshes.
+     3. Day-17 in the calendar is wired to trigger the hero's
+        add-to-calendar button (download .ics).
    ============================================================ */
 
-const TICK_CLASS = 'tick';
-const TICK_DURATION_MS = 400;  // must match @keyframes flip in animations.css
+const ROLLUP_DURATION_MS = 1500;
 
-/** Pad a non-negative integer to 2 digits ("3" -> "03"). */
+/** Pad a non-negative integer to 2 digits ("3" → "03"). */
 function pad2(n) {
   return n < 10 ? `0${n}` : `${n}`;
 }
 
-/**
- * Compute the breakdown of milliseconds into days/hours/minutes/seconds.
- * Always non-negative; if target is in the past, returns all zeros.
- */
+/** Compute days/hours/minutes/seconds remaining. Pure; clamps to ≥0. */
 export function computeDelta(targetMs, nowMs) {
   let diff = Math.max(0, Math.floor((targetMs - nowMs) / 1000));
   const days = Math.floor(diff / 86400);
@@ -22,65 +23,96 @@ export function computeDelta(targetMs, nowMs) {
   diff -= hours * 3600;
   const minutes = Math.floor(diff / 60);
   diff -= minutes * 60;
-  const seconds = diff;
-  return { days, hours, minutes, seconds };
+  return { days, hours, minutes, seconds: diff };
 }
 
-/** Apply a {days, hours, minutes, seconds} object to the four cells. */
-function render(cells, delta) {
-  for (const [key, el] of Object.entries(cells)) {
-    if (!el) continue;
-    const next = pad2(delta[key]);
-    if (el.textContent !== next) {
-      el.textContent = next;
-      el.classList.remove(TICK_CLASS);
-      // Force reflow so the animation restarts even if the class was just removed.
-      void el.offsetWidth;
-      el.classList.add(TICK_CLASS);
-      setTimeout(() => el.classList.remove(TICK_CLASS), TICK_DURATION_MS);
-    }
-  }
-}
-
-/** Self-check: simple math smoke test. Runs once if URL has ?debug=countdown. */
-function debugSelfCheck() {
-  if (!new URLSearchParams(location.search).has('debug')) return;
-  const t = new Date('2026-07-17T14:00:00+03:00').getTime();
-  const n = new Date('2026-07-10T14:00:00+03:00').getTime();
-  const d = computeDelta(t, n);
-  console.assert(d.days === 7 && d.hours === 0 && d.minutes === 0 && d.seconds === 0,
-                 'countdown computeDelta math is wrong', d);
-}
+/** easeOutCubic on [0,1] */
+const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
 /**
- * Boot the ticker. Reads `data/event.json` to find target date, then
- * updates every second. Safe to call if cells are missing — does nothing.
+ * Animate the four cells from 0 → target over ROLLUP_DURATION_MS.
+ * Returns a Promise that resolves when the rollup is done.
  */
+function rollup(cells, target) {
+  return new Promise((resolve) => {
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - start) / ROLLUP_DURATION_MS);
+      const k = easeOutCubic(t);
+      cells.days.textContent    = pad2(Math.round(target.days    * k));
+      cells.hours.textContent   = pad2(Math.round(target.hours   * k));
+      cells.minutes.textContent = pad2(Math.round(target.minutes * k));
+      cells.seconds.textContent = pad2(Math.round(target.seconds * k));
+      if (t < 1) requestAnimationFrame(step);
+      else resolve();
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/** Plain per-second render (no animation, just text swap). */
+function render(cells, delta) {
+  cells.days.textContent    = pad2(delta.days);
+  cells.hours.textContent   = pad2(delta.hours);
+  cells.minutes.textContent = pad2(delta.minutes);
+  cells.seconds.textContent = pad2(delta.seconds);
+}
+
+/** Wire the highlighted day-17 to fire the add-to-cal flow. */
+function wireKeyDay() {
+  const keyDay = document.querySelector('.cal-day.key');
+  const addBtn = document.getElementById('addCalBtn');
+  if (!keyDay || !addBtn) return;
+  keyDay.addEventListener('click', () => addBtn.click());
+}
+
 export async function initCountdown() {
   const cells = {
-    days:    document.querySelector('[data-cd="days"]'),
-    hours:   document.querySelector('[data-cd="hours"]'),
-    minutes: document.querySelector('[data-cd="minutes"]'),
-    seconds: document.querySelector('[data-cd="seconds"]'),
+    days:    document.getElementById('cdDays'),
+    hours:   document.getElementById('cdHours'),
+    minutes: document.getElementById('cdMins'),
+    seconds: document.getElementById('cdSecs'),
   };
-  if (!cells.days) return;  // no countdown markup on this page
+  if (!cells.days) return;
 
-  debugSelfCheck();
-
+  // Load target date from event.json. Bail quietly on failure.
   let targetMs;
   try {
     const res = await fetch('data/event.json');
     const json = await res.json();
     targetMs = new Date(json.date).getTime();
-    if (isNaN(targetMs)) throw new Error('bad date');
+    if (Number.isNaN(targetMs)) throw new Error('bad date');
   } catch (err) {
     console.warn('countdown: failed to load event.json', err);
     return;
   }
 
-  function tick() {
+  wireKeyDay();
+
+  let started = false;
+  const startCountdown = async () => {
+    if (started) return;
+    started = true;
+    await rollup(cells, computeDelta(targetMs, Date.now()));
     render(cells, computeDelta(targetMs, Date.now()));
+    setInterval(() => render(cells, computeDelta(targetMs, Date.now())), 1000);
+  };
+
+  // Fire when the countdown row scrolls into view (≥30% visible).
+  const root = document.getElementById('countdown');
+  if (root && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) {
+          startCountdown();
+          io.disconnect();
+          break;
+        }
+      }
+    }, { threshold: 0.3 });
+    io.observe(root);
+  } else {
+    // No IO support → just start immediately.
+    startCountdown();
   }
-  tick();
-  setInterval(tick, 1000);
 }
