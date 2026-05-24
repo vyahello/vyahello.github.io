@@ -10,6 +10,7 @@ import { initLocation }   from './location.js';
 import { initReveal }     from './reveal.js';
 import { initUI }         from './ui.js';
 import { initGlobals }    from './globals.js';
+import { initChrome }     from './chrome.js';
 import { initCountdown }  from './countdown.js';
 import { initRSVP }       from './rsvp.js';
 
@@ -22,6 +23,7 @@ function boot() {
   initReveal();
   initUI();           // scroll-progress bar
   initGlobals();      // particles + cursor-glow + floating monogram + swatches
+  initChrome();       // music toggle + share button
   initCountdown();    // async, fetches data/event.json
   initRSVP();
   // Stage 6+ replaces RSVP submit with Apps Script POST.
