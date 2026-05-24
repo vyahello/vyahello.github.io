@@ -4,6 +4,12 @@
    ============================================================ */
 
 :root {
+  /* Music-reactive pulse, 0..1. Updated 60×/s by js/chrome.js when audio
+     plays; sits at 0 when paused/muted/unsupported. Consumed in subtle
+     places (monogram ampersand glow, day-17 heart badge) for ambient
+     liveliness — never used for required UX, always graceful at 0. */
+  --audio-pulse: 0;
+
   /* ---- Type stack ---- */
   --font-display:    'Cormorant Garamond', Georgia, serif;
   --font-italic:     'Italiana', 'Cormorant Garamond', Georgia, serif;

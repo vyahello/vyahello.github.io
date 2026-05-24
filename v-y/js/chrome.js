@@ -50,7 +50,58 @@ function ensureMusicEl() {
   musicEl.addEventListener('play',         syncBtnFromAudio);
   musicEl.addEventListener('pause',        syncBtnFromAudio);
   musicEl.addEventListener('volumechange', syncBtnFromAudio);
+
+  attachAudioReactiveLoop(musicEl);
   return musicEl;
+}
+
+/* ---- Music-reactive subtle pulse ---------------------------------
+   Connects musicEl → AnalyserNode → CSS variable --audio-pulse (0..1)
+   driven by bass-band energy. The number is consumed by a few elements
+   (monogram ampersand glow, day-17 heart badge) for an unspoken
+   liveliness — users feel the page "breathe" with the song without
+   ever consciously connecting the dots. */
+let audioCtx       = null;
+let audioAnalyser  = null;
+let audioFreq      = null;
+let audioRAFActive = false;
+
+function attachAudioReactiveLoop(audio) {
+  if (audioAnalyser) return;
+  if (!('AudioContext' in window || 'webkitAudioContext' in window)) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(audio);
+    audioAnalyser = audioCtx.createAnalyser();
+    audioAnalyser.fftSize = 64;                 // tiny — we only need bass
+    audioAnalyser.smoothingTimeConstant = 0.86; // smooth out twitches
+    audioFreq = new Uint8Array(audioAnalyser.frequencyBinCount);
+    source.connect(audioAnalyser);
+    audioAnalyser.connect(audioCtx.destination);
+  } catch {
+    audioAnalyser = null;
+    return;
+  }
+  // Resume the context whenever play succeeds (autoplay-policy quirk).
+  audio.addEventListener('play', () => {
+    if (audioCtx?.state === 'suspended') audioCtx.resume().catch(() => {});
+    if (!audioRAFActive) {
+      audioRAFActive = true;
+      requestAnimationFrame(audioRAFTick);
+    }
+  });
+}
+
+function audioRAFTick() {
+  if (!audioAnalyser || !audioFreq) { audioRAFActive = false; return; }
+  audioAnalyser.getByteFrequencyData(audioFreq);
+  // Average the first 6 bins (the bass) — that's where rhythm lives.
+  let sum = 0;
+  for (let i = 0; i < 6; i++) sum += audioFreq[i];
+  const avg   = sum / 6;
+  const pulse = Math.min(1, Math.max(0, avg / 180));
+  document.documentElement.style.setProperty('--audio-pulse', pulse.toFixed(3));
+  requestAnimationFrame(audioRAFTick);
 }
 
 function isAudible() {

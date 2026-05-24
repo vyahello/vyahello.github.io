@@ -212,6 +212,9 @@
   font-size: 0.85em;
   display: inline-block;
   transform: translateY(-0.05em);
+  /* Glows subtly with the music's bass — clamped so silence = 0,
+     loud beat ≈ 10px halo. Falls back to no-op when audio is paused. */
+  text-shadow: 0 0 calc(var(--audio-pulse) * 14px) color-mix(in oklab, var(--accent) 70%, transparent);
 }
 
 /* ============================================================

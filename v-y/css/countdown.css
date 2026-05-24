@@ -102,7 +102,10 @@
 .cal-day.key::after {
   /* \fe0e = Unicode VS15 text-variation selector — forces iOS Safari
      to render ♥ as a text glyph (theme-coloured) instead of a system
-     red emoji. */
+     red emoji.
+     text-shadow glow follows the music — heartbeat + music-pulse =
+     two heartbeats overlapping. Quietly poetic. */
+  text-shadow: 0 0 calc(var(--audio-pulse) * 10px) var(--accent);
   content: '\2665\fe0e';
   position: absolute;
   top:   -6px;
