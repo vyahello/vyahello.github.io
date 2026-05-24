@@ -83,6 +83,29 @@
   color: var(--accent);
 }
 
+/* ---- Per-character stagger on section titles ----
+   js/reveal.js wraps every glyph in <span class="title-char" style="--ci:N">.
+   Each char starts slightly below + invisible; the cascade triggers when
+   the parent .reveal flips to .is-visible. ~28ms gap → a 16-char title
+   fully resolves in ~450ms, matching the parent's 0.8s fade tempo.
+   prefers-reduced-motion users keep chars static (set in reveal.js by
+   skipping the split entirely). */
+.section__title .title-char {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.45em) rotate(2deg);
+  transition:
+    opacity   0.55s var(--easing),
+    transform 0.65s var(--easing);
+  transition-delay: calc(var(--ci) * 28ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible .section__title .title-char,
+.is-visible.section__title .title-char {
+  opacity: 1;
+  transform: translateY(0) rotate(0);
+}
+
 .section__lead {
   text-align: center;
   font-size: 18px;
