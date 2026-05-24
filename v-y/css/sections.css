@@ -119,26 +119,6 @@
 #schedule .timeline { max-width: 460px; margin: var(--s-6) auto 0; }
 
 /* ============================================================
-   §7 Dress code — five silk-gradient circles
-   ============================================================ */
-#dresscode.section { background: linear-gradient(180deg, #f3e8ce 0%, #e7d8b2 100%); }
-#dresscode .swatches {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: var(--s-4) var(--s-5);
-  margin-top: var(--s-6);
-}
-.swatch-group { display: flex; flex-direction: column; align-items: center; gap: var(--s-2); }
-.swatch-group .swatch-label {
-  font-family: var(--font-body);
-  font-size: 11px;
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  opacity: 0.7;
-}
-
-/* ============================================================
    §8 RSVP — placeholder (real form in Stage 5)
    ============================================================ */
 #rsvp.section {

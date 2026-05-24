@@ -86,20 +86,6 @@
 
 /* ---- Dress-code swatch (silk-textured circle) ---- */
 
-.swatch {
-  width: 72px;
-  height: 72px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle at 30% 30%, var(--c1) 0%, transparent 55%),
-    radial-gradient(circle at 70% 75%, var(--c2) 0%, transparent 55%),
-    linear-gradient(135deg, var(--c1) 0%, var(--c2) 100%);
-  box-shadow:
-    inset 0 -3px 6px rgba(0, 0, 0, 0.35),
-    inset 0 3px 6px rgba(255, 255, 255, 0.25),
-    0 4px 10px rgba(0, 0, 0, 0.25);
-}
-
 /* ---- Timeline dot + connector (Schedule §6) ---- */
 
 .timeline {
