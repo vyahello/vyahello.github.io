@@ -1,0 +1,88 @@
+/* ============================================================
+   invitation.css — §2 Invitation letter
+     · botanical SVG flourish (stroke-drawn on reveal)
+     · italic greeting with optional <span class="gname">
+     · letter body with italic accent em
+     · signature with thin gold rule above
+   Draw trigger: reveal.js adds .drawn to .flourish children.
+   Smart greeting + ?guest=/?form= live in js/invitation.js.
+   ============================================================ */
+
+.letter {
+  text-align: center;
+  max-width: var(--content-w);
+  margin: 0 auto;
+}
+
+.letter-greeting {
+  font-family: var(--font-italic);
+  font-size: clamp(28px, 6.5vw, 38px);
+  color: var(--ink);
+  line-height: 1.2;
+  margin: 0 0 8px;
+}
+.letter-greeting .gname { color: var(--accent); }
+
+.letter-body {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 18px 0 0;
+  text-wrap: pretty;
+}
+.letter-body em {
+  font-family: var(--font-italic);
+  font-style: normal;
+  color: var(--accent);
+  font-size: 1.05em;
+}
+
+.signature {
+  margin-top: 32px;
+  font-family: var(--font-italic);
+  font-size: 28px;
+  color: var(--accent);
+  text-align: center;
+}
+.signature::before {
+  content: '';
+  display: block;
+  width: 44px;
+  height: 1px;
+  background: var(--line-strong);
+  margin: 0 auto 18px;
+}
+
+/* ============================================================
+   BOTANICAL FLOURISH — vine path that draws itself + leaf fade-in
+   ============================================================ */
+.flourish {
+  display: block;
+  margin: 0 auto 28px;
+  color: var(--accent);
+}
+.flourish path {
+  stroke: currentColor;
+  stroke-width: 1;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray:  var(--len, 1000);
+  stroke-dashoffset: var(--len, 1000);
+  transition: stroke-dashoffset 2s var(--easing);
+}
+.flourish.drawn path { stroke-dashoffset: 0; }
+
+.flourish .leaf {
+  fill: currentColor;
+  opacity: 0;
+  transition: opacity 1s var(--easing) 1.2s;
+}
+.flourish.drawn .leaf { opacity: 0.9; }
+
+/* Reduced motion: show the path complete, no draw animation. */
+@media (prefers-reduced-motion: reduce) {
+  .flourish path { stroke-dashoffset: 0; transition: none; }
+  .flourish .leaf { opacity: 0.9; transition: none; }
+}
