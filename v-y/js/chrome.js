@@ -57,7 +57,14 @@ function ensureMusicEl() {
   musicEl.addEventListener('pause',        syncBtnFromAudio);
   musicEl.addEventListener('volumechange', syncBtnFromAudio);
 
-  attachAudioReactiveLoop(musicEl);
+  // iOS Safari: do NOT route audio through Web Audio. createMediaElementSource
+  // reroutes the element's output through the graph; if AudioContext is
+  // suspended (which iOS keeps it until a gesture, and even after gesture
+  // can be flaky), the audio plays the timeline but produces no sound. Skip
+  // the graph on iOS so audio routes through the element's native output —
+  // we lose the --audio-pulse glow but gain reliable playback + zero stutter
+  // on toggle. Desktop / Android still get the audio-reactive graph.
+  if (!IS_IOS) attachAudioReactiveLoop(musicEl);
   return musicEl;
 }
 
