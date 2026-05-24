@@ -17,6 +17,7 @@
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/countdown.css">
   <link rel="stylesheet" href="css/dresscode.css">
+  <link rel="stylesheet" href="css/rsvp.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/globals.css">
@@ -360,82 +361,83 @@
     </div>
   </section>
 
-  <!-- §8 RSVP — multi-step form (Stage 5; submits locally to console.log, real POST in Stage 6) -->
+  <!-- ============================================================
+       §8 RSVP — single-screen form
+         · 3 attendance pills (yes / maybe / no)
+         · dynamic guest list (1..9 rows)
+         · wishes textarea
+         · wax-seal submit → heart burst → confirmation card
+       JS: js/rsvp.js. Submit currently console.logs payload;
+       Stage 6 swaps in Apps Script POST.
+       ============================================================ -->
   <section id="rsvp" class="section reveal">
     <div class="section__inner">
-      <p class="section__eyebrow" style="opacity:.6">підтвердження присутності</p>
+      <p class="section__eyebrow">Підтвердження</p>
+      <h2 class="section__title">Будемо <em>з Вами?</em></h2>
+      <p class="section__lead">
+        Будь ласка, повідомте про Ваше рішення заздалегідь —
+        це допоможе нам подбати про кожного гостя.
+      </p>
 
-      <div class="rsvp__progress" aria-hidden="true">
-        <span class="rsvp__progress-bar" data-rsvp-bar></span>
-      </div>
-
-      <form class="rsvp__form" novalidate>
-
-        <!-- Step 0 · Attendance -->
-        <fieldset class="rsvp__step is-active" data-step="0">
-          <h2 class="section__title" style="color:var(--cream)">Чи будеш з нами?</h2>
-          <div class="rsvp__actions">
-            <button type="button" class="btn btn--solid"       data-attending="true">Так, з радістю</button>
-            <button type="button" class="btn btn--ghost-light" data-attending="false">Не зможу</button>
+      <form class="rsvp-form" id="rsvpForm" novalidate>
+        <div>
+          <label class="field-label">Ваша відповідь <span class="req">*</span></label>
+          <div class="choice-row">
+            <label class="choice">
+              <input type="radio" name="attend" value="yes" required>
+              <span class="pill">Так<span class="pill-sub">залюбки</span></span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="attend" value="maybe">
+              <span class="pill">Можливо<span class="pill-sub">уточню</span></span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="attend" value="no">
+              <span class="pill">На жаль<span class="pill-sub">не зможу</span></span>
+            </label>
           </div>
-        </fieldset>
+        </div>
 
-        <!-- Step 1 · Seats (skipped if not attending) -->
-        <fieldset class="rsvp__step" data-step="1">
-          <h2 class="section__title" style="color:var(--cream)">Скільки вас буде?</h2>
-          <div class="stepper">
-            <button type="button" class="stepper__btn" data-stepper="-1" aria-label="менше">−</button>
-            <span class="stepper__value" data-rsvp-seats>2</span>
-            <button type="button" class="stepper__btn" data-stepper="+1" aria-label="більше">+</button>
+        <div id="guestCountWrap">
+          <label class="field-label">Будь ласка, вкажіть імена та прізвища гостей від Вашої сім'ї <span class="req">*</span></label>
+          <div class="guest-list" id="guestList">
+            <div class="guest-row">
+              <span class="guest-num">01</span>
+              <input type="text" class="guest-name" placeholder="Олена Шевченко" autocomplete="off">
+              <button type="button" class="guest-remove" aria-label="Видалити" tabindex="-1">×</button>
+            </div>
+            <div class="guest-row">
+              <span class="guest-num">02</span>
+              <input type="text" class="guest-name" placeholder="Петро Шевченко" autocomplete="off">
+              <button type="button" class="guest-remove" aria-label="Видалити" tabindex="-1">×</button>
+            </div>
           </div>
-          <div class="rsvp__nav">
-            <button type="button" class="btn"        data-rsvp-prev>Назад</button>
-            <button type="button" class="btn btn--solid" data-rsvp-next>Далі</button>
-          </div>
-        </fieldset>
+          <button type="button" class="guest-add" id="guestAdd">
+            <span class="plus" aria-hidden="true">
+              <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M6 2 L6 10 M2 6 L10 6"/></svg>
+            </span>
+            додати ще гостя
+          </button>
+        </div>
 
-        <!-- Step 2 · Food (skipped if not attending) -->
-        <fieldset class="rsvp__step" data-step="2">
-          <h2 class="section__title" style="color:var(--cream)">Що з їжею?</h2>
-          <div class="chips">
-            <button type="button" class="chip" data-food="meat">мʼясо</button>
-            <button type="button" class="chip" data-food="fish">риба</button>
-            <button type="button" class="chip" data-food="vegetarian">вегетеріанство</button>
-            <button type="button" class="chip" data-food="no-restriction">без обмежень</button>
-          </div>
-          <label class="rsvp__field">
-            <span class="rsvp__label">алергії або особливі побажання</span>
-            <input type="text" class="input" data-rsvp-allergies placeholder="наприклад: без горіхів">
-          </label>
-          <div class="rsvp__nav">
-            <button type="button" class="btn"        data-rsvp-prev>Назад</button>
-            <button type="button" class="btn btn--solid" data-rsvp-next>Далі</button>
-          </div>
-        </fieldset>
+        <div>
+          <label class="field-label">Побажання нам</label>
+          <textarea name="wishes" id="wishesField" placeholder="Кілька теплих слів — або просто залиште порожнім..."></textarea>
+        </div>
 
-        <!-- Step 3 · Wishes (everyone) -->
-        <fieldset class="rsvp__step" data-step="3">
-          <h2 class="section__title" style="color:var(--cream)">Побажання молодятам</h2>
-          <label class="rsvp__field">
-            <span class="rsvp__label">опціонально</span>
-            <textarea class="textarea" data-rsvp-wishes rows="4" placeholder="напишіть кілька теплих слів"></textarea>
-          </label>
-          <div class="rsvp__nav">
-            <button type="button" class="btn"        data-rsvp-prev>Назад</button>
-            <button type="button" class="btn btn--solid" data-rsvp-submit>Відправити</button>
-          </div>
-        </fieldset>
-
-        <!-- Step 4 · Success -->
-        <fieldset class="rsvp__step" data-step="4">
-          <div class="rsvp__success">
-            <div class="rsvp__heart" aria-hidden="true">♥</div>
-            <h2 class="section__title" style="color:var(--cream)">Дякуємо!</h2>
-            <p class="section__lead" style="opacity:.9">Чекаємо тебе.</p>
-          </div>
-        </fieldset>
-
+        <div class="submit-row">
+          <button type="submit" class="seal-btn" id="submitBtn"><span>Запечатати<br>відповідь</span></button>
+        </div>
       </form>
+
+      <div class="rsvp-confirm" id="rsvpConfirm" role="status" aria-live="polite">
+        <div class="ck">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>
+        </div>
+        <h3 data-confirm-title>Дякуємо!</h3>
+        <p  data-confirm-text>Вашу відповідь збережено. Чекаємо на Вас 17 липня.</p>
+        <a class="edit-link" id="editLink" role="button" tabindex="0">Змінити відповідь</a>
+      </div>
     </div>
   </section>
 
