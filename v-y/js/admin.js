@@ -19,6 +19,18 @@ const ATTEND_CLASS = {
   'мабуть': 'is-maybe',
   'ні': 'is-no',
 };
+const ATTEND_ORDER = ['так', 'мабуть', 'ні'];
+
+// Ukrainian plural: 1 родина / 2 родини / 5 родин
+function pluralUa(n, one, few, many) {
+  const mod10 = n % 10;
+  const mod100 = n % 100;
+  if (mod10 === 1 && mod100 !== 11) return `${n} ${one}`;
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return `${n} ${few}`;
+  return `${n} ${many}`;
+}
+const familiesText = (n) => pluralUa(n, 'родина', 'родини', 'родин');
+const peopleText   = (n) => pluralUa(n, 'людина', 'людей', 'людей');
 
 function setTokenInUrl(token) {
   const url = new URL(window.location.href);
@@ -87,6 +99,53 @@ function renderStats(stats) {
   $('hcConfirmed').textContent = h.confirmed ?? '—';
   $('hcMaybe').textContent     = h.maybe ?? '—';
   $('hcTotal').textContent     = h.total_expected ?? '—';
+
+  // Who responded — grouped by attending, with persons count per row
+  const respondersList = $('respondersList');
+  respondersList.innerHTML = '';
+  const responders = Array.isArray(stats.responders) ? stats.responders : [];
+  if (responders.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'admin-list-empty';
+    li.textContent = 'Ще немає відповідей';
+    respondersList.appendChild(li);
+  } else {
+    const groups = { 'так': [], 'мабуть': [], 'ні': [] };
+    for (const r of responders) {
+      if (groups[r.attending]) groups[r.attending].push(r);
+    }
+    for (const key of ATTEND_ORDER) {
+      const list = groups[key];
+      if (!list || list.length === 0) continue;
+      const persons = list.reduce((s, r) => s + (r.persons || 0), 0);
+      const header = document.createElement('li');
+      header.className = 'admin-list-group ' + (ATTEND_CLASS[key] || '');
+      const left = document.createElement('span');
+      left.textContent = ATTEND_LABEL[key];
+      const right = document.createElement('span');
+      right.className = 'admin-list-group-sub';
+      right.textContent = key === 'ні'
+        ? familiesText(list.length)
+        : `${familiesText(list.length)} · ${peopleText(persons)}`;
+      header.appendChild(left);
+      header.appendChild(right);
+      respondersList.appendChild(header);
+
+      for (const r of list) {
+        const li = document.createElement('li');
+        li.className = 'admin-list-item admin-resp-item';
+        const name = document.createElement('span');
+        name.className = 'admin-list-name';
+        name.textContent = r.display_name || r.slug;
+        const persons = document.createElement('span');
+        persons.className = 'admin-resp-persons';
+        persons.textContent = r.persons > 0 ? `${r.persons} ос.` : '—';
+        li.appendChild(name);
+        li.appendChild(persons);
+        respondersList.appendChild(li);
+      }
+    }
+  }
 
   // Pending list
   const pendingList = $('pendingList');

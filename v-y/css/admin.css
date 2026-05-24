@@ -184,6 +184,7 @@
   }
   .admin-summary,
   .admin-headcount,
+  .admin-responders,
   .admin-pending,
   .admin-recent {
     grid-column: 1 / -1;
@@ -307,6 +308,49 @@
   font-size: 12px;
   color: var(--ink-mute);
   letter-spacing: 0.04em;
+}
+
+/* ---- Group headers inside lists (Хто відповів) ---- */
+.admin-list-group {
+  background: color-mix(in oklab, var(--accent) 12%, var(--bg-card));
+  padding: 10px 14px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  color: var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+}
+.admin-list-group.is-yes   { background: color-mix(in oklab, #4a8b3f 16%, var(--bg-card)); }
+.admin-list-group.is-maybe { background: color-mix(in oklab, var(--accent) 16%, var(--bg-card)); }
+.admin-list-group.is-no    { background: color-mix(in oklab, #8b4f3f 14%, var(--bg-card)); }
+.admin-list-group-sub {
+  color: var(--ink-soft);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: none;
+  font-size: 11px;
+}
+
+/* ---- Responders rows: name | persons ---- */
+.admin-resp-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 14px;
+  align-items: baseline;
+}
+.admin-resp-persons {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-soft);
+  letter-spacing: 0.04em;
+  min-width: 60px;
+  text-align: right;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 
 /* ---- Recent replies ---- */
