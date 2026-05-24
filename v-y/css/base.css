@@ -1,32 +1,71 @@
 /* ============================================================
-   base.css — body reset and layout container
+   base.css — body reset, theme-aware background, global overlays
+   (vignette + grain). Section/component styling lives elsewhere.
    ============================================================ */
 
 *, *::before, *::after { box-sizing: border-box; }
 
+html {
+  scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  background: var(--gold-deep);  /* prevents flash before .hero paints */
-  color: var(--cream);
-  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-}
-
-html {
-  scroll-behavior: smooth;
-  /* Snap is set up now; Stage 3 sections will use scroll-snap-align */
-  scroll-snap-type: y proximity;
+  transition: background var(--med), color var(--med);
 }
 
 body {
   min-height: 100svh;
-  overflow-x: hidden;          /* parallax may push elements; never show horizontal scrollbar */
+  overflow-x: hidden;
+  position: relative;
 }
 
-/* Reduced-motion: turn off all animations + transforms.
-   Required by spec §14 (risk: slow devices). */
+/* Lining + tabular numerals on numeric blocks. */
+.num, .lining, .hero-date, .date,
+.countdown__num, .timeline__time {
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: var(--num-feat);
+}
+
+/* ---- Vignette overlay (under content) ---- */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: var(--vignette);
+  transition: background var(--med);
+}
+
+/* ---- SVG turbulence grain overlay (above content but click-through) ---- */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: var(--noise-opacity);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.7'/></svg>");
+}
+
+/* Page content sits above the body overlays. */
+main {
+  position: relative;
+  z-index: 5;
+}
+
+/* Reduced-motion: cut animation + transition durations to near-zero. */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
