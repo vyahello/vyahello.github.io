@@ -1,0 +1,251 @@
+/* ============================================================
+   hero.css — landing screen
+   Structure:
+     .hero
+       .hero-top-wrap   { hearts row + eyebrow }
+       .hero-center     { names + rings + date + place + add-cal }
+       .hero-bottom     { scroll-cue + pulsing line }
+   Letter reveal + stagger driven by js/hero.js wrapping each
+   character in <span class="ch" style="--i: N"> and toggling
+   .hero.intro-done.
+   ============================================================ */
+
+.hero {
+  min-height: 100svh;
+  padding: 56px 0 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align: center;
+  border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+
+/* ---- Top: hearts row + eyebrow ---- */
+.hero-top-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.hero-hearts {
+  color: var(--accent);
+  width: 120px;
+  height: 14px;
+}
+.hero-hearts svg { width: 100%; height: 100%; }
+.hero-top {
+  font-family: var(--font-italic);
+  font-size: clamp(14px, 4vw, 18px);
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+}
+
+/* ---- Center stack ---- */
+.hero-center {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+  align-items: center;
+}
+
+.names {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  margin: 8px 0;
+  will-change: transform;
+}
+.names .n {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(40px, 10vw, 84px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  position: relative;
+  max-width: 100%;
+}
+.names .amp {
+  font-family: var(--font-italic);
+  font-size: clamp(36px, 9vw, 70px);
+  color: var(--accent);
+  font-weight: 400;
+  line-height: 1;
+  margin: 4px 0;
+}
+
+/* Per-letter spans. Hidden by default; the .hero.intro-done class
+   triggers the staggered reveal. */
+.names .n .ch {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(40px);
+  filter: blur(8px);
+}
+.hero.intro-done .names .n .ch {
+  animation: heroCharIn 0.85s var(--easing) forwards;
+  animation-delay: calc(var(--delay, 0.3s) + var(--i, 0) * 0.05s);
+}
+/* Second name (third .names child) starts later so they don't overlap. */
+.hero.intro-done .names .n:nth-child(3) .ch { --delay: 0.7s; }
+
+@keyframes heroCharIn {
+  0%   { opacity: 0; transform: translateY(40px) scale(0.92); filter: blur(8px); }
+  60%  { filter: blur(0); }
+  100% { opacity: 1; transform: translateY(0)   scale(1);    filter: blur(0); }
+}
+
+/* Per-letter hover ripple — desktop only. */
+@media (hover: hover) {
+  .names .n .ch {
+    transition: transform 0.4s var(--easing), color 0.4s;
+  }
+  .names .n:hover .ch:hover {
+    color: var(--accent);
+    transform: translateY(-6px) scale(1.05);
+  }
+}
+
+/* ---- 3D interlocking rings (SVG carries gradient + masks) ---- */
+.hero-rings {
+  color: var(--accent);
+  width: 88px;
+  height: 44px;
+  margin: 4px auto 0;
+  opacity: 0.92;
+}
+.hero-rings svg { width: 100%; height: 100%; }
+
+/* ---- Date row ---- */
+.hero-date {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: clamp(20px, 5vw, 26px);
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+.hero-date .num { font-weight: 400; }
+.hero-date .sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+}
+
+.hero-place {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 8px;
+}
+
+/* ---- "+ додати в календар" button ---- */
+.add-cal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  text-decoration: none;
+  border: 1px solid var(--line);
+  padding: 10px 18px;
+  border-radius: 2px;
+  cursor: pointer;
+  background: transparent;
+  transition: all 0.3s var(--easing);
+}
+.add-cal:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+  background: var(--bg-card);
+}
+.add-cal svg { width: 12px; height: 12px; }
+
+/* ---- Bottom: scroll cue + pulsing line ---- */
+.hero-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+.scroll-cue {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.scroll-line {
+  width: 1px;
+  height: 56px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: heroScrollPulse 2s var(--easing) infinite;
+  transform-origin: top;
+}
+@keyframes heroScrollPulse {
+  0%, 100% { transform: scaleY(0.4); opacity: 0.4; }
+  50%      { transform: scaleY(1);   opacity: 1; }
+}
+
+/* ---- Staggered fade-up reveal for non-letter blocks
+        once curtain dispatches `curtain:lifted` and hero.js sets .intro-done ---- */
+.hero.intro-done .hero-top-wrap,
+.hero.intro-done .names .amp,
+.hero.intro-done .hero-rings,
+.hero.intro-done .hero-date,
+.hero.intro-done .hero-place,
+.hero.intro-done .add-cal,
+.hero.intro-done .hero-bottom {
+  animation: heroIntroUp 1.2s var(--easing) backwards;
+}
+.hero.intro-done .hero-top-wrap { animation-delay: 0.10s; }
+.hero.intro-done .names .amp    { animation-delay: 0.55s; }
+.hero.intro-done .hero-rings    { animation-delay: 1.10s; }
+.hero.intro-done .hero-date     { animation-delay: 1.25s; }
+.hero.intro-done .hero-place    { animation-delay: 1.38s; }
+.hero.intro-done .add-cal       { animation-delay: 1.50s; }
+.hero.intro-done .hero-bottom   { animation-delay: 1.65s; }
+
+@keyframes heroIntroUp {
+  0%   { opacity: 0; transform: translateY(40px); filter: blur(6px); }
+  100% { opacity: 1; transform: translateY(0);    filter: blur(0); }
+}
+
+/* ---- Reduced motion: kill char animation, show everything immediately. ---- */
+@media (prefers-reduced-motion: reduce) {
+  .names .n .ch {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    animation: none !important;
+  }
+  .hero.intro-done .hero-top-wrap,
+  .hero.intro-done .names .amp,
+  .hero.intro-done .hero-rings,
+  .hero.intro-done .hero-date,
+  .hero.intro-done .hero-place,
+  .hero.intro-done .add-cal,
+  .hero.intro-done .hero-bottom {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .scroll-line { animation: none; transform: scaleY(1); opacity: 0.6; }
+}
