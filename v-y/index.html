@@ -44,12 +44,11 @@
   <a   class="floating-mono brand-mono" id="floatingMono"
        href="#hero" aria-label="Повернутись догори">В<span class="amp-char">&amp;</span>Ю</a>
 
-  <!-- Floating scroll indicator — pulsing line anchored to viewport bottom.
-       Always visible regardless of hero height, theme-aware via var(--accent),
-       auto-hides on first scroll. Wired in js/globals.js. -->
+  <!-- Floating scroll indicator — single pulsing gold line anchored to
+       viewport bottom. Always visible during hero, theme-aware via
+       var(--accent), auto-hides on first scroll (any scrollY > 0). -->
   <div class="scroll-indicator" id="scrollIndicator" role="presentation" aria-label="Прокрутіть нижче">
     <span class="line" aria-hidden="true"></span>
-    <span class="chev" aria-hidden="true"></span>
   </div>
 
   <!-- ============================================================

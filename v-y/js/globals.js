@@ -74,17 +74,18 @@ function attachFloatingMono(badge, hero) {
 }
 
 /* ---- Floating scroll indicator ----
-   Fades out the moment the user starts scrolling — its job (invite scroll)
-   is done. Listener is `once: true` so it self-detaches. */
+   Hides on the first real scroll event — `{ once: true }` so the
+   listener auto-detaches and we don't need any scrollY threshold
+   (which was unreliable on iOS Safari during inertia scroll). */
 function attachScrollIndicator(indicator) {
   if (!indicator) return;
-  const hide = () => {
-    if (window.scrollY > 24) indicator.classList.add('hidden');
-  };
-  // Defer slightly — we don't want layout-driven scrollY blips during boot to
-  // hide the indicator before it's even visible.
+  const hide = () => indicator.classList.add('hidden');
+  // Defer attach by 500ms so layout-driven scroll blips during boot don't
+  // trigger the listener before the indicator has had a chance to appear.
   setTimeout(() => {
-    window.addEventListener('scroll', hide, { passive: true });
+    window.addEventListener('scroll',      hide, { passive: true, once: true });
+    window.addEventListener('touchmove',   hide, { passive: true, once: true });
+    window.addEventListener('wheel',       hide, { passive: true, once: true });
   }, 500);
 }
 
