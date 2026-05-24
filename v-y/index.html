@@ -547,6 +547,20 @@
         <p  data-confirm-text>Вашу відповідь збережено. Чекаємо на Вас 17 липня.</p>
         <a class="edit-link" id="editLink" role="button" tabindex="0">Змінити відповідь</a>
       </div>
+
+      <!-- Locked state — shown when the page is opened without a personal
+           ?g=slug link. Replaces the form so casual visitors get a friendly
+           explanation instead of filling a form that would fail to submit. -->
+      <div class="rsvp-locked-msg" id="rsvpLockedMsg">
+        <div class="ck">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="9" rx="1"/>
+            <path d="M8 11 V 8 a 4 4 0 0 1 8 0 V 11"/>
+          </svg>
+        </div>
+        <p>Це запрошення <em>персональне</em>. Будь ласка, відкрийте посилання, яке ми Вам надіслали — там і буде форма підтвердження.</p>
+        <p class="rsvp-locked-help">Якщо посилання загубилось — напишіть нам, ми надішлемо знову.</p>
+      </div>
     </div>
   </section>
 

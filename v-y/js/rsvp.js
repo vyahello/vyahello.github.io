@@ -12,7 +12,7 @@
      · submit POSTs to the Apps Script URL via guest.submitRsvp
    ============================================================ */
 
-import { submitRsvp } from './guest.js';
+import { submitRsvp, getGuestSlug } from './guest.js';
 
 /* ============================================================
    PURE HELPERS — exported for unit tests
@@ -264,6 +264,14 @@ export function initRSVP() {
   const addBtn  = root.querySelector('#guestAdd');
   const seal    = root.querySelector('#submitBtn');
   if (!form || !confirm || !list || !addBtn || !seal) return;
+
+  // RSVP is gated on a personal ?g=slug link. Without one, swap the form +
+  // confirm card for a friendly "this invitation is personal" notice and
+  // bail before wiring submit handlers — there's nothing to submit.
+  if (!getGuestSlug()) {
+    root.classList.add('rsvp-locked');
+    return;
+  }
 
   // Mutable per-instance state that the submit handler reads. Slug + name
   // come from `guest:loaded`; `submittedAt` is preserved across edits so

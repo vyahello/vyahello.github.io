@@ -375,6 +375,78 @@
   font-size: 16px;
   line-height: 1.6;
 }
+/* ============================================================
+   LOCKED STATE — shown when page opened without ?g=slug.
+   The .rsvp-locked class is toggled on #rsvp by js/rsvp.js.
+   When locked: hide form + confirm card, show the locked-msg card.
+   When unlocked (slug present): hide locked-msg, default form/confirm
+   visibility wins.
+   ============================================================ */
+
+.rsvp-locked-msg {
+  display: none;
+  text-align: center;
+  padding: 44px 28px;
+  border: 1px solid var(--accent);
+  background: var(--bg-card);
+  max-width: var(--content-w);
+  margin: 0 auto;
+  position: relative;
+}
+.rsvp-locked-msg::before,
+.rsvp-locked-msg::after {
+  content: '';
+  position: absolute;
+  width:  14px;
+  height: 14px;
+  border: 1px solid var(--accent);
+}
+.rsvp-locked-msg::before { top:    -1px; left:  -1px; border-right: 0; border-bottom: 0; }
+.rsvp-locked-msg::after  { bottom: -1px; right: -1px; border-left:  0; border-top:    0; }
+
+.rsvp-locked-msg .ck {
+  width:  52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--accent);
+}
+.rsvp-locked-msg p {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0;
+  max-width: 38em;
+  margin-left: auto;
+  margin-right: auto;
+}
+.rsvp-locked-msg p em {
+  font-family: var(--font-italic);
+  font-style: normal;
+  color: var(--accent);
+}
+.rsvp-locked-msg p + p {
+  margin-top: 14px;
+}
+.rsvp-locked-msg .rsvp-locked-help {
+  font-family: var(--font-italic);
+  font-size: 14px;
+  color: var(--ink-soft);
+}
+
+#rsvp.rsvp-locked .rsvp-form,
+#rsvp.rsvp-locked .rsvp-confirm {
+  display: none !important;
+}
+#rsvp.rsvp-locked .rsvp-locked-msg {
+  display: block;
+}
+
 /* Submit error — small inline notice if the backend POST failed. */
 .rsvp-error {
   margin-top: 18px;
