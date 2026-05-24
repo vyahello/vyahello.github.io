@@ -46,17 +46,22 @@ function ensureMusicEl() {
 
   // Reflect underlying audio state to the button — covers cases where
   // playback stops outside our toggle (tab discard, media-session pause,
-  // OS controls).
-  musicEl.addEventListener('play',  syncBtnFromAudio);
-  musicEl.addEventListener('pause', syncBtnFromAudio);
+  // OS controls). volumechange also fires on muted ↔ unmuted toggles.
+  musicEl.addEventListener('play',         syncBtnFromAudio);
+  musicEl.addEventListener('pause',        syncBtnFromAudio);
+  musicEl.addEventListener('volumechange', syncBtnFromAudio);
   return musicEl;
 }
 
+function isAudible() {
+  return !!(musicEl && !musicEl.paused && !musicEl.muted);
+}
+
 function syncBtnFromAudio() {
-  if (!musicBtnEl || !musicEl) return;
-  const playing = !musicEl.paused;
-  musicBtnEl.classList.toggle('playing', playing);
-  musicBtnEl.setAttribute('aria-pressed', playing ? 'true' : 'false');
+  if (!musicBtnEl) return;
+  const audible = isAudible();
+  musicBtnEl.classList.toggle('playing', audible);
+  musicBtnEl.setAttribute('aria-pressed', audible ? 'true' : 'false');
 }
 
 /** Smoothly ramp audio.volume to `to` over `durationMs`. Cancels any
@@ -83,12 +88,28 @@ async function startMusic() {
   const a = ensureMusicEl();
   try {
     a.currentTime = 0;             // restart from beginning, per spec
+    a.muted       = false;
     a.volume      = 0;
-    await a.play();                // may reject if autoplay is blocked
+    await a.play();                // may reject without user gesture
     fadeVolume(a, MUSIC_VOLUME, MUSIC_FADE_IN_MS);
     return true;
   } catch {
-    // Autoplay denied (no user gesture yet) — leave button in paused state.
+    // Audible autoplay denied — fall back to muted autoplay so the audio
+    // at least starts loading + advancing the timeline. On the first real
+    // user gesture (anywhere on the page) we unmute. iOS Safari blocks
+    // even this; the gesture fallback will instead start fresh.
+    return tryMutedAutoplay(a);
+  }
+}
+
+async function tryMutedAutoplay(audio) {
+  try {
+    audio.muted  = true;
+    audio.volume = MUSIC_VOLUME;   // pre-set so unmute reveals at correct level
+    audio.currentTime = 0;
+    await audio.play();
+    return true;                    // playing silently — button stays paused UI
+  } catch {
     syncBtnFromAudio();
     return false;
   }
@@ -108,9 +129,39 @@ function attachMusicToggle(btn) {
   musicBtnEl = btn;
   btn.setAttribute('aria-pressed', 'false');
   btn.addEventListener('click', () => {
-    if (!musicEl || musicEl.paused) startMusic();
-    else                            stopMusic();
+    // Treat muted-playing as "not audible" → next click should start fresh.
+    if (!isAudible()) startMusic();
+    else              stopMusic();
   });
+}
+
+/** First gesture anywhere on the page after autoplay attempts:
+ *    · paused → start fresh (now we have a user gesture)
+ *    · muted-playing → unmute with fade-in
+ *    · already audible → nothing
+ *  Skips clicks on the music button (handled by attachMusicToggle).
+ */
+function attachFirstInteractionFallback() {
+  const onFirst = (e) => {
+    if (e && e.target && e.target.closest && e.target.closest('.music-btn')) return;
+    if (!musicEl) { startMusic(); cleanup(); return; }
+    if (musicEl.paused) {
+      startMusic();
+    } else if (musicEl.muted) {
+      musicEl.muted  = false;
+      musicEl.volume = 0;
+      fadeVolume(musicEl, MUSIC_VOLUME, MUSIC_FADE_IN_MS);
+    }
+    cleanup();
+  };
+  const cleanup = () => {
+    document.removeEventListener('click',    onFirst, true);
+    document.removeEventListener('keydown',  onFirst, true);
+    document.removeEventListener('touchend', onFirst, true);
+  };
+  document.addEventListener('click',    onFirst, true);
+  document.addEventListener('keydown',  onFirst, true);
+  document.addEventListener('touchend', onFirst, true);
 }
 
 /* ============================================================
@@ -299,22 +350,20 @@ export function initChrome() {
   attachMusicToggle(document.getElementById('musicBtn'));
   attachShareButton(document.getElementById('shareBtn'));
 
-  // Auto-start music once the intro curtain lifts. If the browser blocks
-  // autoplay (no prior user gesture), startMusic() catches the rejection
-  // and the button stays in the "paused" state.
-  document.addEventListener('curtain:lifted', () => startMusic(), { once: true });
-
-  // Fallback for autoplay-blocked sessions (curtain auto-lifted without a
-  // user click). On the next real interaction anywhere on the page, try
-  // again — by then the browser counts it as a user gesture. Skipped if
-  // music is already playing or the user clicks the music button (which
-  // has its own handler).
-  const firstGesture = (e) => {
-    if (e.target && e.target.closest && e.target.closest('.music-btn')) return;
-    if (musicEl && !musicEl.paused) return;
+  // Auto-start music once the intro curtain lifts. Tries audible play
+  // first; if browser blocks it, falls back to muted autoplay so the
+  // audio at least streams in the background.
+  // `skipIntro` / sessionStorage paths fire curtain:lifted synchronously
+  // INSIDE initCurtain, before initChrome attaches its listener. In that
+  // case we detect "already lifted" via the intro-done class on hero.
+  const heroLifted = document.getElementById('hero')?.classList.contains('intro-done');
+  if (heroLifted) {
     startMusic();
-  };
-  document.addEventListener('click',     firstGesture, { once: true, capture: true });
-  document.addEventListener('keydown',   firstGesture, { once: true, capture: true });
-  document.addEventListener('touchend',  firstGesture, { once: true, capture: true });
+  } else {
+    document.addEventListener('curtain:lifted', () => startMusic(), { once: true });
+  }
+
+  // First real user gesture: either unmute the muted autoplay, or
+  // start fresh if even muted autoplay was denied (iOS Safari).
+  attachFirstInteractionFallback();
 }
