@@ -1,0 +1,202 @@
+/* ============================================================
+   curtain.css — cinematic intro overlay
+   Stack (top→bottom): eyebrow, hearts row, monogram, gold line,
+   3D interlocking rings, date, place.
+   Lifts on click or after 3s via js/curtain.js.
+   ============================================================ */
+
+#curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0;
+  transition: opacity 0.9s var(--easing), transform 1.4s var(--easing);
+  cursor: pointer;
+}
+
+/* Subtle radial halo behind monogram */
+#curtain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 50% at 50% 50%,
+    color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%);
+}
+
+#curtain.lift {
+  opacity: 0;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+#curtain .curtain-eyebrow {
+  font-family: var(--font-italic);
+  font-size: clamp(15px, 4vw, 19px);
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  opacity: 0;
+  animation: curtainFadeUp 1s 0.2s var(--easing) forwards;
+  position: relative;
+  z-index: 2;
+}
+
+#curtain .curtain-hearts {
+  color: var(--accent);
+  width: 140px;
+  height: 16px;
+  margin-top: 16px;
+  opacity: 0;
+  animation: curtainFadeUp 0.9s 0.5s var(--easing) forwards;
+  position: relative;
+  z-index: 2;
+}
+#curtain .curtain-hearts svg { width: 100%; height: 100%; }
+
+#curtain .monogram {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(110px, 26vw, 230px);
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  line-height: 1;
+  opacity: 0;
+  animation: curtainMonoBreath 2.4s var(--easing) forwards;
+  position: relative;
+  z-index: 2;
+  margin: 18px 0 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0;
+}
+#curtain .monogram .amp-char {
+  font-family: var(--font-ampersand);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  padding: 0 0.04em;
+  font-size: 0.85em;
+  transform: translateY(-0.05em);
+  display: inline-block;
+}
+
+#curtain .underline {
+  display: block;
+  height: 1px;
+  background: var(--accent);
+  margin: 36px auto 0;
+  width: 0;
+  animation: curtainLineDraw 1.4s 0.8s var(--easing) forwards;
+  position: relative;
+  z-index: 2;
+}
+
+#curtain .curtain-rings {
+  color: var(--accent);
+  width: 100px;
+  height: 50px;
+  margin-top: 30px;
+  opacity: 0;
+  animation: curtainFadeUp 0.9s 1.6s var(--easing) forwards;
+  position: relative;
+  z-index: 2;
+}
+#curtain .curtain-rings svg { width: 100%; height: 100%; }
+#curtain .curtain-rings .ring {
+  stroke-dasharray: 114;
+  stroke-dashoffset: 114;
+  animation: curtainRingDraw 1.6s 1.8s var(--easing) forwards;
+}
+#curtain .curtain-rings .r2 { animation-delay: 2.2s; }
+
+#curtain .curtain-date {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 4.5vw, 26px);
+  color: var(--ink);
+  letter-spacing: 0.18em;
+  margin-top: 26px;
+  opacity: 0;
+  animation: curtainFadeUp 0.9s 1.4s var(--easing) forwards;
+  position: relative;
+  z-index: 2;
+}
+#curtain .curtain-date .dot {
+  color: var(--accent);
+  margin: 0 8px;
+}
+
+#curtain .curtain-place {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-top: 14px;
+  opacity: 0;
+  animation: curtainFadeUp 0.9s 1.7s var(--easing) forwards;
+  position: relative;
+  z-index: 2;
+}
+
+/* ---- Brand monogram used outside curtain (closing, etc.) ---- */
+.brand-mono .amp-char {
+  font-family: var(--font-ampersand);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--accent);
+  padding: 0 0.04em;
+  font-size: 0.85em;
+  display: inline-block;
+  transform: translateY(-0.05em);
+}
+
+/* ---- Keyframes (prefixed so they can't collide with section-level anims) ---- */
+
+@keyframes curtainFadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes curtainMonoBreath {
+  0%   { opacity: 0; transform: scale(0.94); filter: blur(8px); }
+  60%  { opacity: 1; transform: scale(1);    filter: blur(0); }
+  100% { opacity: 1; transform: scale(1);    filter: blur(0); }
+}
+@keyframes curtainLineDraw {
+  from { width: 0; }
+  to   { width: clamp(140px, 28vw, 220px); }
+}
+@keyframes curtainRingDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Reduced motion: replace all curtain animations with a plain fade-in. */
+@media (prefers-reduced-motion: reduce) {
+  #curtain .curtain-eyebrow,
+  #curtain .curtain-hearts,
+  #curtain .monogram,
+  #curtain .underline,
+  #curtain .curtain-rings,
+  #curtain .curtain-date,
+  #curtain .curtain-place {
+    animation: none !important;
+    opacity: 1;
+    width: auto;
+  }
+  #curtain .underline { width: clamp(140px, 28vw, 220px); }
+  #curtain .curtain-rings .ring {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    animation: none !important;
+  }
+}
+
+/* Print: never show the curtain. */
+@media print {
+  #curtain { display: none !important; }
+}
