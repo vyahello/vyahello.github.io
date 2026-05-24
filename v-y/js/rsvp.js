@@ -1,169 +1,275 @@
 /* ============================================================
-   rsvp.js — multi-step RSVP form
+   rsvp.js — single-screen RSVP form
+     · 3 attendance pills (yes / maybe / no)
+     · dynamic guest-name list (1..MAX_GUESTS rows)
+     · wishes textarea
+     · wax-seal submit button (magnetic hover, idle pulse)
+     · heart-burst on submit (24 hearts/sparkles)
+     · confirmation card with "Змінити відповідь" cycle
+   Submit currently console.logs the payload — Stage 6 swaps in
+   an Apps Script POST.
    ============================================================ */
 
-const MIN_SEATS = 1;
-const MAX_SEATS = 10;
-const DEFAULT_SEATS = 2;   // Stage 7 will override per guest
+/* ============================================================
+   PURE HELPERS — exported for unit tests
+   ============================================================ */
 
-/** Step indices kept as constants so the table below stays readable. */
-const STEP_ATTEND  = 0;
-const STEP_SEATS   = 1;
-const STEP_FOOD    = 2;
-const STEP_WISHES  = 3;
-const STEP_SUCCESS = 4;
+export const MAX_GUESTS  = 9;
+const VALID_ATTENDANCE   = ['yes', 'maybe', 'no'];
+
+/** Sanitize free-form attendance input. Returns 'yes'|'maybe'|'no'|null. */
+export function parseAttendance(raw) {
+  if (typeof raw !== 'string') return null;
+  const v = raw.trim().toLowerCase();
+  return VALID_ATTENDANCE.includes(v) ? v : null;
+}
 
 /**
- * Compute the ordered list of steps a user with given state should walk through.
- * - Attending=null: only the first step (haven't chosen).
- * - Attending=true: 0 → 1 → 2 → 3 → 4
- * - Attending=false: 0 → 3 → 4 (skip seats + food)
- * @returns {number[]}
+ * Clean a list of guest-name strings:
+ *   · drop non-string entries
+ *   · trim whitespace
+ *   · drop now-empty strings
+ *   · clamp to MAX_GUESTS
+ * Always returns a fresh array (never the caller's reference).
  */
-export function computeStepFlow(attending) {
-  if (attending === true)  return [STEP_ATTEND, STEP_SEATS, STEP_FOOD, STEP_WISHES, STEP_SUCCESS];
-  if (attending === false) return [STEP_ATTEND,                         STEP_WISHES, STEP_SUCCESS];
-  return [STEP_ATTEND];
+export function sanitizeGuestNames(input) {
+  if (!Array.isArray(input)) return [];
+  const out = [];
+  for (const item of input) {
+    if (typeof item !== 'string') continue;
+    const trimmed = item.trim();
+    if (!trimmed) continue;
+    out.push(trimmed);
+    if (out.length >= MAX_GUESTS) break;
+  }
+  return out;
 }
 
-/** Clamp the seats number to [MIN_SEATS, MAX_SEATS]. Non-numbers fall to DEFAULT_SEATS. */
-export function clampSeats(n) {
-  const num = Number(n);
-  if (!Number.isFinite(num)) return DEFAULT_SEATS;
-  return Math.max(MIN_SEATS, Math.min(MAX_SEATS, Math.round(num)));
-}
-
-/** Build the submission payload from form state. Stage 6 sends this to Apps Script. */
-export function buildPayload(state) {
+/**
+ * Build the submission payload from form state.
+ * Stage 6 replaces console.log with an Apps Script POST of this object.
+ */
+export function buildPayload(state = {}) {
+  const attending = parseAttendance(state.attending);
+  const names = sanitizeGuestNames(state.guestNames);
+  const wishes = typeof state.wishes === 'string' ? state.wishes.trim() : '';
   return {
-    guest_id:     state.guestId || null,
-    name:         state.name || null,
-    attending:    state.attending === true,
-    seats:        state.attending === true ? clampSeats(state.seats) : 0,
-    food:         state.attending === true ? [...state.food] : [],
-    allergies:    state.attending === true ? (state.allergies || '') : '',
-    wishes:       state.wishes || '',
+    guest_id:     state.guestId ?? null,
+    name:         state.name    ?? null,
+    attending,
+    guest_names:  attending === 'no' ? [] : names,
+    wishes,
     submitted_at: new Date().toISOString(),
   };
 }
 
-/** Compute progress 0..1 given the index of the currently-visible step in the flow. */
-function progressFraction(flow, currentStep) {
-  const i = flow.indexOf(currentStep);
-  if (i < 0) return 0;
-  return (i + 1) / flow.length;
+/* ============================================================
+   BROWSER WIRING — initRSVP()
+   ============================================================ */
+
+const SAMPLE_NAMES = [
+  'Олена Шевченко',
+  'Петро Шевченко',
+  'Андрій Коваленко',
+  'Марія Коваленко',
+  'Іван Бондар',
+  'Наталія Бондар',
+  'Михайло Лисенко',
+  'Софія Лисенко',
+  'Наталія Шевчук',
+];
+
+function padNum(i) {
+  return String(i + 1).padStart(2, '0');
 }
 
-/**
- * Browser entry. Wires up the §8 RSVP DOM. Safe to call when the form is missing
- * — does nothing.
- *
- * The submit handler currently logs to console; Stage 6 will replace it with an
- * Apps Script fetch.
- */
+/* ---- Guest-list helpers ---- */
+
+function renumberGuestRows(list, addBtn) {
+  const rows = list.querySelectorAll('.guest-row');
+  rows.forEach((row, i) => {
+    row.querySelector('.guest-num').textContent = padNum(i);
+    const input = row.querySelector('.guest-name');
+    if (!input.value) input.placeholder = SAMPLE_NAMES[i] || 'Імʼя та прізвище';
+  });
+  if (addBtn) addBtn.disabled = rows.length >= MAX_GUESTS;
+}
+
+function addGuestRow(list, addBtn, { focus = true } = {}) {
+  const rows = list.querySelectorAll('.guest-row');
+  if (rows.length >= MAX_GUESTS) return null;
+  const idx = rows.length;
+  const row = document.createElement('div');
+  row.className = 'guest-row entering';
+  row.innerHTML = `
+    <span class="guest-num">${padNum(idx)}</span>
+    <input type="text" class="guest-name" placeholder="${SAMPLE_NAMES[idx] || 'Імʼя та прізвище'}" autocomplete="off" />
+    <button type="button" class="guest-remove" aria-label="Видалити" tabindex="-1">×</button>
+  `;
+  list.appendChild(row);
+  renumberGuestRows(list, addBtn);
+  if (focus) setTimeout(() => row.querySelector('.guest-name').focus(), 50);
+  setTimeout(() => row.classList.remove('entering'), 500);
+  return row;
+}
+
+function removeGuestRow(row, list, addBtn) {
+  if (list.querySelectorAll('.guest-row').length <= 1) return;
+  row.classList.add('removing');
+  setTimeout(() => { row.remove(); renumberGuestRows(list, addBtn); }, 320);
+}
+
+function readGuestNames(list) {
+  return [...list.querySelectorAll('.guest-name')]
+    .map((i) => i.value.trim())
+    .filter(Boolean);
+}
+
+/* ---- Magnetic seal (desktop) ---- */
+
+function attachMagneticSeal(seal) {
+  if (!seal || !window.matchMedia('(hover: hover)').matches) return;
+  seal.addEventListener('mousemove', (e) => {
+    const r = seal.getBoundingClientRect();
+    const cx = r.left + r.width  / 2;
+    const cy = r.top  + r.height / 2;
+    const dx = (e.clientX - cx) * 0.18;
+    const dy = (e.clientY - cy) * 0.18;
+    seal.style.transform = `translate(${dx}px, ${dy}px) scale(1.06) rotate(-4deg)`;
+  });
+  seal.addEventListener('mouseleave', () => { seal.style.transform = ''; });
+}
+
+/* ---- Heart burst (24 hearts/sparkles in physical radial pattern) ---- */
+
+const HEART_SYMBOLS = ['♥', '♡', '✦', '✧'];
+
+function burstHearts(originX, originY, count = 24) {
+  for (let i = 0; i < count; i++) {
+    const h = document.createElement('div');
+    h.className   = 'flying-heart';
+    h.textContent = HEART_SYMBOLS[i % HEART_SYMBOLS.length];
+    h.style.left  = `${originX}px`;
+    h.style.top   = `${originY}px`;
+
+    const angle = (Math.PI * 2 * i) / count + (Math.random() - 0.5) * 0.5;
+    const dist  = 120 + Math.random() * 120;
+    const dx    = Math.cos(angle) * dist;
+    const dy    = Math.sin(angle) * dist - 40;             // slight upward bias
+    const scale = 0.6 + Math.random() * 0.9;
+    const dur   = 1.1 + Math.random() * 0.8;
+
+    h.style.setProperty('--dx', `${dx}px`);
+    h.style.setProperty('--dy', `${dy}px`);
+    h.style.setProperty('--scale', String(scale));
+    h.style.setProperty('--dur',   `${dur}s`);
+    h.style.fontSize = `${16 + Math.random() * 14}px`;
+
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), dur * 1000 + 100);
+  }
+}
+
+/* ---- Confirmation card ---- */
+
+function showConfirmation(form, confirm, attending) {
+  const title = confirm.querySelector('[data-confirm-title]');
+  const body  = confirm.querySelector('[data-confirm-text]');
+  if (attending === 'yes') {
+    title.textContent = 'Дякуємо!';
+    body.textContent  = 'Вашу відповідь збережено. Чекаємо на Вас 17 липня.';
+  } else if (attending === 'maybe') {
+    title.textContent = 'Будемо чекати';
+    body.textContent  = 'Будь ласка, підтвердіть Вашу присутність ближче до дати.';
+  } else {
+    title.textContent = 'Шкода, що не зможете';
+    body.textContent  = 'Дякуємо, що повідомили. Будемо думати про Вас.';
+  }
+  form.style.display = 'none';
+  confirm.classList.add('show');
+}
+
+function hideConfirmation(form, confirm) {
+  form.style.display = '';
+  confirm.classList.remove('show');
+}
+
+/* ---- Browser entry ---- */
+
 export function initRSVP() {
   const root = document.getElementById('rsvp');
   if (!root) return;
-  const form = root.querySelector('.rsvp__form');
-  if (!form) return;
+  const form    = root.querySelector('#rsvpForm');
+  const confirm = root.querySelector('#rsvpConfirm');
+  const list    = root.querySelector('#guestList');
+  const addBtn  = root.querySelector('#guestAdd');
+  const seal    = root.querySelector('#submitBtn');
+  if (!form || !confirm || !list || !addBtn || !seal) return;
 
-  // ----- state -----
-  const state = {
-    guestId:   null,                  // Stage 7 fills
-    name:      null,                  // Stage 7 fills
-    attending: null,                  // true | false
-    seats:     DEFAULT_SEATS,         // Stage 7 may pre-fill from guest.seats
-    food:      [],                    // ["meat", "fish", ...]
-    allergies: '',
-    wishes:    '',
-  };
+  renumberGuestRows(list, addBtn);
+  attachMagneticSeal(seal);
 
-  // ----- DOM refs -----
-  const stepEls = form.querySelectorAll('[data-step]');
-  const barEl   = form.querySelector('[data-rsvp-bar]');
-  const seatsEl = form.querySelector('[data-rsvp-seats]');
+  // Add-guest button
+  addBtn.addEventListener('click', () => addGuestRow(list, addBtn, { focus: true }));
 
-  // ----- step navigation -----
-  let currentStep = STEP_ATTEND;
-
-  function updateProgress() {
-    const flow = computeStepFlow(state.attending);
-    const pct  = Math.round(progressFraction(flow, currentStep) * 100);
-    if (barEl) barEl.style.width = `${pct}%`;
-  }
-
-  function showStep(step) {
-    currentStep = step;
-    for (const el of stepEls) {
-      el.classList.toggle('is-active', Number(el.dataset.step) === step);
-    }
-    updateProgress();
-  }
-
-  function nextStep() {
-    const flow = computeStepFlow(state.attending);
-    const i = flow.indexOf(currentStep);
-    if (i < 0 || i === flow.length - 1) return;
-    showStep(flow[i + 1]);
-  }
-
-  function prevStep() {
-    const flow = computeStepFlow(state.attending);
-    const i = flow.indexOf(currentStep);
-    if (i <= 0) return;
-    showStep(flow[i - 1]);
-  }
-
-  // ----- handlers -----
-  form.addEventListener('click', (e) => {
-    const t = e.target.closest('button');
-    if (!t) return;
-
-    // Attendance
-    if (t.dataset.attending !== undefined) {
-      state.attending = t.dataset.attending === 'true';
-      nextStep();
-      return;
-    }
-
-    // Seats stepper
-    if (t.dataset.stepper !== undefined) {
-      const delta = Number(t.dataset.stepper);
-      state.seats = clampSeats(state.seats + delta);
-      if (seatsEl) seatsEl.textContent = String(state.seats);
-      return;
-    }
-
-    // Food chips (multi-select)
-    if (t.dataset.food !== undefined) {
-      const v = t.dataset.food;
-      const isOn = state.food.includes(v);
-      state.food = isOn ? state.food.filter((x) => x !== v) : [...state.food, v];
-      t.classList.toggle('is-active', !isOn);
-      return;
-    }
-
-    // Navigation
-    if ('rsvpNext' in t.dataset) { nextStep(); return; }
-    if ('rsvpPrev' in t.dataset) { prevStep(); return; }
-
-    // Submit
-    if ('rsvpSubmit' in t.dataset) {
-      // Pull text-field state from DOM at submit time so we don't echo on every keystroke.
-      const allergiesEl = form.querySelector('[data-rsvp-allergies]');
-      const wishesEl    = form.querySelector('[data-rsvp-wishes]');
-      state.allergies = allergiesEl ? allergiesEl.value.trim() : '';
-      state.wishes    = wishesEl    ? wishesEl.value.trim()    : '';
-
-      const payload = buildPayload(state);
-      // Stage 6 replaces this with: await fetch(eventData.appsScriptUrl, { method:'POST', body:JSON.stringify(payload) })
-      console.log('[rsvp] payload (would POST in Stage 6):', payload);
-      showStep(STEP_SUCCESS);
-      return;
+  // Delegated remove + Enter-to-add
+  list.addEventListener('click', (e) => {
+    const removeBtn = e.target.closest('.guest-remove');
+    if (removeBtn) removeGuestRow(removeBtn.closest('.guest-row'), list, addBtn);
+  });
+  list.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.target.classList.contains('guest-name')) {
+      e.preventDefault();
+      const row    = e.target.closest('.guest-row');
+      const rows   = [...list.querySelectorAll('.guest-row')];
+      const idx    = rows.indexOf(row);
+      if (idx === rows.length - 1) addGuestRow(list, addBtn, { focus: true });
+      else rows[idx + 1].querySelector('.guest-name').focus();
     }
   });
 
-  // ----- init -----
-  if (seatsEl) seatsEl.textContent = String(state.seats);
-  showStep(STEP_ATTEND);
+  // Hide the guest list if attendance flips to 'no'.
+  const guestWrap = root.querySelector('#guestCountWrap');
+  for (const r of root.querySelectorAll('input[name="attend"]')) {
+    r.addEventListener('change', () => {
+      if (guestWrap) guestWrap.style.display = (r.checked && r.value === 'no') ? 'none' : '';
+    });
+  }
+
+  // Edit link cycles back to the form.
+  const editLink = confirm.querySelector('#editLink');
+  if (editLink) editLink.addEventListener('click', () => hideConfirmation(form, confirm));
+
+  // Submit handler
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const fd = new FormData(form);
+    const attending = parseAttendance(fd.get('attend'));
+
+    // Guard: 'yes' or 'maybe' require at least one named guest.
+    const rawNames = readGuestNames(list);
+    if ((attending === 'yes' || attending === 'maybe') && rawNames.length === 0) {
+      const first = list.querySelector('.guest-name');
+      first.focus();
+      first.style.transition = 'background 0.4s';
+      first.style.background = 'color-mix(in oklab, var(--accent) 18%, transparent)';
+      setTimeout(() => { first.style.background = ''; }, 1200);
+      return;
+    }
+
+    const payload = buildPayload({
+      attending,
+      guestNames: rawNames,
+      wishes:     fd.get('wishes') || '',
+    });
+
+    // Heart burst originating at the seal's center.
+    const sealRect = seal.getBoundingClientRect();
+    burstHearts(sealRect.left + sealRect.width / 2, sealRect.top + sealRect.height / 2);
+
+    // Stage 6 replaces console.log with fetch(eventData.appsScriptUrl, { method: 'POST', body: JSON.stringify(payload) })
+    console.log('[rsvp] payload (would POST in Stage 6):', payload);
+    showConfirmation(form, confirm, payload.attending);
+  });
 }
