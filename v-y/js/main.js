@@ -13,20 +13,21 @@ import { initGlobals }    from './globals.js';
 import { initChrome }     from './chrome.js';
 import { initCountdown }  from './countdown.js';
 import { initRSVP }       from './rsvp.js';
+import { initGuest }      from './guest.js';
 
 function boot() {
   initTheme();        // must run first — paints data-theme on body
   initCurtain();      // auto-lifts after 3s or on click
   initHero();         // letter splits + parallax + .ics download
-  initInvitation();   // smart greeting + flourish stroke calibration
+  initInvitation();   // smart greeting + flourish — listens for guest:loaded
   initLocation();     // Leaflet map + CARTO basemap + golden marker
   initReveal();
   initUI();           // scroll-progress bar
   initGlobals();      // particles + cursor-glow + floating monogram + swatches
   initChrome();       // music toggle + share button
   initCountdown();    // async, fetches data/event.json
-  initRSVP();
-  // Stage 6+ replaces RSVP submit with Apps Script POST.
+  initRSVP();         // listens for guest:loaded → pre-fill + edit mode
+  initGuest();        // async fetch — dispatches guest:loaded when ready
 }
 
 if (document.readyState === 'loading') {

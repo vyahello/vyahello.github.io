@@ -65,17 +65,19 @@ test('sanitizeGuestNames: non-string entries are dropped', () => {
 
 /* ---- buildPayload ---- */
 
-test('buildPayload: yes preserves guest_names + wishes', () => {
+test('buildPayload: yes preserves guest_names + wishes + identity', () => {
   const p = buildPayload({
-    attending:  'yes',
-    guestNames: ['Олена Шевченко', '  Петро Шевченко '],
-    wishes:     '  усього найкращого  ',
+    slug:        'iryna-volodymyr',
+    displayName: 'Ірина та Володимир',
+    attending:   'yes',
+    guestNames:  ['Ірина', '  Володимир '],
+    wishes:      '  усього найкращого  ',
   });
+  assert.equal(p.slug,         'iryna-volodymyr');
+  assert.equal(p.display_name, 'Ірина та Володимир');
   assert.equal(p.attending, 'yes');
-  assert.deepEqual(p.guest_names, ['Олена Шевченко', 'Петро Шевченко']);
+  assert.deepEqual(p.guest_names, ['Ірина', 'Володимир']);
   assert.equal(p.wishes, 'усього найкращого');
-  assert.equal(p.guest_id, null);
-  assert.equal(p.name,     null);
   assert.ok(/^\d{4}-\d{2}-\d{2}T/.test(p.submitted_at));
 });
 
@@ -116,9 +118,15 @@ test('buildPayload: invalid attending becomes null (guest_names preserved)', () 
 
 test('buildPayload: missing state fields default safely', () => {
   const p = buildPayload({});
-  assert.equal(p.attending, null);
+  assert.equal(p.attending,    null);
   assert.deepEqual(p.guest_names, []);
-  assert.equal(p.wishes, '');
-  assert.equal(p.guest_id, null);
-  assert.equal(p.name,     null);
+  assert.equal(p.wishes,       '');
+  assert.equal(p.slug,         null);
+  assert.equal(p.display_name, null);
+});
+
+test('buildPayload: passes through submittedAt for edit/upsert', () => {
+  const ts = '2026-06-01T10:00:00.000Z';
+  const p = buildPayload({ attending: 'yes', guestNames: ['Олена'], submittedAt: ts });
+  assert.equal(p.submitted_at, ts);
 });

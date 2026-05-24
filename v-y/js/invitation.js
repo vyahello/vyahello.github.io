@@ -2,11 +2,9 @@
    invitation.js — §2 Invitation letter
      1. Compute SVG flourish stroke length and feed it back as
         --len so the CSS stroke-dash animation has the right scale.
-     2. Personalize the greeting from ?guest= and ?form=m|f|pl.
-        Heuristic when ?form is absent:
-          · multiple names separated by "та" / "і" / "й" / "&" / "," → plural
-          · single name ending in а/я/ія/ея → feminine
-          · everything else → masculine
+     2. Personalise the greeting from ?guest=&form= URL params
+        (legacy / preview) — then OVERRIDE from `guest:loaded`
+        event fired by guest.js once backend data arrives.
    ============================================================ */
 
 const VALID_FORMS = new Set(['m', 'f', 'pl']);
@@ -46,13 +44,14 @@ function readGuestFromUrl(search = window.location.search) {
   return { guest, form };
 }
 
-function applyGreeting(el) {
+/** Render the greeting line. Accepts `{ name, form }` — both optional. */
+function renderGreeting(el, name, form) {
   if (!el) return;
-  const { guest, form } = readGuestFromUrl();
-  const effective = form ?? detectGreetingForm(guest);
-  const prefix = greetingPrefix(effective, Boolean(guest));
-  el.innerHTML = guest
-    ? `${prefix} <span class="gname">${escapeHtml(guest)}</span>,`
+  const hasName = Boolean(name);
+  const effective = (form && VALID_FORMS.has(form)) ? form : detectGreetingForm(name);
+  const prefix = greetingPrefix(effective, hasName);
+  el.innerHTML = hasName
+    ? `${prefix} <span class="gname">${escapeHtml(name)}</span>,`
     : `${prefix},`;
 }
 
@@ -73,6 +72,18 @@ function calibrateFlourish(root = document) {
 }
 
 export function initInvitation() {
-  applyGreeting(document.getElementById('greeting'));
+  const el = document.getElementById('greeting');
+  if (!el) return;
+
+  // 1. First paint from URL params (works offline / for previews).
+  const { guest, form } = readGuestFromUrl();
+  renderGreeting(el, guest, form);
+
+  // 2. Override once backend data arrives — sheet wins over URL params.
+  document.addEventListener('guest:loaded', (e) => {
+    const g = e.detail?.guest;
+    if (g?.display_name) renderGreeting(el, g.display_name, g.form);
+  });
+
   calibrateFlourish();
 }

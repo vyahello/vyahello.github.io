@@ -6,9 +6,13 @@
      · wax-seal submit button (magnetic hover, idle pulse)
      · heart-burst on submit (24 hearts/sparkles)
      · confirmation card with "Змінити відповідь" cycle
-   Submit currently console.logs the payload — Stage 6 swaps in
-   an Apps Script POST.
+     · listens for `guest:loaded` to pre-fill household + restore
+       previously-submitted RSVP, then shows the confirmation card
+       in "you already replied — you can edit" mode
+     · submit POSTs to the Apps Script URL via guest.submitRsvp
    ============================================================ */
+
+import { submitRsvp } from './guest.js';
 
 /* ============================================================
    PURE HELPERS — exported for unit tests
@@ -46,20 +50,21 @@ export function sanitizeGuestNames(input) {
 }
 
 /**
- * Build the submission payload from form state.
- * Stage 6 replaces console.log with an Apps Script POST of this object.
+ * Build the submission payload from form state. Apps Script writes
+ * one row per `slug`; supplying the same slug again triggers an
+ * upsert (edit) instead of a new row.
  */
 export function buildPayload(state = {}) {
   const attending = parseAttendance(state.attending);
   const names = sanitizeGuestNames(state.guestNames);
   const wishes = typeof state.wishes === 'string' ? state.wishes.trim() : '';
   return {
-    guest_id:     state.guestId ?? null,
-    name:         state.name    ?? null,
+    slug:         state.slug         ?? null,
+    display_name: state.displayName  ?? null,
     attending,
     guest_names:  attending === 'no' ? [] : names,
     wishes,
-    submitted_at: new Date().toISOString(),
+    submitted_at: state.submittedAt || new Date().toISOString(),
   };
 }
 
@@ -95,7 +100,7 @@ function renumberGuestRows(list, addBtn) {
   if (addBtn) addBtn.disabled = rows.length >= MAX_GUESTS;
 }
 
-function addGuestRow(list, addBtn, { focus = true } = {}) {
+function addGuestRow(list, addBtn, { focus = true, value = '' } = {}) {
   const rows = list.querySelectorAll('.guest-row');
   if (rows.length >= MAX_GUESTS) return null;
   const idx = rows.length;
@@ -107,6 +112,7 @@ function addGuestRow(list, addBtn, { focus = true } = {}) {
     <button type="button" class="guest-remove" aria-label="Видалити" tabindex="-1">×</button>
   `;
   list.appendChild(row);
+  if (value) row.querySelector('.guest-name').value = value;
   renumberGuestRows(list, addBtn);
   if (focus) setTimeout(() => row.querySelector('.guest-name').focus(), 50);
   setTimeout(() => row.classList.remove('entering'), 500);
@@ -123,6 +129,19 @@ function readGuestNames(list) {
   return [...list.querySelectorAll('.guest-name')]
     .map((i) => i.value.trim())
     .filter(Boolean);
+}
+
+/** Replace all rows in the guest list with the provided names. */
+function setHousehold(list, addBtn, names) {
+  list.innerHTML = '';
+  if (Array.isArray(names) && names.length) {
+    for (const name of names) addGuestRow(list, addBtn, { focus: false, value: name });
+  }
+  // Always keep at least one input row so the user can type.
+  if (list.querySelectorAll('.guest-row').length === 0) {
+    addGuestRow(list, addBtn, { focus: false });
+  }
+  renumberGuestRows(list, addBtn);
 }
 
 /* ---- Magnetic seal (desktop) ---- */
@@ -174,10 +193,13 @@ function burstHearts(originX, originY, count = 24) {
 
 /* ---- Confirmation card ---- */
 
-function showConfirmation(form, confirm, attending) {
+function showConfirmation(form, confirm, attending, { isExisting = false } = {}) {
   const title = confirm.querySelector('[data-confirm-title]');
   const body  = confirm.querySelector('[data-confirm-text]');
-  if (attending === 'yes') {
+  if (isExisting) {
+    title.textContent = 'Ви вже відповіли';
+    body.textContent  = 'Дякуємо! Якщо щось зміниться — натисніть нижче, щоб оновити відповідь.';
+  } else if (attending === 'yes') {
     title.textContent = 'Дякуємо!';
     body.textContent  = 'Вашу відповідь збережено. Чекаємо на Вас 17 липня.';
   } else if (attending === 'maybe') {
@@ -196,6 +218,27 @@ function hideConfirmation(form, confirm) {
   confirm.classList.remove('show');
 }
 
+/** Restore form values from a previously-saved RSVP. */
+function restoreFormFromRsvp(form, list, addBtn, rsvp) {
+  // Attendance radio
+  if (rsvp.attending) {
+    const radio = form.querySelector(`input[name="attend"][value="${rsvp.attending}"]`);
+    if (radio) {
+      radio.checked = true;
+      radio.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+  // Guest names (overrides household_default)
+  if (Array.isArray(rsvp.guest_names) && rsvp.guest_names.length) {
+    setHousehold(list, addBtn, rsvp.guest_names);
+  }
+  // Wishes
+  if (rsvp.wishes) {
+    const ta = form.querySelector('#wishesField');
+    if (ta) ta.value = rsvp.wishes;
+  }
+}
+
 /* ---- Browser entry ---- */
 
 export function initRSVP() {
@@ -207,6 +250,15 @@ export function initRSVP() {
   const addBtn  = root.querySelector('#guestAdd');
   const seal    = root.querySelector('#submitBtn');
   if (!form || !confirm || !list || !addBtn || !seal) return;
+
+  // Mutable per-instance state that the submit handler reads. Slug + name
+  // come from `guest:loaded`; `submittedAt` is preserved across edits so
+  // we don't lose the original submission timestamp.
+  const state = {
+    slug:        null,
+    displayName: null,
+    submittedAt: null,
+  };
 
   renumberGuestRows(list, addBtn);
   attachMagneticSeal(seal);
@@ -242,8 +294,27 @@ export function initRSVP() {
   const editLink = confirm.querySelector('#editLink');
   if (editLink) editLink.addEventListener('click', () => hideConfirmation(form, confirm));
 
+  // Listen for backend data — patches state + UI.
+  document.addEventListener('guest:loaded', (e) => {
+    const { slug, guest, rsvp } = e.detail || {};
+    state.slug = slug || null;
+    state.displayName = guest?.display_name || null;
+
+    // Pre-fill household from guest defaults (rsvp data wins if present).
+    if (Array.isArray(guest?.household_default) && guest.household_default.length) {
+      setHousehold(list, addBtn, guest.household_default);
+    }
+
+    if (rsvp) {
+      state.submittedAt = rsvp.submitted_at || null;
+      restoreFormFromRsvp(form, list, addBtn, rsvp);
+      // Show "already replied" confirmation — user can hit "Змінити" to edit.
+      showConfirmation(form, confirm, rsvp.attending, { isExisting: true });
+    }
+  });
+
   // Submit handler
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const fd = new FormData(form);
@@ -261,17 +332,43 @@ export function initRSVP() {
     }
 
     const payload = buildPayload({
+      slug:        state.slug,
+      displayName: state.displayName,
       attending,
-      guestNames: rawNames,
-      wishes:     fd.get('wishes') || '',
+      guestNames:  rawNames,
+      wishes:      fd.get('wishes') || '',
+      submittedAt: state.submittedAt,
     });
 
     // Heart burst originating at the seal's center.
     const sealRect = seal.getBoundingClientRect();
     burstHearts(sealRect.left + sealRect.width / 2, sealRect.top + sealRect.height / 2);
 
-    // Stage 6 replaces console.log with fetch(eventData.appsScriptUrl, { method: 'POST', body: JSON.stringify(payload) })
-    console.log('[rsvp] payload (would POST in Stage 6):', payload);
-    showConfirmation(form, confirm, payload.attending);
+    // Disable seal during request; restore label on completion.
+    const sealLabel = seal.querySelector('span');
+    const originalLabel = sealLabel?.innerHTML;
+    seal.disabled = true;
+    if (sealLabel) sealLabel.textContent = 'Відправляємо…';
+
+    const result = await submitRsvp(payload);
+
+    seal.disabled = false;
+    if (sealLabel && originalLabel) sealLabel.innerHTML = originalLabel;
+
+    if (result?.ok) {
+      // Preserve the original submission timestamp for subsequent edits.
+      if (!state.submittedAt) state.submittedAt = payload.submitted_at;
+      showConfirmation(form, confirm, payload.attending);
+    } else {
+      // Subtle error inline near the seal — minimal noise for the user.
+      let err = root.querySelector('.rsvp-error');
+      if (!err) {
+        err = document.createElement('p');
+        err.className = 'rsvp-error';
+        seal.parentElement.appendChild(err);
+      }
+      err.textContent = 'Не вдалось зберегти. Перевірте з\'єднання і спробуйте ще раз.';
+      setTimeout(() => { err.remove(); }, 6000);
+    }
   });
 }

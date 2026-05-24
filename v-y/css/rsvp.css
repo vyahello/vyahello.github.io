@@ -375,6 +375,18 @@
   font-size: 16px;
   line-height: 1.6;
 }
+/* Submit error — small inline notice if the backend POST failed. */
+.rsvp-error {
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #c0392b;
+  text-align: center;
+  animation: rsvpFadeIn 0.4s var(--easing);
+}
+
 .rsvp-confirm .edit-link {
   display: inline-block;
   margin-top: 18px;
