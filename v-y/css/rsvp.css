@@ -295,6 +295,9 @@
   will-change: transform, opacity;
   animation: flyHeart var(--dur, 1.4s) ease-out forwards;
   text-shadow: 0 2px 8px color-mix(in oklab, var(--accent) 60%, transparent);
+  /* Force monochrome text glyph on iOS Safari (otherwise ♥ paints as
+     a red system emoji ignoring the `color` property). */
+  font-variant-emoji: text;
 }
 @keyframes flyHeart {
   0% {

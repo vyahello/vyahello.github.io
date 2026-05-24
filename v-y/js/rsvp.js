@@ -142,7 +142,9 @@ function attachMagneticSeal(seal) {
 
 /* ---- Heart burst (24 hearts/sparkles in physical radial pattern) ---- */
 
-const HEART_SYMBOLS = ['♥', '♡', '✦', '✧'];
+// VS15 (︎) forces iOS Safari to render these as monochrome text glyphs
+// (taking the parent's CSS color) rather than colored system emoji.
+const HEART_SYMBOLS = ['♥︎', '♡︎', '✦︎', '✧︎'];
 
 function burstHearts(originX, originY, count = 24) {
   for (let i = 0; i < count; i++) {

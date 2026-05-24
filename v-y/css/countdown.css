@@ -96,7 +96,10 @@
   animation: calKeyPulse 2.4s ease-in-out infinite;
 }
 .cal-day.key::after {
-  content: '♥';
+  /* \fe0e = Unicode VS15 text-variation selector — forces iOS Safari
+     to render ♥ as a text glyph (theme-coloured) instead of a system
+     red emoji. */
+  content: '\2665\fe0e';
   position: absolute;
   top:   -6px;
   right: -6px;
@@ -109,6 +112,7 @@
   font-size: 10px;
   line-height: 16px;
   text-align: center;
+  font-variant-emoji: text;
 }
 @keyframes calKeyPulse {
   0%, 100% {
