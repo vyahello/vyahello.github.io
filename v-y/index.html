@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="css/curtain.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/countdown.css">
+  <link rel="stylesheet" href="css/dresscode.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/globals.css">
@@ -334,36 +335,27 @@
     </div>
   </section>
 
-  <!-- §7 Dress code (payload palette) -->
+  <!-- ============================================================
+       §7 DRESS CODE — 5 realistic fabric swatches (champagne /
+       pink / sage / chocolate / black). Multi-layer radial gradients
+       imitate draped satin; swatchPop + shine sweep trigger on
+       viewport entry via globals.js (.shimmering class).
+       ============================================================ -->
   <section id="dresscode" class="section reveal">
     <div class="section__inner">
-      <p class="section__eyebrow">дрес-код</p>
-      <h2 class="section__title">Наша кольорова гама</h2>
+      <p class="section__eyebrow">Дрес-код</p>
+      <h2 class="section__title">Кольорова <em>палітра</em></h2>
       <p class="section__lead">
-        Будемо вдячні, якщо підтримаєте нашу палітру у своєму образі.
+        Нам буде дуже приємно, якщо Ви підтримаєте кольорову гаму нашого свята
+        у своєму образі — оберіть будь-який відтінок з палітри нижче.
       </p>
 
-      <div class="swatches reveal-stagger">
-        <div class="swatch-group reveal">
-          <div class="swatch" style="--c1:#e6cf95; --c2:#a4824b" aria-hidden="true"></div>
-          <span class="swatch-label">Шампань</span>
-        </div>
-        <div class="swatch-group reveal">
-          <div class="swatch" style="--c1:#e6b9b1; --c2:#a87873" aria-hidden="true"></div>
-          <span class="swatch-label">Пудра</span>
-        </div>
-        <div class="swatch-group reveal">
-          <div class="swatch" style="--c1:#aeb289; --c2:#5b6240" aria-hidden="true"></div>
-          <span class="swatch-label">Олива</span>
-        </div>
-        <div class="swatch-group reveal">
-          <div class="swatch" style="--c1:#8f6242; --c2:#3a2310" aria-hidden="true"></div>
-          <span class="swatch-label">Шоколад</span>
-        </div>
-        <div class="swatch-group reveal">
-          <div class="swatch" style="--c1:#3a3a3a; --c2:#0a0a0a" aria-hidden="true"></div>
-          <span class="swatch-label">Чорний</span>
-        </div>
+      <div class="swatches" id="swatches" aria-label="Палітра дрес-коду">
+        <div class="swatch" aria-label="Шампань"><div class="swatch-tile sw-champagne"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" aria-label="Пудра"><div class="swatch-tile sw-pink"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" aria-label="Шавлія"><div class="swatch-tile sw-sage"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" aria-label="Шоколад"><div class="swatch-tile sw-chocolate"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" aria-label="Чорний"><div class="swatch-tile sw-black"></div><div class="swatch-shine"></div></div>
       </div>
     </div>
   </section>
