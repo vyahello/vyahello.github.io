@@ -65,10 +65,9 @@
            like a small notch. -->
       <svg viewBox="0 0 100 50" fill="none" overflow="visible">
         <defs>
-          <!-- Stops read theme-aware CSS vars so cream/gold/dark each get
-               their own balanced gold gradient (no white stripe on darker
-               themes, no near-black bottom on dark theme). -->
-          <linearGradient id="goldRingC" x1="0.3" y1="0" x2="0.7" y2="1">
+          <!-- userSpaceOnUse so the patch arc inherits the same gradient
+               mapping as the full ring (no per-bbox rescale). -->
+          <linearGradient id="goldRingC" gradientUnits="userSpaceOnUse" x1="50" y1="6" x2="50" y2="44">
             <stop offset="0%"   class="ring-stop-0"/>
             <stop offset="14%"  class="ring-stop-1"/>
             <stop offset="38%"  class="ring-stop-2"/>
@@ -84,19 +83,22 @@
             <stop offset="0%"   class="ring-cast-0"/>
             <stop offset="100%" class="ring-cast-1"/>
           </radialGradient>
-          <mask id="mLeftC">
-            <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-            <ellipse cx="50" cy="34.95" rx="5.2" ry="2.6" transform="rotate(56 50 34.95)" fill="black"/>
-          </mask>
-          <mask id="mRightC">
-            <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-            <ellipse cx="50" cy="15.05" rx="5.2" ry="2.6" transform="rotate(-56 50 15.05)" fill="black"/>
-          </mask>
         </defs>
 
         <ellipse class="ring-detail" cx="50" cy="46.5" rx="28" ry="1.7" fill="url(#goldRingCCast)"/>
 
-        <g mask="url(#mLeftC)">
+        <!-- RIGHT ring drawn first — will be covered by LEFT at top intersection
+             (LEFT visually in front there). -->
+        <g>
+          <circle class="ring-detail ring-edge" cx="65" cy="25" r="19.8" stroke-width="0.45"/>
+          <circle class="ring r2"               cx="65" cy="25" r="18"   stroke="url(#goldRingC)" stroke-width="3.6" stroke-linecap="round"/>
+          <path   class="ring-detail ring-highlight"   d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke-width="0.6"/>
+          <path   class="ring-detail ring-self-shadow" d="M 51 32   A 18 18 0 0 0 79 32"   stroke-width="0.45"/>
+          <ellipse class="ring-detail" cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingCSpec)" transform="rotate(-25 57 15.5)"/>
+        </g>
+
+        <!-- LEFT ring drawn second — covers RIGHT at both intersection points. -->
+        <g>
           <circle class="ring-detail ring-edge" cx="35" cy="25" r="19.8" stroke-width="0.45"/>
           <circle class="ring r1"               cx="35" cy="25" r="18"   stroke="url(#goldRingC)" stroke-width="3.6" stroke-linecap="round"/>
           <path   class="ring-detail ring-highlight"   d="M 21 18.5 A 18 18 0 0 1 49 18.5" stroke-width="0.6"/>
@@ -104,13 +106,18 @@
           <ellipse class="ring-detail" cx="27" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingCSpec)" transform="rotate(-25 27 15.5)"/>
         </g>
 
-        <g mask="url(#mRightC)">
-          <circle class="ring-detail ring-edge" cx="65" cy="25" r="19.8" stroke-width="0.45"/>
-          <circle class="ring r2"               cx="65" cy="25" r="18"   stroke="url(#goldRingC)" stroke-width="3.6" stroke-linecap="round"/>
-          <path   class="ring-detail ring-highlight"   d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke-width="0.6"/>
-          <path   class="ring-detail ring-self-shadow" d="M 51 32   A 18 18 0 0 0 79 32"   stroke-width="0.45"/>
-          <ellipse class="ring-detail" cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingCSpec)" transform="rotate(-25 57 15.5)"/>
-        </g>
+        <!-- WEAVE PATCH at bottom intersection: a short arc of RIGHT ring's
+             stroke painted ON TOP of LEFT. This is the moment where RIGHT
+             passes in front of LEFT — completing the over/under weave so
+             the rings actually look interlocked instead of just overlapping.
+             Path traces ~30° of right ring's circumference centred on the
+             bottom intersection (50, 34.95). -->
+        <path class="ring-weave-patch"
+              d="M 53.1 38.5 A 18 18 0 0 0 47.9 30.7"
+              stroke="url(#goldRingC)"
+              stroke-width="3.6"
+              stroke-linecap="round"
+              fill="none"/>
       </svg>
     </div>
     <div class="curtain-date"><span>17</span><span class="dot">·</span><span>07</span><span class="dot">·</span><span>2026</span></div>
@@ -173,7 +180,7 @@
         <!-- Photoreal interlocking bands — see commentary on curtain rings. -->
         <svg viewBox="0 0 100 50" fill="none" overflow="visible">
           <defs>
-            <linearGradient id="goldRingH" x1="0.3" y1="0" x2="0.7" y2="1">
+            <linearGradient id="goldRingH" gradientUnits="userSpaceOnUse" x1="50" y1="6" x2="50" y2="44">
               <stop offset="0%"   class="ring-stop-0"/>
               <stop offset="14%"  class="ring-stop-1"/>
               <stop offset="38%"  class="ring-stop-2"/>
@@ -189,19 +196,21 @@
               <stop offset="0%"   class="ring-cast-0"/>
               <stop offset="100%" class="ring-cast-1"/>
             </radialGradient>
-            <mask id="mLeftH">
-              <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-              <ellipse cx="50" cy="34.95" rx="5.2" ry="2.6" transform="rotate(56 50 34.95)" fill="black"/>
-            </mask>
-            <mask id="mRightH">
-              <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-              <ellipse cx="50" cy="15.05" rx="5.2" ry="2.6" transform="rotate(-56 50 15.05)" fill="black"/>
-            </mask>
           </defs>
 
           <ellipse cx="50" cy="46.5" rx="28" ry="1.7" fill="url(#goldRingHCast)"/>
 
-          <g mask="url(#mLeftH)">
+          <!-- RIGHT ring first (back) — LEFT will cover at top intersection. -->
+          <g>
+            <circle class="ring-edge"        cx="65" cy="25" r="19.8" stroke-width="0.45"/>
+            <circle cx="65" cy="25" r="18"   stroke="url(#goldRingH)" stroke-width="3.6" stroke-linecap="round"/>
+            <path   class="ring-highlight"   d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke-width="0.6"/>
+            <path   class="ring-self-shadow" d="M 51 32   A 18 18 0 0 0 79 32"   stroke-width="0.45"/>
+            <ellipse cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingHSpec)" transform="rotate(-25 57 15.5)"/>
+          </g>
+
+          <!-- LEFT ring on top of RIGHT (covers at both intersections). -->
+          <g>
             <circle class="ring-edge"        cx="35" cy="25" r="19.8" stroke-width="0.45"/>
             <circle cx="35" cy="25" r="18"   stroke="url(#goldRingH)" stroke-width="3.6" stroke-linecap="round"/>
             <path   class="ring-highlight"   d="M 21 18.5 A 18 18 0 0 1 49 18.5" stroke-width="0.6"/>
@@ -209,13 +218,12 @@
             <ellipse cx="27" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingHSpec)" transform="rotate(-25 27 15.5)"/>
           </g>
 
-          <g mask="url(#mRightH)">
-            <circle class="ring-edge"        cx="65" cy="25" r="19.8" stroke-width="0.45"/>
-            <circle cx="65" cy="25" r="18"   stroke="url(#goldRingH)" stroke-width="3.6" stroke-linecap="round"/>
-            <path   class="ring-highlight"   d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke-width="0.6"/>
-            <path   class="ring-self-shadow" d="M 51 32   A 18 18 0 0 0 79 32"   stroke-width="0.45"/>
-            <ellipse cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingHSpec)" transform="rotate(-25 57 15.5)"/>
-          </g>
+          <!-- Weave patch — RIGHT ring's arc on top at bottom intersection. -->
+          <path d="M 53.1 38.5 A 18 18 0 0 0 47.9 30.7"
+                stroke="url(#goldRingH)"
+                stroke-width="3.6"
+                stroke-linecap="round"
+                fill="none"/>
         </svg>
       </div>
 
