@@ -26,6 +26,7 @@
   <link rel="stylesheet" href="css/location.css">
   <link rel="stylesheet" href="css/dresscode.css">
   <link rel="stylesheet" href="css/rsvp.css">
+  <link rel="stylesheet" href="css/polish.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/globals.css">
@@ -325,31 +326,58 @@
     </div>
   </section>
 
-  <!-- §6 Schedule (TBD placeholders) -->
+  <!-- ============================================================
+       §6 TIMELINE (Програма дня) — 6 events, 100px | 1px line | 40px gap
+       ============================================================ -->
   <section id="schedule" class="section reveal">
     <div class="section__inner">
-      <p class="section__eyebrow">розклад дня</p>
-      <h2 class="section__title">Як буде проходити свято</h2>
+      <p class="section__eyebrow">Програма дня</p>
+      <h2 class="section__title">Як <em>пройде</em> вечір?</h2>
 
-      <ol class="timeline reveal-stagger">
-        <!-- TBD: real schedule from event.json in Stage 10 -->
-        <li class="timeline__item reveal">
-          <p class="timeline__time">14:00</p>
-          <p class="timeline__title">Церемонія</p>
-        </li>
-        <li class="timeline__item reveal">
-          <p class="timeline__time">16:00</p>
-          <p class="timeline__title">Фуршет та фотосесія</p>
-        </li>
-        <li class="timeline__item reveal">
-          <p class="timeline__time">17:00</p>
-          <p class="timeline__title">Початок банкету</p>
-        </li>
-        <li class="timeline__item reveal">
-          <p class="timeline__time">22:00</p>
-          <p class="timeline__title">Феєрверк</p>
-        </li>
-      </ol>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-time">14:30</div>
+          <div>
+            <div class="tl-name">Збір гостей</div>
+            <div class="tl-desc">Welcome drink</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">15:00</div>
+          <div>
+            <div class="tl-name">Церемонія</div>
+            <div class="tl-desc">Найважливіші слова</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">16:00</div>
+          <div>
+            <div class="tl-name">Фотосесія &amp; фуршет</div>
+            <div class="tl-desc">Час для теплих кадрів</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">17:30</div>
+          <div>
+            <div class="tl-name">Святковий бенкет</div>
+            <div class="tl-desc">Вечеря, тости, музика</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">21:00</div>
+          <div>
+            <div class="tl-name">Перший танець</div>
+            <div class="tl-desc">Та святковий торт</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-time">23:00</div>
+          <div>
+            <div class="tl-name">Афтепаті</div>
+            <div class="tl-desc">До світанку</div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -458,103 +486,103 @@
     </div>
   </section>
 
-  <!-- §9 P.S. gifts (payload-verbatim) -->
+  <!-- ============================================================
+       §7 GIFTS — envelope SVG + two paragraphs з gold italic em
+       ============================================================ -->
   <section id="gifts" class="section reveal">
     <div class="section__inner">
-      <div class="gifts__icon" aria-hidden="true">✦</div>
-      <p class="gifts__text">
-        P.S. Якщо бажаєте доповнити привітання, замість квітів
-        будемо раді пляшці алкоголю для наших теплих сімейних вечорів.
-      </p>
+      <p class="section__eyebrow">Подарунки</p>
+
+      <div class="gifts">
+        <svg class="gift-ornament" viewBox="0 0 70 70" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
+          <rect x="10" y="22" width="50" height="34" rx="1"/>
+          <path d="M10 32 L60 32"/>
+          <path d="M35 22 L35 56"/>
+          <path d="M22 22 C 22 10, 35 10, 35 22 C 35 10, 48 10, 48 22"/>
+          <circle cx="22" cy="16" r="1.5" fill="currentColor"/>
+          <circle cx="48" cy="16" r="1.5" fill="currentColor"/>
+        </svg>
+        <p>Ваша присутність на нашому святі — найкращий подарунок для нас.</p>
+        <p>
+          Та якщо все ж бажаєте доповнити привітання, замість квітів будемо щиро раді
+          <em>пляшці вашого улюбленого напою</em> для теплих сімейних вечорів —
+          або символічному внеску до <em>конверта</em> на наш майбутній дім.
+        </p>
+      </div>
     </div>
   </section>
 
-  <!-- §12 FAQ (TBD content) -->
+  <!-- ============================================================
+       §9 FAQ — 3 accordions з 01/02/03 префіксами та + → × toggle
+       ============================================================ -->
   <section id="faq" class="section reveal">
     <div class="section__inner">
-      <p class="section__eyebrow">часті питання</p>
-      <h2 class="section__title">Що варто знати</h2>
+      <p class="section__eyebrow">Питання</p>
+      <h2 class="section__title">Що <em>важливо</em> знати?</h2>
 
-      <div class="accordion">
-        <details class="accordion__item">
-          <summary class="accordion__summary">Чи можна з дітьми?</summary>
-          <div class="accordion__body">
-            TBD — відповідь буде заповнена пізніше.
+      <div class="faq">
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span class="faq-num">01</span>
+            <span class="faq-q">Чи можна прийти з дітьми?</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-a">
+            Звісно. Ми будемо щиро раді бачити Вашу родину у повному складі.
+            Будь ласка, вкажіть кількість діток у формі підтвердження присутності,
+            щоб ми могли подбати про дитяче меню.
           </div>
         </details>
-        <details class="accordion__item">
-          <summary class="accordion__summary">Де паркуватись?</summary>
-          <div class="accordion__body">
-            TBD — відповідь буде заповнена пізніше.
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span class="faq-num">02</span>
+            <span class="faq-q">Де можна залишити автомобіль?</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-a">
+            На території комплексу Soprano Inn є вільна парковка для гостей.
+            Якщо плануєте святкувати без обмежень — рекомендуємо скористатися таксі.
           </div>
         </details>
-        <details class="accordion__item">
-          <summary class="accordion__summary">Чи буде трансфер між локаціями?</summary>
-          <div class="accordion__body">
-            TBD — відповідь буде заповнена пізніше.
-          </div>
-        </details>
-        <details class="accordion__item">
-          <summary class="accordion__summary">Чи можна змінити відповідь у RSVP?</summary>
-          <div class="accordion__body">
-            TBD — відповідь буде заповнена пізніше.
+        <details class="faq-item">
+          <summary class="faq-summary">
+            <span class="faq-num">03</span>
+            <span class="faq-q">До якого часу триватиме свято?</span>
+            <span class="faq-toggle" aria-hidden="true"></span>
+          </summary>
+          <div class="faq-a">
+            Офіційна програма завершується близько 23:00, після чого розпочинається
+            афтепаті — для тих, хто хоче святкувати з нами довше.
           </div>
         </details>
       </div>
     </div>
   </section>
 
-  <!-- §13 Contacts (TBD placeholders) -->
-  <section id="contacts" class="section section--dark reveal">
+  <!-- ============================================================
+       §10 COORDINATOR — single card з decorative corner-marks
+       Real name + phone — placeholders until provided.
+       ============================================================ -->
+  <section id="coordinator" class="section reveal">
     <div class="section__inner">
-      <p class="section__eyebrow">контакти</p>
-      <h2 class="section__title">До кого звертатись</h2>
+      <p class="section__eyebrow">На зв'язку</p>
 
-      <div class="contacts__grid reveal-stagger">
-        <article class="card contact-card reveal">
-          <p class="contact-card__role">Координатор</p>
-          <p class="contact-card__name">Імʼя координатора</p>
-          <div class="contact-card__buttons">
-            <a class="btn" href="tel:+380000000000">Телефон</a>
-            <a class="btn" href="https://t.me/" target="_blank" rel="noopener">Telegram</a>
-          </div>
-        </article>
-        <article class="card contact-card reveal">
-          <p class="contact-card__role">Молодята</p>
-          <p class="contact-card__name">В&amp;Ю</p>
-          <div class="contact-card__buttons">
-            <a class="btn" href="tel:+380000000000">Телефон</a>
-          </div>
-        </article>
+      <div class="coord-card">
+        <div class="lbl">Координатор свята</div>
+        <h3 class="nm">[ Ім'я координатора ]</h3>
+        <div class="role">допоможе з будь-якими питаннями</div>
+        <a class="tel" href="tel:+380000000000">+380 XX XXX XX XX</a>
       </div>
     </div>
   </section>
 
-  <!-- §14 Outro -->
-  <section id="outro" class="section reveal">
-    <div class="section__inner">
-      <p class="outro__sign">З любовʼю,</p>
-      <p class="outro__names">Володимир та Юстина</p>
-
-      <svg class="outro__monogram" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <defs>
-          <linearGradient id="monoGold" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%"   stop-color="#fff5cc"/>
-            <stop offset="55%"  stop-color="#e2b65c"/>
-            <stop offset="100%" stop-color="#7a4f15"/>
-          </linearGradient>
-        </defs>
-        <text x="50%" y="58%"
-              text-anchor="middle"
-              dominant-baseline="middle"
-              font-family="Cormorant Garamond, serif"
-              font-size="34"
-              font-style="italic"
-              fill="url(#monoGold)">В&amp;Ю</text>
-      </svg>
-
-      <p class="outro__footer">© 2026</p>
-    </div>
+  <!-- ============================================================
+       §14 CLOSING — big monogram + sign + final date
+       ============================================================ -->
+  <section class="closing">
+    <div class="mono-big brand-mono">В<span class="amp-char">&amp;</span>Ю</div>
+    <div class="sign">До зустрічі</div>
+    <div class="date-final">17 · 07 · 2026</div>
   </section>
 
   </main>
