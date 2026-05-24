@@ -1,0 +1,281 @@
+/* ============================================================
+   polish.css — final 5 sections:
+     §6 Timeline (Програма дня)
+     §7 Gifts (Подарунки)
+     §9 FAQ (Питання)
+     §10 Coordinator (На зв'язку)
+     §14 Closing (До зустрічі)
+   ============================================================ */
+
+/* ============================================================
+   §6 PROGRAM TIMELINE
+   ============================================================ */
+.timeline {
+  max-width: var(--content-w);
+  margin: 0 auto;
+  position: relative;
+}
+.timeline::before {
+  content: '';
+  position: absolute;
+  left:   100px;
+  top:    16px;
+  bottom: 16px;
+  width: 1px;
+  background: var(--line-strong);
+}
+.tl-item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: 40px;
+  padding: 18px 0;
+  align-items: baseline;
+  position: relative;
+}
+.tl-item::before {
+  content: '';
+  position: absolute;
+  left: 95px;
+  top:  30px;
+  width:  11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+}
+.tl-time {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  text-align: right;
+  padding-right: 18px;
+  font-weight: 500;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.tl-name {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.tl-desc {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-mute);
+  margin-top: 5px;
+  text-transform: uppercase;
+}
+
+@media (max-width: 480px) {
+  .timeline::before  { left: 84px; }
+  .tl-item           { grid-template-columns: 84px 1fr; gap: 28px; }
+  .tl-item::before   { left: 79px; }
+}
+
+/* ============================================================
+   §7 GIFTS
+   ============================================================ */
+.gifts {
+  max-width: var(--content-w);
+  margin: 0 auto;
+  text-align: center;
+}
+.gift-ornament {
+  width:  70px;
+  height: 70px;
+  margin: 0 auto 26px;
+  color: var(--accent);
+}
+.gifts p {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  line-height: 1.7;
+  color: var(--ink);
+  margin: 14px 0;
+  text-wrap: pretty;
+}
+.gifts p em {
+  font-family: var(--font-italic);
+  font-style: normal;
+  color: var(--accent);
+}
+
+/* ============================================================
+   §9 FAQ
+   ============================================================ */
+.faq {
+  max-width: var(--content-w);
+  margin: 0 auto;
+}
+.faq-item {
+  border-top: 1px solid var(--line-strong);
+  padding: 0;
+}
+.faq-item:last-child { border-bottom: 1px solid var(--line-strong); }
+
+.faq-summary {
+  display: grid;
+  grid-template-columns: 38px 1fr 18px;
+  gap: 14px;
+  align-items: baseline;
+  padding: 20px 4px;
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+}
+.faq-summary::-webkit-details-marker { display: none; }
+
+.faq-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  align-self: center;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.faq-q {
+  font-family: var(--font-display);
+  font-size: 19px;
+  color: var(--ink);
+  line-height: 1.35;
+}
+.faq-toggle {
+  width:  18px;
+  height: 18px;
+  position: relative;
+  transition: transform 0.4s var(--easing);
+  align-self: center;
+}
+.faq-toggle::before,
+.faq-toggle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: var(--ink-soft);
+  transition: background 0.3s;
+}
+.faq-toggle::before {
+  width:  14px;
+  height: 1px;
+  transform: translate(-50%, -50%);
+}
+.faq-toggle::after {
+  width:  1px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  transition: transform 0.4s var(--easing);
+}
+details[open] .faq-toggle::after {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.faq-a {
+  padding: 0 4px 24px 56px;
+  font-family: var(--font-serif);
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-soft);
+}
+
+/* ============================================================
+   §10 COORDINATOR
+   ============================================================ */
+.coord-card {
+  max-width: var(--content-w);
+  margin: 0 auto;
+  text-align: center;
+  padding: 36px 28px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-card);
+  position: relative;
+}
+.coord-card::before,
+.coord-card::after {
+  content: '';
+  position: absolute;
+  width:  14px;
+  height: 14px;
+  border: 1px solid var(--accent);
+}
+.coord-card::before { top:    -1px; left:  -1px; border-right: 0; border-bottom: 0; }
+.coord-card::after  { bottom: -1px; right: -1px; border-left:  0; border-top:    0; }
+
+.coord-card .lbl {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-bottom: 12px;
+}
+.coord-card .nm {
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--ink);
+  margin: 0 0 4px;
+  font-weight: 400;
+}
+.coord-card .role {
+  font-family: var(--font-italic);
+  font-size: 14px;
+  color: var(--ink-soft);
+  margin-bottom: 16px;
+}
+.coord-card .tel {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+  padding-bottom: 4px;
+  display: inline-block;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* ============================================================
+   §14 CLOSING
+   ============================================================ */
+.closing {
+  text-align: center;
+  padding: 110px 0 80px;
+  border-bottom: none;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+.closing .mono-big {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(80px, 18vw, 140px);
+  color: var(--accent);
+  line-height: 1;
+  letter-spacing: 0.04em;
+}
+.closing .sign {
+  margin-top: 30px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.closing .sign::before,
+.closing .sign::after {
+  content: '';
+  display: inline-block;
+  width:  28px;
+  height: 1px;
+  background: var(--line-strong);
+  vertical-align: middle;
+  margin: 0 16px;
+}
+.closing .date-final {
+  margin-top: 24px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
