@@ -73,8 +73,30 @@ function attachFloatingMono(badge, hero) {
   onScroll();
 }
 
+/* ---- Swatch shimmer ----
+   When the dress-code palette enters the viewport, add .shimmering
+   so swatchPop + shine sweep animate sequentially (CSS-driven).
+   One-shot — disconnects after first intersection. */
+function attachSwatchShimmer(swatches) {
+  if (!swatches || !('IntersectionObserver' in window)) {
+    swatches?.classList.add('shimmering');
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        swatches.classList.add('shimmering');
+        io.disconnect();
+        break;
+      }
+    }
+  }, { threshold: 0.4 });
+  io.observe(swatches);
+}
+
 export function initGlobals() {
   spawnParticles(document.getElementById('particles'));
   attachCursorGlow(document.getElementById('cursorGlow'));
   attachFloatingMono(document.getElementById('floatingMono'), document.getElementById('hero'));
+  attachSwatchShimmer(document.getElementById('swatches'));
 }
