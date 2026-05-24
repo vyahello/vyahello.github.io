@@ -95,11 +95,40 @@
   border-color: var(--accent);
 }
 
+/* ---- Scroll indicator ----
+   Conservative cue — small (24px tall), pulses subtly, only visible while
+   the hero is ≥95% in viewport (`.visible` toggled by globals.js). Sits
+   8px above safe-area-bottom so it stays clear of the add-cal button on
+   short devices and the iOS home indicator below it. */
+.scroll-indicator {
+  position: fixed;
+  left: 50%;
+  bottom: max(8px, calc(env(safe-area-inset-bottom, 0px) + 8px));
+  transform: translateX(-50%);
+  z-index: 20;
+  width: 1px;
+  height: 24px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(to bottom, transparent, var(--accent) 40%, var(--accent) 100%);
+  transition: opacity 0.5s var(--easing);
+}
+.scroll-indicator.visible {
+  opacity: 1;
+  animation: scrollIndicatorPulse 2s var(--easing) infinite;
+  transform-origin: top center;
+}
+@keyframes scrollIndicatorPulse {
+  0%, 100% { transform: translateX(-50%) scaleY(0.45); opacity: 0.5; }
+  50%      { transform: translateX(-50%) scaleY(1);    opacity: 1; }
+}
+
 /* Reduced motion: stop the rising motes + disable transitions. */
 @media (prefers-reduced-motion: reduce) {
-  .particles span { animation: none; opacity: 0.3; }
-  .cursor-glow    { display: none; }
-  .floating-mono  { transition: none; }
+  .particles span      { animation: none; opacity: 0.3; }
+  .cursor-glow         { display: none; }
+  .floating-mono       { transition: none; }
+  .scroll-indicator.visible { animation: none; transform: translateX(-50%); }
 }
 
 /* Print: no chrome at all. */

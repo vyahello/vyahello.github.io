@@ -44,6 +44,13 @@
   <a   class="floating-mono brand-mono" id="floatingMono"
        href="#hero" aria-label="Повернутись догори">В<span class="amp-char">&amp;</span>Ю</a>
 
+  <!-- Conservative scroll cue — small pulsing line revealed only while
+       hero is ≥95% in viewport (IntersectionObserver). Hides itself once
+       user scrolls into the second section, reappears if scrolled back.
+       Anchored low to viewport bottom to avoid overlap with add-cal button
+       on shorter devices (iPhone SE/10/14). Wired in js/globals.js. -->
+  <div class="scroll-indicator" id="scrollIndicator" role="presentation" aria-label="Прокрутіть нижче"></div>
+
   <!-- ============================================================
        CURTAIN INTRO (z-index 200, lifts on click or after 3s).
        JS: js/curtain.js. Skipped on subsequent loads in same session.

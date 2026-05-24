@@ -73,6 +73,23 @@ function attachFloatingMono(badge, hero) {
   onScroll();
 }
 
+/* ---- Scroll indicator ----
+   IntersectionObserver-gated: visible only while hero is ≥95% in
+   viewport. Naturally reappears if the user scrolls back to the top.
+   No scroll-event listener — no iOS Safari edge cases. */
+function attachScrollIndicator(indicator, hero) {
+  if (!indicator || !hero || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const e of entries) {
+        indicator.classList.toggle('visible', e.isIntersecting && e.intersectionRatio >= 0.95);
+      }
+    },
+    { threshold: [0, 0.95, 1] },
+  );
+  io.observe(hero);
+}
+
 /* ---- Swatch shimmer ----
    When the dress-code palette enters the viewport, add .shimmering
    so swatchPop + shine sweep animate sequentially (CSS-driven).
@@ -99,4 +116,5 @@ export function initGlobals() {
   attachCursorGlow(document.getElementById('cursorGlow'));
   attachFloatingMono(document.getElementById('floatingMono'), document.getElementById('hero'));
   attachSwatchShimmer(document.getElementById('swatches'));
+  attachScrollIndicator(document.getElementById('scrollIndicator'), document.getElementById('hero'));
 }
