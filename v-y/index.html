@@ -56,33 +56,78 @@
       <span class="diamond right" aria-hidden="true"></span>
     </div>
     <div class="curtain-rings" aria-hidden="true">
+      <!-- Photoreal interlocking wedding bands.
+           Layers per ring (back→front): outer dark contour, main gold body
+           (stroke-drawn on intro), inner edge (band hollow), top highlight,
+           bottom self-shadow, specular reflection dot.
+           Intersection masks are rotated ellipses aligned with the OTHER
+           ring's tangent so the weave reads cleanly instead of looking
+           like a small notch. -->
       <svg viewBox="0 0 100 50" fill="none" overflow="visible">
         <defs>
-          <linearGradient id="goldRingC" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%"   stop-color="#fff0bc"/>
-            <stop offset="22%"  stop-color="#f0d480"/>
-            <stop offset="48%"  stop-color="#b58a3d"/>
-            <stop offset="72%"  stop-color="#7a5520"/>
-            <stop offset="100%" stop-color="#3d2810"/>
+          <linearGradient id="goldRingC" x1="0.3" y1="0" x2="0.7" y2="1">
+            <stop offset="0%"   stop-color="#fff7d4"/>
+            <stop offset="14%"  stop-color="#f7dc94"/>
+            <stop offset="38%"  stop-color="#c89542"/>
+            <stop offset="64%"  stop-color="#7a5520"/>
+            <stop offset="100%" stop-color="#2b1808"/>
           </linearGradient>
+          <linearGradient id="goldRingCInner" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"   stop-color="rgba(50,30,10,0.6)"/>
+            <stop offset="50%"  stop-color="rgba(120,80,30,0.85)"/>
+            <stop offset="100%" stop-color="rgba(25,15,5,0.7)"/>
+          </linearGradient>
+          <radialGradient id="goldRingCSpec" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%"   stop-color="rgba(255,253,225,0.95)"/>
+            <stop offset="60%"  stop-color="rgba(255,253,225,0.25)"/>
+            <stop offset="100%" stop-color="rgba(255,253,225,0)"/>
+          </radialGradient>
+          <radialGradient id="goldRingCCast" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%"   stop-color="rgba(20,10,5,0.45)"/>
+            <stop offset="100%" stop-color="rgba(20,10,5,0)"/>
+          </radialGradient>
+          <!-- Bottom intersection (50, 34.95) — cut on LEFT ring so right ring
+               passes through cleanly. Ellipse rotated to align with right
+               ring's tangent direction (~56° at this point). -->
           <mask id="mLeftC">
             <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-            <circle cx="50" cy="34.95" r="3.3" fill="black"/>
+            <ellipse cx="50" cy="34.95" rx="5.2" ry="2.6" transform="rotate(56 50 34.95)" fill="black"/>
           </mask>
+          <!-- Top intersection (50, 15.05) — cut on RIGHT ring so left ring
+               passes through cleanly. Rotated -56° (mirror). -->
           <mask id="mRightC">
             <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-            <circle cx="50" cy="15.05" r="3.3" fill="black"/>
+            <ellipse cx="50" cy="15.05" rx="5.2" ry="2.6" transform="rotate(-56 50 15.05)" fill="black"/>
           </mask>
         </defs>
+
+        <!-- Soft cast shadow on the surface below the rings. -->
+        <ellipse class="ring-detail" cx="50" cy="46.5" rx="28" ry="1.7" fill="url(#goldRingCCast)"/>
+
+        <!-- LEFT ring (drawn first, behind) — bottom intersection masked. -->
         <g mask="url(#mLeftC)">
-          <circle class="ring r1" cx="35" cy="25" r="18" fill="none" stroke="url(#goldRingC)" stroke-width="3.2" stroke-linecap="round"/>
-          <circle cx="35" cy="25" r="16.6" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="0.5"/>
-          <path d="M 19 21 A 18 18 0 0 1 51 21" stroke="rgba(255,250,220,0.75)" stroke-width="0.55" fill="none"/>
+          <!-- Outer dark contour for crisp edge -->
+          <circle class="ring-detail" cx="35" cy="25" r="19.8" stroke="rgba(20,12,2,0.45)" stroke-width="0.45"/>
+          <!-- Main animated gold stroke -->
+          <circle class="ring r1" cx="35" cy="25" r="18" stroke="url(#goldRingC)" stroke-width="3.6" stroke-linecap="round"/>
+          <!-- Inner edge — suggests the band's hollow inside surface -->
+          <circle class="ring-detail" cx="35" cy="25" r="16.2" stroke="url(#goldRingCInner)" stroke-width="0.8" opacity="0.7"/>
+          <!-- Top highlight arc (catches light from above) -->
+          <path class="ring-detail" d="M 21 18.5 A 18 18 0 0 1 49 18.5" stroke="rgba(255,253,225,0.65)" stroke-width="0.6"/>
+          <!-- Faint bottom self-shadow (band's underside) -->
+          <path class="ring-detail" d="M 21 32 A 18 18 0 0 0 49 32" stroke="rgba(15,5,0,0.32)" stroke-width="0.45"/>
+          <!-- Tiny specular reflection near top-left -->
+          <ellipse class="ring-detail" cx="27" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingCSpec)" transform="rotate(-25 27 15.5)"/>
         </g>
+
+        <!-- RIGHT ring (drawn second, on top) — top intersection masked. -->
         <g mask="url(#mRightC)">
-          <circle class="ring r2" cx="65" cy="25" r="18" fill="none" stroke="url(#goldRingC)" stroke-width="3.2" stroke-linecap="round"/>
-          <circle cx="65" cy="25" r="16.6" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="0.5"/>
-          <path d="M 49 21 A 18 18 0 0 1 81 21" stroke="rgba(255,250,220,0.75)" stroke-width="0.55" fill="none"/>
+          <circle class="ring-detail" cx="65" cy="25" r="19.8" stroke="rgba(20,12,2,0.45)" stroke-width="0.45"/>
+          <circle class="ring r2" cx="65" cy="25" r="18" stroke="url(#goldRingC)" stroke-width="3.6" stroke-linecap="round"/>
+          <circle class="ring-detail" cx="65" cy="25" r="16.2" stroke="url(#goldRingCInner)" stroke-width="0.8" opacity="0.7"/>
+          <path  class="ring-detail" d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke="rgba(255,253,225,0.65)" stroke-width="0.6"/>
+          <path  class="ring-detail" d="M 51 32 A 18 18 0 0 0 79 32" stroke="rgba(15,5,0,0.32)" stroke-width="0.45"/>
+          <ellipse class="ring-detail" cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingCSpec)" transform="rotate(-25 57 15.5)"/>
         </g>
       </svg>
     </div>
@@ -143,33 +188,58 @@
       </div>
 
       <div class="hero-rings" aria-hidden="true">
+        <!-- Photoreal interlocking bands — see commentary on curtain rings. -->
         <svg viewBox="0 0 100 50" fill="none" overflow="visible">
           <defs>
-            <linearGradient id="goldRingH" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%"   stop-color="#fff0bc"/>
-              <stop offset="22%"  stop-color="#f0d480"/>
-              <stop offset="48%"  stop-color="#b58a3d"/>
-              <stop offset="72%"  stop-color="#7a5520"/>
-              <stop offset="100%" stop-color="#3d2810"/>
+            <linearGradient id="goldRingH" x1="0.3" y1="0" x2="0.7" y2="1">
+              <stop offset="0%"   stop-color="#fff7d4"/>
+              <stop offset="14%"  stop-color="#f7dc94"/>
+              <stop offset="38%"  stop-color="#c89542"/>
+              <stop offset="64%"  stop-color="#7a5520"/>
+              <stop offset="100%" stop-color="#2b1808"/>
             </linearGradient>
+            <linearGradient id="goldRingHInner" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"   stop-color="rgba(50,30,10,0.6)"/>
+              <stop offset="50%"  stop-color="rgba(120,80,30,0.85)"/>
+              <stop offset="100%" stop-color="rgba(25,15,5,0.7)"/>
+            </linearGradient>
+            <radialGradient id="goldRingHSpec" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%"   stop-color="rgba(255,253,225,0.95)"/>
+              <stop offset="60%"  stop-color="rgba(255,253,225,0.25)"/>
+              <stop offset="100%" stop-color="rgba(255,253,225,0)"/>
+            </radialGradient>
+            <radialGradient id="goldRingHCast" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%"   stop-color="rgba(20,10,5,0.45)"/>
+              <stop offset="100%" stop-color="rgba(20,10,5,0)"/>
+            </radialGradient>
             <mask id="mLeftH">
               <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-              <circle cx="50" cy="34.95" r="3.3" fill="black"/>
+              <ellipse cx="50" cy="34.95" rx="5.2" ry="2.6" transform="rotate(56 50 34.95)" fill="black"/>
             </mask>
             <mask id="mRightH">
               <rect x="-10" y="-10" width="120" height="70" fill="white"/>
-              <circle cx="50" cy="15.05" r="3.3" fill="black"/>
+              <ellipse cx="50" cy="15.05" rx="5.2" ry="2.6" transform="rotate(-56 50 15.05)" fill="black"/>
             </mask>
           </defs>
+
+          <ellipse cx="50" cy="46.5" rx="28" ry="1.7" fill="url(#goldRingHCast)"/>
+
           <g mask="url(#mLeftH)">
-            <circle cx="35" cy="25" r="18"   fill="none" stroke="url(#goldRingH)"     stroke-width="3"   stroke-linecap="round"/>
-            <circle cx="35" cy="25" r="16.7" fill="none" stroke="rgba(0,0,0,0.5)"     stroke-width="0.5"/>
-            <path   d="M 19 21 A 18 18 0 0 1 51 21" stroke="rgba(255,250,220,0.75)"   stroke-width="0.5" fill="none"/>
+            <circle cx="35" cy="25" r="19.8" stroke="rgba(20,12,2,0.45)" stroke-width="0.45"/>
+            <circle cx="35" cy="25" r="18"   stroke="url(#goldRingH)"    stroke-width="3.6" stroke-linecap="round"/>
+            <circle cx="35" cy="25" r="16.2" stroke="url(#goldRingHInner)" stroke-width="0.8" opacity="0.7"/>
+            <path  d="M 21 18.5 A 18 18 0 0 1 49 18.5" stroke="rgba(255,253,225,0.65)" stroke-width="0.6"/>
+            <path  d="M 21 32   A 18 18 0 0 0 49 32"   stroke="rgba(15,5,0,0.32)"     stroke-width="0.45"/>
+            <ellipse cx="27" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingHSpec)" transform="rotate(-25 27 15.5)"/>
           </g>
+
           <g mask="url(#mRightH)">
-            <circle cx="65" cy="25" r="18"   fill="none" stroke="url(#goldRingH)"     stroke-width="3"   stroke-linecap="round"/>
-            <circle cx="65" cy="25" r="16.7" fill="none" stroke="rgba(0,0,0,0.5)"     stroke-width="0.5"/>
-            <path   d="M 49 21 A 18 18 0 0 1 81 21" stroke="rgba(255,250,220,0.75)"   stroke-width="0.5" fill="none"/>
+            <circle cx="65" cy="25" r="19.8" stroke="rgba(20,12,2,0.45)" stroke-width="0.45"/>
+            <circle cx="65" cy="25" r="18"   stroke="url(#goldRingH)"    stroke-width="3.6" stroke-linecap="round"/>
+            <circle cx="65" cy="25" r="16.2" stroke="url(#goldRingHInner)" stroke-width="0.8" opacity="0.7"/>
+            <path  d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke="rgba(255,253,225,0.65)" stroke-width="0.6"/>
+            <path  d="M 51 32   A 18 18 0 0 0 79 32"   stroke="rgba(15,5,0,0.32)"     stroke-width="0.45"/>
+            <ellipse cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingHSpec)" transform="rotate(-25 57 15.5)"/>
           </g>
         </svg>
       </div>
