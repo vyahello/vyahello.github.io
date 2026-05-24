@@ -65,8 +65,10 @@
    navigates to #hero (handled by the anchor href). */
 .floating-mono {
   position: fixed;
-  top: 16px;
-  left: 16px;
+  /* Match .float-controls so the badge clears notch / Dynamic Island and
+     stays aligned with the right-side dots on iPhone 14 Pro etc. */
+  top:  max(16px, env(safe-area-inset-top,  16px));
+  left: max(16px, env(safe-area-inset-left, 16px));
   z-index: 49;
   font-family: var(--font-display);
   font-weight: 300;

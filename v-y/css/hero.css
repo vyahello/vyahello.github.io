@@ -12,17 +12,25 @@
 
 .hero {
   min-height: 100svh;
-  padding: 56px 0 80px;
+  /* Top/bottom padding clears the iOS notch / Dynamic Island and Android
+     gesture indicator. `env(safe-area-inset-*)` resolves to 0 on desktop,
+     so the explicit minimum (72px / 80px) takes over there. */
+  padding-top:    max(72px, calc(env(safe-area-inset-top, 0px)    + 48px));
+  padding-bottom: max(80px, calc(env(safe-area-inset-bottom, 0px) + 56px));
+  padding-left:   28px;
+  padding-right:  28px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  /* `gap` is the floor — flex still adds remaining space via space-between
+     on tall viewports, but on short screens (iPhone with toolbar) this
+     guarantees we never crash the eyebrow into the names. */
+  gap: clamp(56px, 7vh, 110px);
   text-align: center;
   border-bottom: 1px solid var(--line);
   overflow: hidden;
   max-width: var(--maxw);
   margin: 0 auto;
-  padding-left: 28px;
-  padding-right: 28px;
 }
 
 /* ---- Top: hearts row + eyebrow ---- */

@@ -6,12 +6,14 @@
    in css/globals.css. Behaviour: js/ui.js + js/theme.js.
    ============================================================ */
 
-/* ---- Floating controls dock (top-right) ---- */
+/* ---- Floating controls dock (top-right) ----
+   Pushed below the iOS notch / Dynamic Island via env(safe-area-inset-*).
+   Resolves to plain 16px on desktop. */
 
 .float-controls {
   position: fixed;
-  top: 16px;
-  right: 16px;
+  top:   max(16px, env(safe-area-inset-top,   16px));
+  right: max(16px, env(safe-area-inset-right, 16px));
   z-index: 50;
   display: flex;
   gap: 10px;
@@ -88,8 +90,10 @@
 
 .share-popover {
   position: fixed;
-  top: 64px;
-  right: 16px;
+  /* Sits just below the share button — adopts the same safe-area-inset
+     offsets so the popover doesn't clip behind the iOS notch. */
+  top:   calc(max(16px, env(safe-area-inset-top,   16px)) + 48px);
+  right: max(16px, env(safe-area-inset-right, 16px));
   z-index: 60;
   width: 240px;
   background: var(--bg-card);
