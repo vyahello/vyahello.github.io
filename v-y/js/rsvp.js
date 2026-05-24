@@ -367,7 +367,7 @@ export function initRSVP() {
 
     if (needsNames && rawNames.length === 0) {
       const first = list.querySelector('.guest-name');
-      flagInvalidGuestInput(first, 'Будь ласка, вкажіть Ваше імʼя та прізвище.');
+      flagInvalidGuestInput(first, 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.');
       return;
     }
 
@@ -377,7 +377,7 @@ export function initRSVP() {
       const invalidInput = [...list.querySelectorAll('.guest-name')]
         .find((i) => i.value.trim() && !hasFullName(i.value));
       if (invalidInput) {
-        flagInvalidGuestInput(invalidInput, 'Будь ласка, вкажіть імʼя ТА прізвище.');
+        flagInvalidGuestInput(invalidInput, 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.');
         return;
       }
     }
