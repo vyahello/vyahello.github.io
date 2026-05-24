@@ -12,8 +12,14 @@
 
 const MUSIC_SRC      = 'another-love.mp3';
 const MUSIC_VOLUME   = 0.42;
-const MUSIC_FADE_IN_MS  = 1400;
-const MUSIC_FADE_OUT_MS = 500;
+const MUSIC_FADE_IN_MS  = 700;   // snappier — no "slow ramp" feel on iPhone
+
+// iOS Safari: scroll is NOT a user gesture for audio unlock, only taps are.
+// We also keep the autoplay code paths (curtain:lifted) gated for iOS, since
+// neither audible nor muted <audio> autoplay is reliable there — first real
+// touch is what we wait for.
+const IS_IOS = /iP(ad|hone|od)/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 
 const SHARE_TITLE = 'Володимир та Юстина · 17.07.2026';
 const SHARE_TEXT  = 'Запрошуємо на весілля Володимира та Юстини';
@@ -135,44 +141,63 @@ function fadeVolume(audio, to, durationMs, onDone) {
   }, tickMs);
 }
 
+// Tracks the in-flight play() promise so stopMusic() can await it before
+// calling pause() — avoids Safari's "play() request was interrupted by a
+// call to pause()" error and the audio "tail" that follows it.
+let playPromise = null;
+
 async function startMusic() {
   const a = ensureMusicEl();
+  // Cancel any in-flight fade so we don't fight ourselves on rapid toggle.
+  if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+  // Wait for any pending play() to settle so we can re-issue cleanly.
+  if (playPromise) { try { await playPromise; } catch { /* ignore */ } }
   try {
     a.currentTime = 0;             // restart from beginning, per spec
     a.muted       = false;
     a.volume      = 0;
-    await a.play();                // may reject without user gesture
+    playPromise   = a.play();      // may reject without user gesture
+    await playPromise;
+    playPromise = null;
     fadeVolume(a, MUSIC_VOLUME, MUSIC_FADE_IN_MS);
     return true;
   } catch {
-    // Audible autoplay denied — fall back to muted autoplay so the audio
-    // at least starts loading + advancing the timeline. On the first real
-    // user gesture (anywhere on the page) we unmute. iOS Safari blocks
-    // even this; the gesture fallback will instead start fresh.
+    playPromise = null;
+    // iOS Safari rejects both audible AND muted <audio> autoplay — the
+    // muted-fallback only buys us anything on desktop Chrome/Firefox.
+    if (IS_IOS) { syncBtnFromAudio(); return false; }
     return tryMutedAutoplay(a);
   }
 }
 
 async function tryMutedAutoplay(audio) {
+  if (playPromise) { try { await playPromise; } catch { /* ignore */ } }
   try {
     audio.muted  = true;
-    audio.volume = MUSIC_VOLUME;   // pre-set so unmute reveals at correct level
+    audio.volume = MUSIC_VOLUME;
     audio.currentTime = 0;
-    await audio.play();
-    return true;                    // playing silently — button stays paused UI
+    playPromise = audio.play();
+    await playPromise;
+    playPromise = null;
+    return true;
   } catch {
+    playPromise = null;
     syncBtnFromAudio();
     return false;
   }
 }
 
-function stopMusic() {
+async function stopMusic() {
   if (!musicEl || musicEl.paused) return;
   const a = musicEl;
-  fadeVolume(a, 0, MUSIC_FADE_OUT_MS, () => {
-    a.pause();
-    a.currentTime = 0;
-  });
+  // Cancel any in-flight fade and wait for any in-flight play() to settle
+  // before pausing — eliminates the Safari "tail-of-audio" + race error.
+  if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+  if (playPromise) { try { await playPromise; } catch { /* ignore */ } }
+  // Instant pause — no fade-out. Users expect immediate response when they
+  // tap the music button; a half-second fade reads as "the app is stuck".
+  a.pause();
+  a.currentTime = 0;
 }
 
 function attachMusicToggle(btn) {
@@ -190,7 +215,12 @@ function attachMusicToggle(btn) {
  *    · paused → start fresh (now we have a user gesture)
  *    · muted-playing → unmute with fade-in
  *    · already audible → nothing
- *  Skips clicks on the music button (handled by attachMusicToggle).
+ *  Skips events targeting the music button (handled by attachMusicToggle).
+ *
+ *  Listens to `touchstart` (fires the instant a finger lands — iOS Safari's
+ *  earliest user-gesture point), `click`, and `keydown`. We deliberately do
+ *  NOT listen to `scroll` — iOS doesn't count it as a gesture, so calling
+ *  audio.play() from a scroll handler would still be rejected.
  */
 function attachFirstInteractionFallback() {
   const onFirst = (e) => {
@@ -206,13 +236,15 @@ function attachFirstInteractionFallback() {
     cleanup();
   };
   const cleanup = () => {
-    document.removeEventListener('click',    onFirst, true);
-    document.removeEventListener('keydown',  onFirst, true);
-    document.removeEventListener('touchend', onFirst, true);
+    document.removeEventListener('touchstart', onFirst, true);
+    document.removeEventListener('touchend',   onFirst, true);
+    document.removeEventListener('click',      onFirst, true);
+    document.removeEventListener('keydown',    onFirst, true);
   };
-  document.addEventListener('click',    onFirst, true);
-  document.addEventListener('keydown',  onFirst, true);
-  document.addEventListener('touchend', onFirst, true);
+  document.addEventListener('touchstart', onFirst, { capture: true, passive: true });
+  document.addEventListener('touchend',   onFirst, true);
+  document.addEventListener('click',      onFirst, true);
+  document.addEventListener('keydown',    onFirst, true);
 }
 
 /* ============================================================
