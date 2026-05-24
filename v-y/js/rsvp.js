@@ -248,11 +248,17 @@ function hideConfirmation(form, confirm) {
   confirm.classList.remove('show');
 }
 
+/** Backend stores attending in Ukrainian (так/мабуть/ні) but the radio
+    inputs in the form use the English codes (yes/maybe/no) that the
+    submit handler expects. Normalize both directions when restoring. */
+const UA_TO_EN_ATTENDING = { 'так': 'yes', 'мабуть': 'maybe', 'ні': 'no' };
+
 /** Restore form values from a previously-saved RSVP. */
 function restoreFormFromRsvp(form, list, addBtn, rsvp) {
   // Attendance radio
   if (rsvp.attending) {
-    const radio = form.querySelector(`input[name="attend"][value="${rsvp.attending}"]`);
+    const code = UA_TO_EN_ATTENDING[rsvp.attending] || rsvp.attending;
+    const radio = form.querySelector(`input[name="attend"][value="${code}"]`);
     if (radio) {
       radio.checked = true;
       radio.dispatchEvent(new Event('change', { bubbles: true }));
