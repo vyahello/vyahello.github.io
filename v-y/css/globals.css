@@ -1,0 +1,106 @@
+/* ============================================================
+   globals.css — page chrome that lives outside <main>:
+     · floating particles (gold motes rising from bottom)
+     · cursor-glow orb (desktop only)
+     · floating monogram badge (appears after hero scrolls off)
+     · brand monogram glyph helpers
+   Behaviour wired by js/globals.js.
+   ============================================================ */
+
+/* ---- Floating gold motes (18 spans created by JS) ----
+   Sits at z-index 3 — below page content (main is z-index 5)
+   but above body::before/::after overlays. */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  overflow: hidden;
+}
+.particles span {
+  position: absolute;
+  bottom: -10px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  animation: globalsRise linear infinite;
+  filter: blur(0.4px);
+}
+@keyframes globalsRise {
+  0%   { transform: translateY(0)      translateX(0);    opacity: 0; }
+  10%  {                                                  opacity: 0.6; }
+  90%  {                                                  opacity: 0.3; }
+  100% { transform: translateY(-110vh) translateX(40px); opacity: 0; }
+}
+
+/* ---- Cursor-glow orb ----
+   Big soft radial halo that lerps toward the cursor. Mix-blend
+   `overlay` so it tints whatever theme is active. Hidden on
+   touch-primary devices. */
+.cursor-glow {
+  position: fixed;
+  width: 480px;
+  height: 480px;
+  border-radius: 50%;
+  background: radial-gradient(circle,
+    color-mix(in oklab, var(--accent) 22%, transparent) 0%,
+    transparent 60%);
+  pointer-events: none;
+  z-index: 4;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 0.6s;
+  will-change: transform;
+  top: 0;
+  left: 0;
+}
+.cursor-glow.active { opacity: 1; }
+@media (hover: none) { .cursor-glow { display: none; } }
+
+/* ---- Floating monogram badge ----
+   Hidden by default; .show after hero scrolls past. Clicking
+   navigates to #hero (handled by the anchor href). */
+.floating-mono {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 49;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 18px;
+  color: var(--ink);
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 8px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  text-decoration: none;
+  transition: opacity 0.5s var(--easing), transform 0.5s var(--easing);
+}
+.floating-mono.show {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.floating-mono:hover {
+  border-color: var(--accent);
+}
+
+/* Reduced motion: stop the rising motes and disable transitions. */
+@media (prefers-reduced-motion: reduce) {
+  .particles span { animation: none; opacity: 0.3; }
+  .cursor-glow    { display: none; }
+  .floating-mono  { transition: none; }
+}
+
+/* Print: no chrome at all. */
+@media print {
+  .particles, .cursor-glow, .floating-mono { display: none !important; }
+}
