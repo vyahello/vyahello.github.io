@@ -98,6 +98,7 @@ Pure modules with named exports. `js/main.js` orchestrates boot order. Each modu
 - Full `@media (prefers-reduced-motion: reduce)` coverage: heartbeat animations, parallax scroll, char-stagger, breathing, ring rotation — all collapse to static fades.
 - Mobile-safe: titles wrap only at whitespace (`.title-word { white-space: nowrap }`), iOS notch/Dynamic Island handled via `env(safe-area-inset-*)`.
 - Theme picker, music toggle, share popover all keyboard-navigable.
+- **Cross-platform audio**: `touchstart` is the earliest user-gesture point on iOS for autoplay unlock. `playPromise` is awaited before `pause()` to avoid Safari's "play() request was interrupted by a call to pause()" race. iOS routes audio through the native `<audio>` element output (no `MediaElementSource`); desktop + Android route through Web Audio for the `--audio-pulse` reactive glow. `AudioContext.resume()` is called from every user-gesture handler so Android Chrome's suspended context releases reliably.
 
 ## Tests
 
