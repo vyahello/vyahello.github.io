@@ -1,7 +1,12 @@
 /* ============================================================
    curtain.css — cinematic intro overlay
-   Stack (top→bottom): eyebrow, hearts row, monogram, gold line,
-   3D interlocking rings, date, place.
+   Pared down to 4 wow-focused elements (the rest live on the main
+   page so the curtain does not duplicate content):
+     1. Big «В&Ю» monogram with breath-in + ambient halo
+     2. Ornamental underline (two diamonds + gradient line drawing
+        outward from centre)
+     3. 3D interlocking gold rings (stroke-draw)
+     4. Date «17 · 07 · 2026»
    Lifts on click or after 3s via js/curtain.js.
    ============================================================ */
 
@@ -19,14 +24,20 @@
   cursor: pointer;
 }
 
-/* Subtle radial halo behind monogram */
+/* Soft radial halo behind monogram — gently breathes for extra atmosphere. */
 #curtain::before {
   content: '';
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: radial-gradient(ellipse 60% 50% at 50% 50%,
-    color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%);
+  background:
+    radial-gradient(ellipse 70% 60% at 50% 50%,
+      color-mix(in oklab, var(--accent) 18%, transparent), transparent 65%);
+  animation: curtainHalo 4s ease-in-out infinite alternate;
+}
+@keyframes curtainHalo {
+  from { opacity: 0.7; transform: scale(1); }
+  to   { opacity: 1;   transform: scale(1.04); }
 }
 
 #curtain.lift {
@@ -35,29 +46,9 @@
   pointer-events: none;
 }
 
-#curtain .curtain-eyebrow {
-  font-family: var(--font-italic);
-  font-size: clamp(15px, 4vw, 19px);
-  letter-spacing: 0.06em;
-  color: var(--ink-soft);
-  opacity: 0;
-  animation: curtainFadeUp 1s 0.2s var(--easing) forwards;
-  position: relative;
-  z-index: 2;
-}
-
-#curtain .curtain-hearts {
-  color: var(--accent);
-  width: 140px;
-  height: 16px;
-  margin-top: 16px;
-  opacity: 0;
-  animation: curtainFadeUp 0.9s 0.5s var(--easing) forwards;
-  position: relative;
-  z-index: 2;
-}
-#curtain .curtain-hearts svg { width: 100%; height: 100%; }
-
+/* ============================================================
+   MONOGRAM — clamp(110, 26vw, 230px) breath-in
+   ============================================================ */
 #curtain .monogram {
   font-family: var(--font-display);
   font-weight: 300;
@@ -66,14 +57,14 @@
   letter-spacing: 0.04em;
   line-height: 1;
   opacity: 0;
-  animation: curtainMonoBreath 2.4s var(--easing) forwards;
+  animation: curtainMonoBreath 2s var(--easing) forwards;
   position: relative;
   z-index: 2;
-  margin: 18px 0 0;
   display: flex;
   align-items: baseline;
   justify-content: center;
   gap: 0;
+  text-shadow: 0 8px 30px color-mix(in oklab, var(--accent) 25%, transparent);
 }
 #curtain .monogram .amp-char {
   font-family: var(--font-ampersand);
@@ -86,65 +77,108 @@
   display: inline-block;
 }
 
+/* ============================================================
+   UNDERLINE — gradient line drawing centre-out + diamond accents
+   ============================================================ */
 #curtain .underline {
-  display: block;
-  height: 1px;
-  background: var(--accent);
-  margin: 36px auto 0;
-  width: 0;
-  animation: curtainLineDraw 1.4s 0.8s var(--easing) forwards;
   position: relative;
   z-index: 2;
+  margin: 32px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  width: clamp(180px, 32vw, 280px);
+  height: 14px;
 }
 
+#curtain .underline .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right,
+    transparent 0%,
+    var(--accent) 30%,
+    var(--accent) 70%,
+    transparent 100%);
+  transform: scaleX(0);
+  transform-origin: center;
+  animation: curtainLineDraw 1.1s 0.5s var(--easing) forwards;
+}
+
+/* Tiny diamond at each end — rotates in with the line. */
+#curtain .underline .diamond {
+  width: 6px;
+  height: 6px;
+  background: var(--accent);
+  transform: rotate(45deg) scale(0);
+  opacity: 0;
+  box-shadow: 0 0 8px color-mix(in oklab, var(--accent) 50%, transparent);
+  animation: curtainDiamondPop 0.5s 1.1s var(--easing) forwards;
+}
+#curtain .underline .diamond.right { animation-delay: 1.25s; }
+
+@keyframes curtainLineDraw { to { transform: scaleX(1); } }
+@keyframes curtainDiamondPop {
+  0%   { opacity: 0; transform: rotate(0deg)   scale(0);   }
+  60%  { opacity: 1; transform: rotate(45deg)  scale(1.3); }
+  100% { opacity: 1; transform: rotate(45deg)  scale(1);   }
+}
+
+/* ============================================================
+   RINGS — 3D interlocking, stroke-drawn (left ring first, then right)
+   ============================================================ */
 #curtain .curtain-rings {
   color: var(--accent);
-  width: 100px;
-  height: 50px;
-  margin-top: 30px;
+  width: 110px;
+  height: 55px;
+  margin-top: 36px;
   opacity: 0;
-  animation: curtainFadeUp 0.9s 1.6s var(--easing) forwards;
+  animation: curtainFadeUp 0.7s 1.5s var(--easing) forwards;
   position: relative;
   z-index: 2;
 }
 #curtain .curtain-rings svg { width: 100%; height: 100%; }
 #curtain .curtain-rings .ring {
-  stroke-dasharray: 114;
+  stroke-dasharray:  114;
   stroke-dashoffset: 114;
-  animation: curtainRingDraw 1.6s 1.8s var(--easing) forwards;
+  animation: curtainRingDraw 0.9s 1.7s var(--easing) forwards;
 }
-#curtain .curtain-rings .r2 { animation-delay: 2.2s; }
+#curtain .curtain-rings .r2 { animation-delay: 2.0s; }
+@keyframes curtainRingDraw { to { stroke-dashoffset: 0; } }
 
+/* ============================================================
+   DATE — Cormorant w/ wider spacing + accent dots
+   ============================================================ */
 #curtain .curtain-date {
   font-family: var(--font-display);
-  font-size: clamp(20px, 4.5vw, 26px);
+  font-size: clamp(22px, 5vw, 28px);
   color: var(--ink);
-  letter-spacing: 0.18em;
-  margin-top: 26px;
+  letter-spacing: 0.22em;
+  margin-top: 30px;
   opacity: 0;
-  animation: curtainFadeUp 0.9s 1.4s var(--easing) forwards;
+  animation: curtainFadeUp 0.7s 2.1s var(--easing) forwards;
   position: relative;
   z-index: 2;
+  font-variant-numeric: lining-nums tabular-nums;
 }
 #curtain .curtain-date .dot {
   color: var(--accent);
-  margin: 0 8px;
+  margin: 0 10px;
 }
 
-#curtain .curtain-place {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  letter-spacing: 0.45em;
-  text-transform: uppercase;
-  color: var(--ink-mute);
-  margin-top: 14px;
-  opacity: 0;
-  animation: curtainFadeUp 0.9s 1.7s var(--easing) forwards;
-  position: relative;
-  z-index: 2;
+@keyframes curtainFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes curtainMonoBreath {
+  0%   { opacity: 0; transform: scale(0.86); filter: blur(12px); }
+  55%  { opacity: 1; transform: scale(1.02); filter: blur(0); }
+  100% { opacity: 1; transform: scale(1);    filter: blur(0); }
 }
 
-/* ---- Brand monogram used outside curtain (closing, etc.) ---- */
+/* ============================================================
+   Brand monogram used outside curtain (closing, etc.)
+   ============================================================ */
 .brand-mono .amp-char {
   font-family: var(--font-ampersand);
   font-style: italic;
@@ -156,39 +190,22 @@
   transform: translateY(-0.05em);
 }
 
-/* ---- Keyframes (prefixed so they can't collide with section-level anims) ---- */
-
-@keyframes curtainFadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes curtainMonoBreath {
-  0%   { opacity: 0; transform: scale(0.94); filter: blur(8px); }
-  60%  { opacity: 1; transform: scale(1);    filter: blur(0); }
-  100% { opacity: 1; transform: scale(1);    filter: blur(0); }
-}
-@keyframes curtainLineDraw {
-  from { width: 0; }
-  to   { width: clamp(140px, 28vw, 220px); }
-}
-@keyframes curtainRingDraw {
-  to { stroke-dashoffset: 0; }
-}
-
-/* Reduced motion: replace all curtain animations with a plain fade-in. */
+/* ============================================================
+   Reduced motion: all animations collapse to a plain fade.
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
-  #curtain .curtain-eyebrow,
-  #curtain .curtain-hearts,
+  #curtain::before,
   #curtain .monogram,
-  #curtain .underline,
+  #curtain .underline .line,
+  #curtain .underline .diamond,
   #curtain .curtain-rings,
-  #curtain .curtain-date,
-  #curtain .curtain-place {
+  #curtain .curtain-date {
     animation: none !important;
     opacity: 1;
-    width: auto;
   }
-  #curtain .underline { width: clamp(140px, 28vw, 220px); }
+  #curtain .monogram          { filter: none; transform: none; }
+  #curtain .underline .line   { transform: scaleX(1); }
+  #curtain .underline .diamond { transform: rotate(45deg); }
   #curtain .curtain-rings .ring {
     stroke-dasharray: none;
     stroke-dashoffset: 0;
@@ -196,7 +213,4 @@
   }
 }
 
-/* Print: never show the curtain. */
-@media print {
-  #curtain { display: none !important; }
-}
+@media print { #curtain { display: none !important; } }
