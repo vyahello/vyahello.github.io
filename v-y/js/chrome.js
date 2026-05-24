@@ -14,8 +14,17 @@ const STOP_FADE_S   = 0.8;
 const STOP_KILL_MS  = 900;
 
 const SHARE_TITLE = 'Володимир та Юстина · 17.07.2026';
-const SHARE_TEXT  = 'Запрошуємо Вас на наше весілля';
+const SHARE_TEXT  = 'Запрошуємо на весілля Володимира та Юстини';
 const COPIED_MS   = 2000;
+
+/**
+ * URL the user actually wants to forward — strip personal params so the
+ * recipient doesn't see someone else's greeting ("Дорога Олена") or
+ * theme/intro overrides baked in. Keeps the base path + origin.
+ */
+function shareableUrl() {
+  return `${window.location.origin}${window.location.pathname}`;
+}
 
 /* ============================================================
    MUSIC — ambient pad
@@ -152,7 +161,7 @@ function hasNativeShare() {
 }
 
 function buildSharePopover(btn) {
-  const links = shareLinks(window.location.href);
+  const links = shareLinks(shareableUrl());
   const mobile = isMobile();
   const native = hasNativeShare();
 
@@ -188,11 +197,11 @@ function buildSharePopover(btn) {
     const optEl = e.target.closest('.opt');
 
     if (action === 'copy') {
-      const ok = await copyToClipboard(window.location.href);
+      const ok = await copyToClipboard(shareableUrl());
       if (ok) flashCopiedFeedback(optEl);
     } else if (action === 'system') {
       try {
-        await navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url: window.location.href });
+        await navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url: shareableUrl() });
         closePopover(btn);
       } catch { /* user cancelled OS sheet — ignore */ }
     }
