@@ -1,93 +1,124 @@
 /* ============================================================
    test/rsvp.test.mjs — unit tests for pure helpers in rsvp.js
-   Run with:  node --test test/
+   Run with:  node test/rsvp.test.mjs
+   (Direct file path — `node --test test/` hits a Node 22.22.2 glob bug.)
    ============================================================ */
 
 import { test } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { computeStepFlow, clampSeats, buildPayload } from '../js/rsvp.js';
+import {
+  parseAttendance,
+  sanitizeGuestNames,
+  buildPayload,
+  MAX_GUESTS,
+} from '../js/rsvp.js';
 
-test('computeStepFlow: null returns only the first step', () => {
-  assert.deepEqual(computeStepFlow(null), [0]);
+/* ---- parseAttendance ---- */
+
+test('parseAttendance: yes / maybe / no pass through', () => {
+  assert.equal(parseAttendance('yes'),   'yes');
+  assert.equal(parseAttendance('maybe'), 'maybe');
+  assert.equal(parseAttendance('no'),    'no');
 });
 
-test('computeStepFlow: attending true walks all five steps in order', () => {
-  assert.deepEqual(computeStepFlow(true), [0, 1, 2, 3, 4]);
+test('parseAttendance: case-insensitive + trims', () => {
+  assert.equal(parseAttendance('YES'),    'yes');
+  assert.equal(parseAttendance('  Maybe '), 'maybe');
+  assert.equal(parseAttendance('NO\n'),    'no');
 });
 
-test('computeStepFlow: attending false skips seats + food', () => {
-  assert.deepEqual(computeStepFlow(false), [0, 3, 4]);
+test('parseAttendance: invalid input → null', () => {
+  assert.equal(parseAttendance(''),         null);
+  assert.equal(parseAttendance('bogus'),    null);
+  assert.equal(parseAttendance(null),       null);
+  assert.equal(parseAttendance(undefined),  null);
+  assert.equal(parseAttendance(42),         null);
 });
 
-test('clampSeats: clamps below 1 to 1', () => {
-  assert.equal(clampSeats(0),  1);
-  assert.equal(clampSeats(-5), 1);
+/* ---- sanitizeGuestNames ---- */
+
+test('sanitizeGuestNames: trims + drops blanks', () => {
+  assert.deepEqual(
+    sanitizeGuestNames(['Олена', '  Петро  ', '', '   ', 'Анна']),
+    ['Олена', 'Петро', 'Анна'],
+  );
 });
 
-test('clampSeats: clamps above 10 to 10', () => {
-  assert.equal(clampSeats(11),   10);
-  assert.equal(clampSeats(9999), 10);
+test(`sanitizeGuestNames: clamps to MAX_GUESTS (${'placeholder'})`, () => {
+  // Reference the actual MAX_GUESTS so the test doesn't drift if the cap changes.
+  const big = Array.from({ length: MAX_GUESTS + 5 }, (_, i) => `Гість ${i}`);
+  const out = sanitizeGuestNames(big);
+  assert.equal(out.length, MAX_GUESTS);
 });
 
-test('clampSeats: in-range values pass through (rounded)', () => {
-  assert.equal(clampSeats(1),   1);
-  assert.equal(clampSeats(5),   5);
-  assert.equal(clampSeats(10),  10);
-  assert.equal(clampSeats(3.4), 3);
-  assert.equal(clampSeats(3.6), 4);
+test('sanitizeGuestNames: non-array input → []', () => {
+  assert.deepEqual(sanitizeGuestNames(null),      []);
+  assert.deepEqual(sanitizeGuestNames(undefined), []);
+  assert.deepEqual(sanitizeGuestNames('abc'),     []);
+  assert.deepEqual(sanitizeGuestNames(123),       []);
 });
 
-test('clampSeats: non-numeric falls back to default (2)', () => {
-  assert.equal(clampSeats('abc'),       2);
-  assert.equal(clampSeats(undefined),   2);
-  assert.equal(clampSeats(NaN),         2);
+test('sanitizeGuestNames: non-string entries are dropped', () => {
+  assert.deepEqual(sanitizeGuestNames(['Olena', 5, null, 'Petro']),
+                   ['Olena', 'Petro']);
 });
 
-test('buildPayload: attending true preserves seats + food + wishes', () => {
+/* ---- buildPayload ---- */
+
+test('buildPayload: yes preserves guest_names + wishes', () => {
   const p = buildPayload({
-    guestId:   'ivan-petrov',
-    name:      'Іван',
-    attending: true,
-    seats:     3,
-    food:      ['meat', 'fish'],
-    allergies: 'без горіхів',
-    wishes:    'усього найкращого',
+    attending:  'yes',
+    guestNames: ['Олена Шевченко', '  Петро Шевченко '],
+    wishes:     '  усього найкращого  ',
   });
-  assert.equal(p.guest_id, 'ivan-petrov');
-  assert.equal(p.name, 'Іван');
-  assert.equal(p.attending, true);
-  assert.equal(p.seats, 3);
-  assert.deepEqual(p.food, ['meat', 'fish']);
-  assert.equal(p.allergies, 'без горіхів');
+  assert.equal(p.attending, 'yes');
+  assert.deepEqual(p.guest_names, ['Олена Шевченко', 'Петро Шевченко']);
   assert.equal(p.wishes, 'усього найкращого');
-  // submitted_at is an ISO string
+  assert.equal(p.guest_id, null);
+  assert.equal(p.name,     null);
   assert.ok(/^\d{4}-\d{2}-\d{2}T/.test(p.submitted_at));
 });
 
-test('buildPayload: attending false zeros out seats/food/allergies but keeps wishes', () => {
+test('buildPayload: no empties guest_names but keeps wishes', () => {
   const p = buildPayload({
-    attending: false,
-    seats:     5,                // should be ignored
-    food:      ['meat'],         // should be ignored
-    allergies: 'без горіхів',    // should be ignored
-    wishes:    'на жаль не зможу',
+    attending:  'no',
+    guestNames: ['ignored'],
+    wishes:     'на жаль не зможу',
   });
-  assert.equal(p.attending, false);
-  assert.equal(p.seats, 0);
-  assert.deepEqual(p.food, []);
-  assert.equal(p.allergies, '');
+  assert.equal(p.attending, 'no');
+  assert.deepEqual(p.guest_names, []);
   assert.equal(p.wishes, 'на жаль не зможу');
 });
 
-test('buildPayload: null guest fields stay null (Stage 7 fills them)', () => {
-  const p = buildPayload({ attending: true, seats: 2, food: [], wishes: '' });
-  assert.equal(p.guest_id, null);
-  assert.equal(p.name, null);
+test('buildPayload: maybe keeps guest_names', () => {
+  const p = buildPayload({
+    attending:  'maybe',
+    guestNames: ['Олена'],
+    wishes:     '',
+  });
+  assert.equal(p.attending, 'maybe');
+  assert.deepEqual(p.guest_names, ['Олена']);
+  assert.equal(p.wishes, '');
 });
 
-test('buildPayload: food array is a copy, not a reference', () => {
-  const food = ['meat'];
-  const p = buildPayload({ attending: true, seats: 2, food, wishes: '' });
-  food.push('fish');
-  assert.deepEqual(p.food, ['meat']);
+test('buildPayload: guest_names array is a copy, not a live ref', () => {
+  const names = ['Олена'];
+  const p = buildPayload({ attending: 'yes', guestNames: names, wishes: '' });
+  names.push('Петро');
+  assert.deepEqual(p.guest_names, ['Олена']);
+});
+
+test('buildPayload: invalid attending becomes null (guest_names preserved)', () => {
+  const p = buildPayload({ attending: 'bogus', guestNames: ['Олена'], wishes: '' });
+  assert.equal(p.attending, null);
+  assert.deepEqual(p.guest_names, ['Олена']);
+});
+
+test('buildPayload: missing state fields default safely', () => {
+  const p = buildPayload({});
+  assert.equal(p.attending, null);
+  assert.deepEqual(p.guest_names, []);
+  assert.equal(p.wishes, '');
+  assert.equal(p.guest_id, null);
+  assert.equal(p.name,     null);
 });
