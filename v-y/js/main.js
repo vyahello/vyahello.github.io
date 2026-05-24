@@ -2,23 +2,25 @@
    main.js — entry; orchestrates per-section module init
    ============================================================ */
 
-import { initTheme }     from './theme.js';
-import { initCurtain }   from './curtain.js';
-import { initHero }      from './hero.js';
-import { initReveal }    from './reveal.js';
-import { initUI }        from './ui.js';
-import { initGlobals }   from './globals.js';
-import { initCountdown } from './countdown.js';
-import { initRSVP }      from './rsvp.js';
+import { initTheme }      from './theme.js';
+import { initCurtain }    from './curtain.js';
+import { initHero }       from './hero.js';
+import { initInvitation } from './invitation.js';
+import { initReveal }     from './reveal.js';
+import { initUI }         from './ui.js';
+import { initGlobals }    from './globals.js';
+import { initCountdown }  from './countdown.js';
+import { initRSVP }       from './rsvp.js';
 
 function boot() {
-  initTheme();       // must run first — paints data-theme on body
-  initCurtain();     // auto-lifts after 3s or on click
-  initHero();        // letter splits + parallax + .ics download
+  initTheme();        // must run first — paints data-theme on body
+  initCurtain();      // auto-lifts after 3s or on click
+  initHero();         // letter splits + parallax + .ics download
+  initInvitation();   // smart greeting + flourish stroke calibration
   initReveal();
-  initUI();          // scroll-progress bar
-  initGlobals();     // particles + cursor-glow + floating monogram
-  initCountdown();   // async, fetches data/event.json
+  initUI();           // scroll-progress bar
+  initGlobals();      // particles + cursor-glow + floating monogram + swatches
+  initCountdown();    // async, fetches data/event.json
   initRSVP();
   // Stage 6+ replaces RSVP submit with Apps Script POST.
 }

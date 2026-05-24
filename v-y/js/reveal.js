@@ -27,6 +27,10 @@ export function initReveal() {
       for (const entry of entries) {
         if (entry.isIntersecting) {
           entry.target.classList.add('is-visible');
+          // Trigger botanical flourish stroke-on inside revealed sections.
+          for (const f of entry.target.querySelectorAll('.flourish')) {
+            f.classList.add('drawn');
+          }
           observer.unobserve(entry.target);
         }
       }
