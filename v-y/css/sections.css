@@ -114,38 +114,6 @@
 }
 
 /* ============================================================
-   §5 Countdown — visual placeholder (real ticker in Stage 4)
-   ============================================================ */
-#countdown.section { background: linear-gradient(180deg, #1a0f04 0%, #2a1a08 100%); color: var(--cream); }
-#countdown .countdown__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(64px, 96px));
-  gap: var(--s-4);
-  justify-content: center;
-  margin-top: var(--s-6);
-}
-.countdown__cell {
-  background: linear-gradient(180deg, rgba(255,232,170,0.08), rgba(0,0,0,0.25));
-  border: 1px solid rgba(255, 226, 160, 0.25);
-  border-radius: var(--r-md);
-  padding: var(--s-4) var(--s-2);
-}
-.countdown__num {
-  font-family: var(--font-display);
-  font-size: clamp(28px, 5vw, 44px);
-  line-height: 1;
-  color: var(--gold-glow);
-}
-.countdown__label {
-  font-family: var(--font-body);
-  font-size: 10px;
-  letter-spacing: var(--tracking-wider);
-  text-transform: uppercase;
-  opacity: 0.75;
-  margin-top: var(--s-2);
-}
-
-/* ============================================================
    §6 Schedule
    ============================================================ */
 #schedule .timeline { max-width: 460px; margin: var(--s-6) auto 0; }
@@ -277,13 +245,6 @@
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
   opacity: 0.5;
-}
-
-/* ============================================================
-   §5 Countdown — tick animation on value change
-   ============================================================ */
-.countdown__num.tick {
-  animation: flip 0.4s ease-in-out;
 }
 
 /* ============================================================
