@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="css/animations.css">
   <link rel="stylesheet" href="css/curtain.css">
   <link rel="stylesheet" href="css/hero.css">
+  <link rel="stylesheet" href="css/invitation.css">
   <link rel="stylesheet" href="css/countdown.css">
   <link rel="stylesheet" href="css/dresscode.css">
   <link rel="stylesheet" href="css/rsvp.css">
@@ -184,26 +185,35 @@
     </div>
   </section>
 
-  <!-- §2 Personalized greeting (Stage 3 placeholder; Stage 7 interpolates guest name) -->
-  <section id="greeting" class="section reveal">
+  <!-- ============================================================
+       §2 INVITATION LETTER — botanical flourish + smart greeting
+       Personalised via ?guest=…&form=m|f|pl URL params. Heuristic
+       (male/female/plural) when ?form is omitted lives in
+       js/invitation.js → detectGreetingForm().
+       ============================================================ -->
+  <section id="invitation" class="section reveal">
     <div class="section__inner">
-      <p class="section__eyebrow">привітання</p>
-      <p class="section__lead">
-        <span class="greeting__name">Дорогі друзі</span>,
-        ми надзвичайно раді запросити саме вас стати частиною нашого свята.
-      </p>
-      <div class="divider" aria-hidden="true"></div>
-    </div>
-  </section>
+      <p class="section__eyebrow">Запрошення</p>
 
-  <!-- §3 Story (payload-verbatim) -->
-  <section id="story" class="section reveal">
-    <div class="section__inner">
-      <div class="story__heart" aria-hidden="true">♥</div>
-      <p class="section__lead">
-        Запрошуємо вас стати частиною нашої історії кохання
-        та розділити з нами день народження нашої сімʼї.
-      </p>
+      <svg class="flourish" width="120" height="36" viewBox="0 0 120 36" style="--len: 240;" aria-hidden="true">
+        <path d="M2 18 C 20 18, 30 6, 45 18 S 75 30, 60 18 S 90 6, 100 18 L 118 18"/>
+        <circle class="leaf" cx="60" cy="18" r="2.4"/>
+        <path class="leaf" d="M45 14 Q 47 10 52 12 Q 50 16 45 14 Z" opacity="0.7"/>
+        <path class="leaf" d="M75 22 Q 73 26 68 24 Q 70 20 75 22 Z" opacity="0.7"/>
+      </svg>
+
+      <div class="letter">
+        <p class="letter-greeting" id="greeting">Дорогі гості,</p>
+        <p class="letter-body">
+          ми маємо честь запросити Вас на найважливіший день нашого життя —
+          день, коли наша <em>історія кохання</em> отримає своє ім'я,
+          а наша <em>сім'я</em> — свій початок.
+        </p>
+        <p class="letter-body">
+          Будемо щиро вдячні, якщо Ви розділите цей день поряд з нами.
+        </p>
+        <div class="signature">з любов'ю, <span class="brand-mono">В<span class="amp-char">&amp;</span>Ю</span></div>
+      </div>
     </div>
   </section>
 
