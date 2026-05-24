@@ -33,6 +33,9 @@ function hideImmediately(curtain, hero) {
   curtain.style.display = 'none';
   curtain.setAttribute('aria-hidden', 'true');
   if (hero) hero.classList.add('intro-done');
+  // Same semantic as a real lift — downstream consumers (music auto-start,
+  // hero reveal) should fire whether the curtain was shown or skipped.
+  document.dispatchEvent(new CustomEvent('curtain:lifted'));
 }
 
 function liftCurtain(curtain, hero) {

@@ -1,17 +1,19 @@
 /* ============================================================
    chrome.js — top-right floating chrome:
-     · Music toggle (Web Audio ambient pad — 4 oscillators + LFO
-       modulation through a delay feedback loop)
+     · Music toggle — HTMLAudioElement playing another-love.mp3
+       with auto-start on curtain:lifted (subject to browser
+       autoplay policy). Toggle off pauses + rewinds to 0; toggle
+       on plays from start each time (per user spec).
      · Share button: custom popover with direct messenger links
        (Telegram / Viber / WhatsApp / Email / Copy) + optional
        system share. Same UX on iOS, Android, and desktop.
    Both buttons mount inside .float-controls; theme dots live next.
    ============================================================ */
 
-const MUSIC_NOTES   = [220, 277.18, 329.63, 440];          // A3 / C#4 / E4 / A4
-const MASTER_FADE_S = 3;
-const STOP_FADE_S   = 0.8;
-const STOP_KILL_MS  = 900;
+const MUSIC_SRC      = 'another-love.mp3';
+const MUSIC_VOLUME   = 0.42;
+const MUSIC_FADE_IN_MS  = 1400;
+const MUSIC_FADE_OUT_MS = 500;
 
 const SHARE_TITLE = 'Володимир та Юстина · 17.07.2026';
 const SHARE_TEXT  = 'Запрошуємо на весілля Володимира та Юстини';
@@ -27,82 +29,87 @@ function shareableUrl() {
 }
 
 /* ============================================================
-   MUSIC — ambient pad
+   MUSIC — another-love.mp3 (looped, gentle fade in/out)
    ============================================================ */
 
-let audioCtx     = null;
-let musicNodes   = null;
-let musicPlaying = false;
+let musicEl    = null;       // HTMLAudioElement (lazy-created on first need)
+let musicBtnEl = null;       // The .music-btn DOM node (set on init)
+let fadeTimer  = null;       // setInterval handle for the active fade ramp
 
-function startMusic(btn) {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  if (audioCtx.state === 'suspended') audioCtx.resume();
-  const ctx = audioCtx;
+function ensureMusicEl() {
+  if (musicEl) return musicEl;
+  musicEl = new Audio(MUSIC_SRC);
+  musicEl.loop        = true;
+  musicEl.preload     = 'auto';
+  musicEl.volume      = 0;
+  musicEl.crossOrigin = 'anonymous';
 
-  const master = ctx.createGain();
-  master.gain.value = 0;
-  master.connect(ctx.destination);
-  master.gain.linearRampToValueAtTime(0.08, ctx.currentTime + MASTER_FADE_S);
-
-  const oscs = MUSIC_NOTES.map((freq, i) => {
-    const o = ctx.createOscillator();
-    const g = ctx.createGain();
-    o.frequency.value = freq;
-    o.type            = i === 0 ? 'sine' : 'triangle';
-    g.gain.value      = 0.25 - i * 0.05;
-
-    const lfo     = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    lfo.frequency.value = 0.1 + i * 0.04;
-    lfoGain.gain.value  = 0.5 + i * 0.3;
-    lfo.connect(lfoGain).connect(o.frequency);
-    lfo.start();
-
-    o.connect(g).connect(master);
-    o.start();
-    return { o, g, lfo };
-  });
-
-  const delay     = ctx.createDelay();
-  const feedback  = ctx.createGain();
-  const delayGain = ctx.createGain();
-  delay.delayTime.value = 0.4;
-  feedback.gain.value   = 0.3;
-  delayGain.gain.value  = 0.3;
-  master.connect(delay);
-  delay.connect(feedback).connect(delay);
-  delay.connect(delayGain).connect(ctx.destination);
-
-  musicNodes   = { master, oscs };
-  musicPlaying = true;
-  btn?.classList.add('playing');
-  btn?.setAttribute('aria-pressed', 'true');
+  // Reflect underlying audio state to the button — covers cases where
+  // playback stops outside our toggle (tab discard, media-session pause,
+  // OS controls).
+  musicEl.addEventListener('play',  syncBtnFromAudio);
+  musicEl.addEventListener('pause', syncBtnFromAudio);
+  return musicEl;
 }
 
-function stopMusic(btn) {
-  if (!musicNodes) return;
-  const { master, oscs } = musicNodes;
-  master.gain.cancelScheduledValues(audioCtx.currentTime);
-  master.gain.linearRampToValueAtTime(0, audioCtx.currentTime + STOP_FADE_S);
-  setTimeout(() => {
-    for (const { o, lfo } of oscs) {
-      try { o.stop(); } catch { /* already stopped */ }
-      try { lfo.stop(); } catch { /* already stopped */ }
+function syncBtnFromAudio() {
+  if (!musicBtnEl || !musicEl) return;
+  const playing = !musicEl.paused;
+  musicBtnEl.classList.toggle('playing', playing);
+  musicBtnEl.setAttribute('aria-pressed', playing ? 'true' : 'false');
+}
+
+/** Smoothly ramp audio.volume to `to` over `durationMs`. Cancels any
+    in-flight fade. Calls `onDone` when the target is reached. */
+function fadeVolume(audio, to, durationMs, onDone) {
+  if (fadeTimer) { clearInterval(fadeTimer); fadeTimer = null; }
+  const from  = audio.volume;
+  const steps = Math.max(8, Math.round(durationMs / 35));
+  const tickMs = durationMs / steps;
+  let i = 0;
+  fadeTimer = setInterval(() => {
+    i++;
+    const t = i / steps;
+    audio.volume = Math.max(0, Math.min(1, from + (to - from) * t));
+    if (i >= steps) {
+      clearInterval(fadeTimer);
+      fadeTimer = null;
+      onDone?.();
     }
-    try { master.disconnect(); } catch { /* ignore */ }
-    musicNodes = null;
-  }, STOP_KILL_MS);
-  musicPlaying = false;
-  btn?.classList.remove('playing');
-  btn?.setAttribute('aria-pressed', 'false');
+  }, tickMs);
+}
+
+async function startMusic() {
+  const a = ensureMusicEl();
+  try {
+    a.currentTime = 0;             // restart from beginning, per spec
+    a.volume      = 0;
+    await a.play();                // may reject if autoplay is blocked
+    fadeVolume(a, MUSIC_VOLUME, MUSIC_FADE_IN_MS);
+    return true;
+  } catch {
+    // Autoplay denied (no user gesture yet) — leave button in paused state.
+    syncBtnFromAudio();
+    return false;
+  }
+}
+
+function stopMusic() {
+  if (!musicEl || musicEl.paused) return;
+  const a = musicEl;
+  fadeVolume(a, 0, MUSIC_FADE_OUT_MS, () => {
+    a.pause();
+    a.currentTime = 0;
+  });
 }
 
 function attachMusicToggle(btn) {
   if (!btn) return;
+  musicBtnEl = btn;
   btn.setAttribute('aria-pressed', 'false');
   btn.addEventListener('click', () => {
-    if (musicPlaying) stopMusic(btn);
-    else              startMusic(btn);
+    if (!musicEl || musicEl.paused) startMusic();
+    else                            stopMusic();
   });
 }
 
@@ -291,4 +298,23 @@ function attachShareButton(btn) {
 export function initChrome() {
   attachMusicToggle(document.getElementById('musicBtn'));
   attachShareButton(document.getElementById('shareBtn'));
+
+  // Auto-start music once the intro curtain lifts. If the browser blocks
+  // autoplay (no prior user gesture), startMusic() catches the rejection
+  // and the button stays in the "paused" state.
+  document.addEventListener('curtain:lifted', () => startMusic(), { once: true });
+
+  // Fallback for autoplay-blocked sessions (curtain auto-lifted without a
+  // user click). On the next real interaction anywhere on the page, try
+  // again — by then the browser counts it as a user gesture. Skipped if
+  // music is already playing or the user clicks the music button (which
+  // has its own handler).
+  const firstGesture = (e) => {
+    if (e.target && e.target.closest && e.target.closest('.music-btn')) return;
+    if (musicEl && !musicEl.paused) return;
+    startMusic();
+  };
+  document.addEventListener('click',     firstGesture, { once: true, capture: true });
+  document.addEventListener('keydown',   firstGesture, { once: true, capture: true });
+  document.addEventListener('touchend',  firstGesture, { once: true, capture: true });
 }
