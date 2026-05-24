@@ -5,6 +5,44 @@
 
 [hidden] { display: none !important; }
 
+/* ---- "← Запрошення" pill in the float-controls dock ---- */
+.admin-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px 7px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--ink-soft);
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--tracking-wider);
+  text-transform: uppercase;
+  transition: color 0.25s var(--easing), border-color 0.25s var(--easing),
+              transform 0.25s var(--easing);
+}
+.admin-back:hover {
+  color: var(--ink);
+  border-color: var(--accent);
+  transform: translateX(-2px);
+}
+.admin-back:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.admin-back svg {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+@media (max-width: 480px) {
+  .admin-back span { display: none; }
+  .admin-back { padding: 7px 9px; }
+}
+
 .admin-main {
   position: relative;
   z-index: 5;

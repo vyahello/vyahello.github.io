@@ -45,7 +45,10 @@ function getTokenFromUrl() {
 }
 
 async function fetchEventConfig() {
-  const res = await fetch('data/event.json', { cache: 'no-store' });
+  // resolve relative to the module URL so it works from both
+  // /v-y/admin/ and any other folder depth without hard-coding.
+  const url = new URL('../data/event.json', import.meta.url);
+  const res = await fetch(url, { cache: 'no-store' });
   if (!res.ok) throw new Error('event-config-failed');
   return res.json();
 }
