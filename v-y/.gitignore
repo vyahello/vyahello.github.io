@@ -1,4 +1,5 @@
 .local/
+.claude/
 CLAUDE.md
 .superpowers/
 temp/
