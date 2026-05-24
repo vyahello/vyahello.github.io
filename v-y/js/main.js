@@ -3,6 +3,7 @@
    ============================================================ */
 
 import { initTheme }       from './theme.js';
+import { initCurtain }     from './curtain.js';
 import { initHero }        from './hero.js';
 import { initReveal }      from './reveal.js';
 import { initUI }          from './ui.js';
@@ -12,6 +13,7 @@ import { initRSVP }        from './rsvp.js';
 
 function boot() {
   initTheme();        // must run first — paints data-theme on body
+  initCurtain();      // auto-lifts after 3s or on click; first paint after theme
   initHero();
   initReveal();
   initUI();
