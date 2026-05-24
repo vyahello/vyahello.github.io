@@ -129,6 +129,30 @@
   opacity: 0.6;
 }
 .guest-name:focus::placeholder { opacity: 0.3; }
+/* Flag set by JS when the submit handler finds a single-word value (no surname)
+   or an empty required row. Brief pulse, doesn't persist. */
+.guest-name.is-invalid {
+  animation: guestNameShake 0.42s var(--easing);
+  background: color-mix(in oklab, #c44a2f 14%, transparent);
+  border-radius: 4px;
+}
+@keyframes guestNameShake {
+  0%, 100% { transform: translateX(0); }
+  20%      { transform: translateX(-4px); }
+  40%      { transform: translateX(4px); }
+  60%      { transform: translateX(-3px); }
+  80%      { transform: translateX(2px); }
+}
+
+/* Inline hint shown right below the guest list when validation fails. */
+.guest-list-error {
+  margin: 12px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklab, #c44a2f 80%, var(--ink));
+  text-align: center;
+}
 
 .guest-remove {
   width: 24px;

@@ -145,17 +145,33 @@ function setHousehold(list, addBtn, names) {
   renumberGuestRows(list, addBtn);
 }
 
-/**
- * Expand the form to match the expected household size — adds empty rows
- * (no values, no auto-filled names) so the guest sees "we're expecting N
- * of you" but still types their own full name + surname.
- * Never shrinks an already-larger list.
- */
-function setHouseholdRowCount(list, addBtn, count) {
-  const target = Math.max(1, Math.min(Number(count) || 0, MAX_GUESTS));
-  const current = list.querySelectorAll('.guest-row').length;
-  for (let i = current; i < target; i++) addGuestRow(list, addBtn, { focus: false });
-  renumberGuestRows(list, addBtn);
+/** Returns true when `s` looks like "Ім'я Прізвище" (≥ 2 whitespace-separated
+    tokens). Used to enforce surname entry — guests were submitting just first
+    names which made the Sheet ambiguous. */
+function hasFullName(s) {
+  return String(s || '').trim().split(/\s+/).filter(Boolean).length >= 2;
+}
+
+/** Focus + briefly tint an invalid name input, and surface a small inline
+    hint underneath the guest list. Auto-clears after ~3.5s. */
+function flagInvalidGuestInput(input, message) {
+  if (!input) return;
+  input.focus();
+  input.classList.add('is-invalid');
+  setTimeout(() => input.classList.remove('is-invalid'), 1400);
+
+  const list = input.closest('#guestList') || input.closest('.guest-list');
+  if (list) {
+    let hint = list.parentElement.querySelector('.guest-list-error');
+    if (!hint) {
+      hint = document.createElement('p');
+      hint.className = 'guest-list-error';
+      list.parentElement.insertBefore(hint, list.nextSibling);
+    }
+    hint.textContent = message;
+    clearTimeout(flagInvalidGuestInput._t);
+    flagInvalidGuestInput._t = setTimeout(() => hint.remove(), 3500);
+  }
 }
 
 /* ---- Magnetic seal (desktop) ---- */
@@ -322,13 +338,6 @@ export function initRSVP() {
     state.slug = slug || null;
     state.displayName = guest?.display_name || null;
 
-    // Pre-fill ROW COUNT only — empty inputs so the guest writes their own
-    // full name + surname. household_default's purpose is to hint at the
-    // expected family size, not to dictate names.
-    if (Array.isArray(guest?.household_default) && guest.household_default.length) {
-      setHouseholdRowCount(list, addBtn, guest.household_default.length);
-    }
-
     if (rsvp) {
       state.submittedAt = rsvp.submitted_at || null;
       // Restoring previous answer DOES fill values — that's the guest's
@@ -348,13 +357,23 @@ export function initRSVP() {
 
     // Guard: 'yes' or 'maybe' require at least one named guest.
     const rawNames = readGuestNames(list);
-    if ((attending === 'yes' || attending === 'maybe') && rawNames.length === 0) {
+    const needsNames = attending === 'yes' || attending === 'maybe';
+
+    if (needsNames && rawNames.length === 0) {
       const first = list.querySelector('.guest-name');
-      first.focus();
-      first.style.transition = 'background 0.4s';
-      first.style.background = 'color-mix(in oklab, var(--accent) 18%, transparent)';
-      setTimeout(() => { first.style.background = ''; }, 1200);
+      flagInvalidGuestInput(first, 'Будь ласка, вкажіть Ваше імʼя та прізвище.');
       return;
+    }
+
+    // Each filled row must contain BOTH name and surname (2+ words) so the
+    // sheet doesn't get half-identified guests like "Ірина".
+    if (needsNames) {
+      const invalidInput = [...list.querySelectorAll('.guest-name')]
+        .find((i) => i.value.trim() && !hasFullName(i.value));
+      if (invalidInput) {
+        flagInvalidGuestInput(invalidInput, 'Будь ласка, вкажіть імʼя ТА прізвище.');
+        return;
+      }
     }
 
     const payload = buildPayload({
