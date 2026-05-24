@@ -1,28 +1,28 @@
 /* ============================================================
    chrome.js — top-right floating chrome:
-     · Music toggle (Web Audio ambient pad — 4 oscillators with
-       LFO modulation through a delay feedback loop)
-     · Share button (Web Share API + clipboard fallback)
-   Both buttons are mounted inside .float-controls; theme dots
-   live next to them.
+     · Music toggle (Web Audio ambient pad — 4 oscillators + LFO
+       modulation through a delay feedback loop)
+     · Share button: custom popover with direct messenger links
+       (Telegram / Viber / WhatsApp / Email / Copy) + optional
+       system share. Same UX on iOS, Android, and desktop.
+   Both buttons mount inside .float-controls; theme dots live next.
    ============================================================ */
 
 const MUSIC_NOTES   = [220, 277.18, 329.63, 440];          // A3 / C#4 / E4 / A4
-const MASTER_FADE_S = 3;                                    // start ramp
-const STOP_FADE_S   = 0.8;                                  // exit ramp
-const STOP_KILL_MS  = 900;                                  // when to disconnect
+const MASTER_FADE_S = 3;
+const STOP_FADE_S   = 0.8;
+const STOP_KILL_MS  = 900;
 
-const SHARE_DATA = {
-  title: 'Володимир та Юстина · 17.07.2026',
-  text:  'Запрошуємо Вас на наше весілля',
-};
+const SHARE_TITLE = 'Володимир та Юстина · 17.07.2026';
+const SHARE_TEXT  = 'Запрошуємо Вас на наше весілля';
+const COPIED_MS   = 2000;
 
 /* ============================================================
    MUSIC — ambient pad
    ============================================================ */
 
-let audioCtx    = null;
-let musicNodes  = null;
+let audioCtx     = null;
+let musicNodes   = null;
 let musicPlaying = false;
 
 function startMusic(btn) {
@@ -42,7 +42,6 @@ function startMusic(btn) {
     o.type            = i === 0 ? 'sine' : 'triangle';
     g.gain.value      = 0.25 - i * 0.05;
 
-    // Slow LFO on the oscillator's frequency for a breathing detune.
     const lfo     = ctx.createOscillator();
     const lfoGain = ctx.createGain();
     lfo.frequency.value = 0.1 + i * 0.04;
@@ -55,7 +54,6 @@ function startMusic(btn) {
     return { o, g, lfo };
   });
 
-  // Feedback delay tap for ambient halo.
   const delay     = ctx.createDelay();
   const feedback  = ctx.createGain();
   const delayGain = ctx.createGain();
@@ -100,20 +98,40 @@ function attachMusicToggle(btn) {
 }
 
 /* ============================================================
-   SHARE — native Web Share API + clipboard fallback
+   SHARE — popover with direct messenger links
    ============================================================ */
 
-const CHECK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="4 12 10 18 20 6"/></svg>';
-const COPIED_DISPLAY_MS = 2000;
+const ICON = {
+  telegram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3 L2 11 L9 13 L18 7 L11 15 L13 22 Z"/></svg>',
+  viber:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18 L4 22 L8 21 L13 21 C 17 21 19 18 19 13 V 9 C 19 5 17 3 13 3 H 10 C 6 3 5 5 5 9 V 18 Z"/><path d="M9 9 C 9 11 11 13 13 13"/><path d="M11 7 C 14 7 15 8 15 11"/></svg>',
+  whatsapp: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21 L4.5 16 C 3.5 14.5 3 12.8 3 11 C 3 6 7 2 12 2 C 17 2 21 6 21 11 C 21 16 17 20 12 20 C 10.2 20 8.5 19.5 7 18.5 L 3 21 Z"/><path d="M9 9 C 9 11 11 14 13 14 L 14 14 L 15 13 C 15.5 12.5 16 13 16 13 C 16 14 14.5 15.5 13 15 C 10.5 14 9 12 8 9.5 C 8 8 9 7 9.5 7 C 10 7 10.5 8 10 8.5 L 9 9 Z"/></svg>',
+  email:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7 L12 13 L21 7"/></svg>',
+  copy:     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="1"/><path d="M5 15 H 4 V 4 H 15 V 5"/></svg>',
+  system:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5"  r="3"/><circle cx="6"  cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5 L15.4 17.5 M15.4 6.5 L8.6 10.5"/></svg>',
+  check:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 10 18 20 6"/></svg>',
+};
+
+const enc = encodeURIComponent;
+
+function shareLinks(url) {
+  // Compose the messenger-share intent URLs. Each function returns a string
+  // suitable as <a href="">. Mobile schemes (viber://) only render on
+  // a device that registered the handler.
+  return {
+    telegram: `https://t.me/share/url?url=${enc(url)}&text=${enc(SHARE_TEXT)}`,
+    viber:    `viber://forward?text=${enc(SHARE_TEXT + ' ' + url)}`,
+    whatsapp: `https://wa.me/?text=${enc(SHARE_TEXT + ' ' + url)}`,
+    email:    `mailto:?subject=${enc(SHARE_TITLE)}&body=${enc(SHARE_TEXT + '\n\n' + url)}`,
+  };
+}
 
 /** Copy `text` to clipboard. Tries the async Clipboard API first,
-    then the legacy execCommand path. Returns true on success. */
+    then a legacy execCommand fallback (non-secure contexts). */
 async function copyToClipboard(text) {
   if (navigator.clipboard?.writeText) {
     try { await navigator.clipboard.writeText(text); return true; }
-    catch { /* fall through to legacy */ }
+    catch { /* fall through */ }
   }
-  // Legacy fallback — works in non-secure contexts and older browsers.
   const ta = document.createElement('textarea');
   ta.value = text;
   ta.setAttribute('readonly', '');
@@ -121,45 +139,139 @@ async function copyToClipboard(text) {
   document.body.appendChild(ta);
   ta.select();
   let ok = false;
-  try { ok = document.execCommand('copy'); }
-  catch { /* unsupported — give up */ }
+  try { ok = document.execCommand('copy'); } catch { /* unsupported */ }
   document.body.removeChild(ta);
   return ok;
 }
 
-function flashCopiedFeedback(btn) {
-  const originalHtml = btn.innerHTML;
-  btn.innerHTML = CHECK_SVG;
-  btn.classList.add('copied');
+function isMobile() {
+  return window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+}
+function hasNativeShare() {
+  return typeof navigator.share === 'function';
+}
+
+function buildSharePopover(btn) {
+  const links = shareLinks(window.location.href);
+  const mobile = isMobile();
+  const native = hasNativeShare();
+
+  // Visible options: messengers + email always; viber + system-share only on
+  // mobile (the only places those handlers actually resolve to something).
+  const opts = [
+    { id: 'telegram',  label: 'Telegram',           kind: 'link',   href: links.telegram, icon: ICON.telegram },
+    ...(mobile ? [{ id: 'viber', label: 'Viber',    kind: 'link',   href: links.viber,    icon: ICON.viber }] : []),
+    { id: 'whatsapp',  label: 'WhatsApp',           kind: 'link',   href: links.whatsapp, icon: ICON.whatsapp },
+    { id: 'email',     label: 'Email',              kind: 'link',   href: links.email,    icon: ICON.email },
+    { id: 'copy',      label: 'Копіювати посилання', kind: 'action', action: 'copy',       icon: ICON.copy },
+    ...(native ? [{ id: 'system', label: 'Інші способи…', kind: 'action', action: 'system', icon: ICON.system }] : []),
+  ];
+
+  const pop = document.createElement('div');
+  pop.className = 'share-popover';
+  pop.setAttribute('role', 'menu');
+  pop.setAttribute('aria-label', 'Поділитися запрошенням');
+  pop.innerHTML = opts.map((o) => {
+    const inner = `<span class="ic" aria-hidden="true">${o.icon}</span><span class="lbl">${o.label}</span>`;
+    if (o.kind === 'link') {
+      const target = o.href.startsWith('mailto:') || o.href.startsWith('viber:') ? '' : 'target="_blank" rel="noopener noreferrer"';
+      return `<a class="opt" role="menuitem" href="${o.href}" ${target} data-share-id="${o.id}">${inner}</a>`;
+    }
+    return `<button type="button" class="opt" role="menuitem" data-share-action="${o.action}">${inner}</button>`;
+  }).join('');
+
+  // Action wiring — clipboard copy + system share both run in JS.
+  pop.addEventListener('click', async (e) => {
+    const action = e.target.closest('[data-share-action]')?.dataset.shareAction;
+    if (!action) return;
+    e.preventDefault();
+    const optEl = e.target.closest('.opt');
+
+    if (action === 'copy') {
+      const ok = await copyToClipboard(window.location.href);
+      if (ok) flashCopiedFeedback(optEl);
+    } else if (action === 'system') {
+      try {
+        await navigator.share({ title: SHARE_TITLE, text: SHARE_TEXT, url: window.location.href });
+        closePopover(btn);
+      } catch { /* user cancelled OS sheet — ignore */ }
+    }
+  });
+
+  // Clicking any link option also closes the popover, after a short delay so
+  // the browser has time to follow the navigation.
+  pop.addEventListener('click', (e) => {
+    const link = e.target.closest('a.opt');
+    if (link) setTimeout(() => closePopover(btn), 200);
+  });
+
+  return pop;
+}
+
+function flashCopiedFeedback(optEl) {
+  if (!optEl) return;
+  const lbl = optEl.querySelector('.lbl');
+  const ic  = optEl.querySelector('.ic');
+  if (!lbl || !ic) return;
+  const orig = { lbl: lbl.textContent, ic: ic.innerHTML };
+  lbl.textContent = 'Скопійовано!';
+  ic.innerHTML    = ICON.check;
+  optEl.classList.add('is-copied');
   setTimeout(() => {
-    btn.innerHTML = originalHtml;
-    btn.classList.remove('copied');
-  }, COPIED_DISPLAY_MS);
+    lbl.textContent = orig.lbl;
+    ic.innerHTML    = orig.ic;
+    optEl.classList.remove('is-copied');
+  }, COPIED_MS);
+}
+
+let openPopoverEl = null;
+let outsideHandler = null;
+let escHandler = null;
+
+function openPopover(btn) {
+  if (openPopoverEl) return;
+  openPopoverEl = buildSharePopover(btn);
+  document.body.appendChild(openPopoverEl);
+
+  // Open animation on next frame so transition runs.
+  requestAnimationFrame(() => openPopoverEl.classList.add('open'));
+  btn.setAttribute('aria-expanded', 'true');
+
+  outsideHandler = (e) => {
+    if (!openPopoverEl) return;
+    if (openPopoverEl.contains(e.target) || btn.contains(e.target)) return;
+    closePopover(btn);
+  };
+  escHandler = (e) => { if (e.key === 'Escape') closePopover(btn); };
+
+  // Defer attach so the opening click itself doesn't immediately close it.
+  setTimeout(() => {
+    document.addEventListener('click',   outsideHandler);
+    document.addEventListener('keydown', escHandler);
+  }, 0);
+}
+
+function closePopover(btn) {
+  if (!openPopoverEl) return;
+  openPopoverEl.classList.remove('open');
+  btn.setAttribute('aria-expanded', 'false');
+  document.removeEventListener('click',   outsideHandler);
+  document.removeEventListener('keydown', escHandler);
+  const stale = openPopoverEl;
+  openPopoverEl = null;
+  outsideHandler = null;
+  escHandler = null;
+  setTimeout(() => stale.remove(), 280);   // matches CSS transition
 }
 
 function attachShareButton(btn) {
   if (!btn) return;
-
-  btn.addEventListener('click', async () => {
-    const url  = window.location.href;
-    const data = { ...SHARE_DATA, url };
-
-    // Try native share sheet first (mobile-primary path).
-    if (typeof navigator.share === 'function') {
-      try {
-        await navigator.share(data);
-        return;                         // OS handled the share — done.
-      } catch (err) {
-        // User cancelled the share sheet — that's a normal "no-op" exit,
-        // not a reason to also copy to clipboard. Bail.
-        if (err && err.name === 'AbortError') return;
-        // Any other failure: fall through to the clipboard fallback below.
-      }
-    }
-
-    // No Web Share, or share threw a non-cancel error → copy URL.
-    const copied = await copyToClipboard(url);
-    if (copied) flashCopiedFeedback(btn);
+  btn.setAttribute('aria-haspopup', 'menu');
+  btn.setAttribute('aria-expanded', 'false');
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    if (openPopoverEl) closePopover(btn);
+    else               openPopover(btn);
   });
 }
 
