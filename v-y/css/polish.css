@@ -252,6 +252,17 @@ details[open] .faq-toggle::after {
   color: var(--accent);
   line-height: 1;
   letter-spacing: 0.04em;
+  /* Quiet breathing — monogram floats gently up-down (6s cycle). Combined
+     with the audio-pulse glow on .amp-char (curtain.css), the closing
+     reads as alive without being animated-to-death. */
+  animation: closingFloat 6s ease-in-out infinite;
+}
+@keyframes closingFloat {
+  0%, 100% { transform: translateY(0)    scale(1);    }
+  50%      { transform: translateY(-8px) scale(1.012); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .closing .mono-big { animation: none; }
 }
 .closing .sign {
   margin-top: 30px;
