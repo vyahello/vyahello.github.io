@@ -1,9 +1,9 @@
 /* ============================================================
-   ui.css — global overlay chrome:
-     · scroll progress bar
-     · scroll-to-top button
-     · floating controls (theme switcher; music + share land in Step 11)
-   Behaviour driven by js/ui.js + js/theme.js.
+   ui.css — chrome that lives in the upper-right corner:
+     · floating controls (theme switcher; music + share in Step 11)
+     · scroll progress bar (theme-aware accent gradient)
+   Scroll-to-top is now handled by the floating monogram badge
+   in css/globals.css. Behaviour: js/ui.js + js/theme.js.
    ============================================================ */
 
 /* ---- Floating controls dock (top-right) ---- */
@@ -57,7 +57,7 @@
   .theme-dot { transition: none; }
 }
 
-/* ---- Scroll progress bar ---- */
+/* ---- Scroll progress bar (theme-aware) ---- */
 
 .scroll-progress {
   position: fixed;
@@ -65,38 +65,14 @@
   left: 0;
   height: 2px;
   width: 0;             /* JS sets this to a percentage */
-  background: linear-gradient(90deg, var(--gold-glow), var(--gold-warm), var(--gold-deep));
-  z-index: 999;
+  background: linear-gradient(to right,
+    transparent,
+    color-mix(in oklab, var(--accent) 70%, transparent),
+    var(--accent),
+    color-mix(in oklab, var(--accent) 70%, transparent),
+    transparent);
+  z-index: 70;
   pointer-events: none;
+  box-shadow: 0 0 12px var(--accent);
   transition: width 0.05s linear;
-}
-
-/* ---- Scroll-to-top button ---- */
-
-.scroll-top {
-  position: fixed;
-  right: var(--s-5);
-  bottom: var(--s-5);
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background: var(--gold-warm);
-  color: var(--cream);
-  border: 1px solid var(--gold-glow);
-  cursor: pointer;
-  z-index: 998;
-  display: grid;
-  place-items: center;
-  font-size: 18px;
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
-  box-shadow: var(--shadow-soft);
-}
-.scroll-top.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.scroll-top:hover {
-  background: var(--gold-deep);
 }
