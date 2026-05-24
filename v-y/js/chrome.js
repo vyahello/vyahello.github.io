@@ -90,12 +90,23 @@ function attachAudioReactiveLoop(audio) {
   }
   // Resume the context whenever play succeeds (autoplay-policy quirk).
   audio.addEventListener('play', () => {
-    if (audioCtx?.state === 'suspended') audioCtx.resume().catch(() => {});
+    ensureAudioContextResumed();
     if (!audioRAFActive) {
       audioRAFActive = true;
       requestAnimationFrame(audioRAFTick);
     }
   });
+}
+
+/** Call from any user-gesture handler. Chrome for Android keeps the
+ *  AudioContext suspended until resumed inside a gesture even when
+ *  audio.play() succeeded earlier (e.g., from muted autoplay). Without
+ *  this, audio "plays" through Web Audio graph but never reaches the
+ *  speakers after unmute. Idempotent; ignores rejection. */
+function ensureAudioContextResumed() {
+  if (audioCtx && audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(() => { /* ignore — best effort */ });
+  }
 }
 
 function audioRAFTick() {
@@ -205,6 +216,9 @@ function attachMusicToggle(btn) {
   musicBtnEl = btn;
   btn.setAttribute('aria-pressed', 'false');
   btn.addEventListener('click', () => {
+    // Click IS a user gesture — resume any suspended context so muted-graph
+    // playback can actually reach the speakers on Android Chrome.
+    ensureAudioContextResumed();
     // Treat muted-playing as "not audible" → next click should start fresh.
     if (!isAudible()) startMusic();
     else              stopMusic();
@@ -225,6 +239,11 @@ function attachMusicToggle(btn) {
 function attachFirstInteractionFallback() {
   const onFirst = (e) => {
     if (e && e.target && e.target.closest && e.target.closest('.music-btn')) return;
+    // Resume any suspended AudioContext FIRST — we're in a real user-gesture
+    // task here, so this call counts as a gesture-initiated resume on
+    // Android Chrome / Samsung Internet (which otherwise keep it suspended
+    // even though autoplay-muted technically worked).
+    ensureAudioContextResumed();
     if (!musicEl) { startMusic(); cleanup(); return; }
     if (musicEl.paused) {
       startMusic();
