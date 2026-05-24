@@ -23,7 +23,7 @@ python3 -m http.server 8000
 Useful URL params:
 
 - `?skipIntro=1` — skip the curtain intro
-- `?theme=cream|gold|dark` — override default theme
+- `?theme=cream|dark` — override default theme
 - `?g=<slug>` — personalised invitation (requires backend + matching row in `Гості` tab)
 
 ## Architecture
@@ -67,7 +67,7 @@ Useful URL params:
 
 ## CSS architecture
 
-- **`theme.css`** — 3 themes (cream/gold/dark) as data-attribute scoped custom properties (`[data-theme="..."]`). All other stylesheets reference tokens only — never hard-code colors.
+- **`theme.css`** — 2 themes (cream/dark) as data-attribute scoped custom properties (`[data-theme="..."]`). All other stylesheets reference tokens only — never hard-code colors.
 - **`globals.css`** — page chrome (floating particles, cursor glow, monogram badge).
 - **`sections.css`** — `.reveal` intersection-driven fade, `.title-word`/`.title-char` per-character stagger animation primitives.
 - **Per-section stylesheets** — `hero.css`, `invitation.css`, `countdown.css`, `location.css`, `dresscode.css`, `rsvp.css`, `polish.css` (timeline + gifts + faq + closing).

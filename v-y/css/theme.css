@@ -118,43 +118,6 @@
 }
 
 /* ============================================================
-   THEME: GOLD — warm gold/champagne (payload-inspired)
-   ============================================================ */
-[data-theme="gold"] {
-  --bg:          #b8924d;
-  --bg-grain:    #a6803e;
-  --bg-card:     rgba(255, 240, 200, 0.07);
-  --bg-deep:     #8c6c32;
-  --ink:         #2a1c08;
-  --ink-soft:    #4a341a;
-  --ink-mute:    #6a4f2c;
-  --accent:      #fff4d0;
-  --accent-soft: #f0dba2;
-  --accent-deep: #fffaea;
-  --line:        rgba(40, 26, 8, 0.32);
-  --line-strong: rgba(40, 26, 8, 0.55);
-  --shadow:      0 30px 80px -40px rgba(60, 35, 0, 0.55);
-  --noise-opacity: 0.13;
-  --vignette:
-    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(255,240,200,0.28), transparent 60%),
-    radial-gradient(ellipse 90% 70% at 80% 100%, rgba(120,75,20,0.4), transparent 60%);
-
-  /* On a gold bg the rings need MUTED top-highlight (no white stripe) and
-     warmer dark stops — they should read like jewellery embedded in the
-     palette, not pop with overdone contrast. */
-  --ring-stop-0: #fff0c8;
-  --ring-stop-1: #f0d480;
-  --ring-stop-2: #b58a3d;
-  --ring-stop-3: #6a4f1c;
-  --ring-stop-4: #3d2810;
-  --ring-highlight:   rgba(255, 240, 195, 0.22);
-  --ring-self-shadow: rgba( 40,  18,   0, 0.18);
-  --ring-edge:        rgba( 20,  12,   2, 0.35);
-  --ring-spec:        rgba(255, 245, 200, 0.7);
-  --ring-cast:        rgba( 20,  10,   5, 0.28);
-}
-
-/* ============================================================
    THEME: DARK — luxe black + gold
    ============================================================ */
 [data-theme="dark"] {

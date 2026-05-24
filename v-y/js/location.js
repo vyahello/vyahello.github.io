@@ -1,7 +1,7 @@
 /* ============================================================
    location.js — §5 Локація — Leaflet map + theme-aware tiles
 
-   · Tile basemap: CARTO `light_all` for cream/gold themes,
+   · Tile basemap: CARTO `light_all` for cream theme,
      `dark_all` for the dark theme. Swaps live on `theme:changed`.
    · Custom golden divIcon marker with pulse ring.
    · "Відкрити в Google Maps" button gets href injected with VENUE coords.
@@ -90,7 +90,7 @@ export function initLocation() {
     const sameVariant =
       (currentTheme === 'dark') === (next === 'dark');
     currentTheme = next;
-    if (sameVariant) return;             // light_all serves both cream + gold
+    if (sameVariant) return;             // no-op for same variant
     map.removeLayer(tileLayer);
     tileErrors = 0;
     tileLayer = buildTileLayer(next).addTo(map);

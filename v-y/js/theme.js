@@ -1,5 +1,5 @@
 /* ============================================================
-   theme.js — 3-theme switcher (cream | gold | dark)
+   theme.js — 2-theme switcher (cream | dark)
 
    Resolution order on first paint:
      1. ?theme= URL param (if valid)
@@ -7,9 +7,10 @@
      3. default "cream"
 
    Persists selection to localStorage when the user clicks a dot.
+   Legacy "gold" values (in storage / URL) are silently mapped to cream.
    ============================================================ */
 
-const THEMES = ['cream', 'gold', 'dark'];
+const THEMES = ['cream', 'dark'];
 const STORAGE_KEY = 'v-y:theme';
 const DEFAULT_THEME = 'cream';
 

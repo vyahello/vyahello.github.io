@@ -43,7 +43,6 @@
   transition: transform 0.25s var(--easing), box-shadow 0.25s var(--easing);
 }
 .theme-dot[data-theme-dot="cream"] { background: #f0e8d8; }
-.theme-dot[data-theme-dot="gold"]  { background: linear-gradient(135deg, #f0dba2 0%, #b8924d 55%, #6b4f2a 100%); }
 .theme-dot[data-theme-dot="dark"]  { background: linear-gradient(135deg, #2a2218 0%, #15110c 60%, #0d0a06 100%); }
 .theme-dot:hover { transform: scale(1.12); }
 .theme-dot:focus-visible {
