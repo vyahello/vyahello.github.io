@@ -53,6 +53,28 @@
 }
 
 /* ============================================================
+   Ring SVG colour bindings — class selectors instead of inline
+   style="stop-color: var(--…)" because Safari + some Firefox
+   versions don't reliably resolve CSS variables inside SVG
+   <stop> inline style (the stop falls back to BLACK). Class
+   selectors are deterministic across browsers.
+   ============================================================ */
+.ring-stop-0 { stop-color: var(--ring-stop-0); }
+.ring-stop-1 { stop-color: var(--ring-stop-1); }
+.ring-stop-2 { stop-color: var(--ring-stop-2); }
+.ring-stop-3 { stop-color: var(--ring-stop-3); }
+.ring-stop-4 { stop-color: var(--ring-stop-4); }
+.ring-spec-0 { stop-color: var(--ring-spec); }
+.ring-spec-1 { stop-color: var(--ring-spec); stop-opacity: 0.25; }
+.ring-spec-2 { stop-color: var(--ring-spec); stop-opacity: 0; }
+.ring-cast-0 { stop-color: var(--ring-cast); }
+.ring-cast-1 { stop-color: var(--ring-cast); stop-opacity: 0; }
+
+.ring-edge        { stroke: var(--ring-edge); }
+.ring-highlight   { stroke: var(--ring-highlight); }
+.ring-self-shadow { stroke: var(--ring-self-shadow); }
+
+/* ============================================================
    THEME: CREAM — light, airy luxe (default)
    ============================================================ */
 [data-theme="cream"] {

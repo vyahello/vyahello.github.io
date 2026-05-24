@@ -69,20 +69,20 @@
                their own balanced gold gradient (no white stripe on darker
                themes, no near-black bottom on dark theme). -->
           <linearGradient id="goldRingC" x1="0.3" y1="0" x2="0.7" y2="1">
-            <stop offset="0%"   style="stop-color: var(--ring-stop-0)"/>
-            <stop offset="14%"  style="stop-color: var(--ring-stop-1)"/>
-            <stop offset="38%"  style="stop-color: var(--ring-stop-2)"/>
-            <stop offset="64%"  style="stop-color: var(--ring-stop-3)"/>
-            <stop offset="100%" style="stop-color: var(--ring-stop-4)"/>
+            <stop offset="0%"   class="ring-stop-0"/>
+            <stop offset="14%"  class="ring-stop-1"/>
+            <stop offset="38%"  class="ring-stop-2"/>
+            <stop offset="64%"  class="ring-stop-3"/>
+            <stop offset="100%" class="ring-stop-4"/>
           </linearGradient>
           <radialGradient id="goldRingCSpec" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%"   style="stop-color: var(--ring-spec)"/>
-            <stop offset="60%"  style="stop-color: var(--ring-spec); stop-opacity: 0.25"/>
-            <stop offset="100%" style="stop-color: var(--ring-spec); stop-opacity: 0"/>
+            <stop offset="0%"   class="ring-spec-0"/>
+            <stop offset="60%"  class="ring-spec-1"/>
+            <stop offset="100%" class="ring-spec-2"/>
           </radialGradient>
           <radialGradient id="goldRingCCast" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%"   style="stop-color: var(--ring-cast)"/>
-            <stop offset="100%" style="stop-color: var(--ring-cast); stop-opacity: 0"/>
+            <stop offset="0%"   class="ring-cast-0"/>
+            <stop offset="100%" class="ring-cast-1"/>
           </radialGradient>
           <mask id="mLeftC">
             <rect x="-10" y="-10" width="120" height="70" fill="white"/>
@@ -97,18 +97,18 @@
         <ellipse class="ring-detail" cx="50" cy="46.5" rx="28" ry="1.7" fill="url(#goldRingCCast)"/>
 
         <g mask="url(#mLeftC)">
-          <circle class="ring-detail" cx="35" cy="25" r="19.8" style="stroke: var(--ring-edge)"        stroke-width="0.45"/>
-          <circle class="ring r1"     cx="35" cy="25" r="18"   stroke="url(#goldRingC)"                stroke-width="3.6" stroke-linecap="round"/>
-          <path   class="ring-detail" d="M 21 18.5 A 18 18 0 0 1 49 18.5" style="stroke: var(--ring-highlight)"   stroke-width="0.6"/>
-          <path   class="ring-detail" d="M 21 32 A 18 18 0 0 0 49 32"     style="stroke: var(--ring-self-shadow)" stroke-width="0.45"/>
+          <circle class="ring-detail ring-edge" cx="35" cy="25" r="19.8" stroke-width="0.45"/>
+          <circle class="ring r1"               cx="35" cy="25" r="18"   stroke="url(#goldRingC)" stroke-width="3.6" stroke-linecap="round"/>
+          <path   class="ring-detail ring-highlight"   d="M 21 18.5 A 18 18 0 0 1 49 18.5" stroke-width="0.6"/>
+          <path   class="ring-detail ring-self-shadow" d="M 21 32   A 18 18 0 0 0 49 32"   stroke-width="0.45"/>
           <ellipse class="ring-detail" cx="27" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingCSpec)" transform="rotate(-25 27 15.5)"/>
         </g>
 
         <g mask="url(#mRightC)">
-          <circle class="ring-detail" cx="65" cy="25" r="19.8" style="stroke: var(--ring-edge)"        stroke-width="0.45"/>
-          <circle class="ring r2"     cx="65" cy="25" r="18"   stroke="url(#goldRingC)"                stroke-width="3.6" stroke-linecap="round"/>
-          <path   class="ring-detail" d="M 51 18.5 A 18 18 0 0 1 79 18.5" style="stroke: var(--ring-highlight)"   stroke-width="0.6"/>
-          <path   class="ring-detail" d="M 51 32 A 18 18 0 0 0 79 32"     style="stroke: var(--ring-self-shadow)" stroke-width="0.45"/>
+          <circle class="ring-detail ring-edge" cx="65" cy="25" r="19.8" stroke-width="0.45"/>
+          <circle class="ring r2"               cx="65" cy="25" r="18"   stroke="url(#goldRingC)" stroke-width="3.6" stroke-linecap="round"/>
+          <path   class="ring-detail ring-highlight"   d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke-width="0.6"/>
+          <path   class="ring-detail ring-self-shadow" d="M 51 32   A 18 18 0 0 0 79 32"   stroke-width="0.45"/>
           <ellipse class="ring-detail" cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingCSpec)" transform="rotate(-25 57 15.5)"/>
         </g>
       </svg>
@@ -174,20 +174,20 @@
         <svg viewBox="0 0 100 50" fill="none" overflow="visible">
           <defs>
             <linearGradient id="goldRingH" x1="0.3" y1="0" x2="0.7" y2="1">
-              <stop offset="0%"   style="stop-color: var(--ring-stop-0)"/>
-              <stop offset="14%"  style="stop-color: var(--ring-stop-1)"/>
-              <stop offset="38%"  style="stop-color: var(--ring-stop-2)"/>
-              <stop offset="64%"  style="stop-color: var(--ring-stop-3)"/>
-              <stop offset="100%" style="stop-color: var(--ring-stop-4)"/>
+              <stop offset="0%"   class="ring-stop-0"/>
+              <stop offset="14%"  class="ring-stop-1"/>
+              <stop offset="38%"  class="ring-stop-2"/>
+              <stop offset="64%"  class="ring-stop-3"/>
+              <stop offset="100%" class="ring-stop-4"/>
             </linearGradient>
             <radialGradient id="goldRingHSpec" cx="0.5" cy="0.5" r="0.5">
-              <stop offset="0%"   style="stop-color: var(--ring-spec)"/>
-              <stop offset="60%"  style="stop-color: var(--ring-spec); stop-opacity: 0.25"/>
-              <stop offset="100%" style="stop-color: var(--ring-spec); stop-opacity: 0"/>
+              <stop offset="0%"   class="ring-spec-0"/>
+              <stop offset="60%"  class="ring-spec-1"/>
+              <stop offset="100%" class="ring-spec-2"/>
             </radialGradient>
             <radialGradient id="goldRingHCast" cx="0.5" cy="0.5" r="0.5">
-              <stop offset="0%"   style="stop-color: var(--ring-cast)"/>
-              <stop offset="100%" style="stop-color: var(--ring-cast); stop-opacity: 0"/>
+              <stop offset="0%"   class="ring-cast-0"/>
+              <stop offset="100%" class="ring-cast-1"/>
             </radialGradient>
             <mask id="mLeftH">
               <rect x="-10" y="-10" width="120" height="70" fill="white"/>
@@ -202,18 +202,18 @@
           <ellipse cx="50" cy="46.5" rx="28" ry="1.7" fill="url(#goldRingHCast)"/>
 
           <g mask="url(#mLeftH)">
-            <circle cx="35" cy="25" r="19.8" style="stroke: var(--ring-edge)" stroke-width="0.45"/>
-            <circle cx="35" cy="25" r="18"   stroke="url(#goldRingH)"         stroke-width="3.6" stroke-linecap="round"/>
-            <path  d="M 21 18.5 A 18 18 0 0 1 49 18.5" style="stroke: var(--ring-highlight)"   stroke-width="0.6"/>
-            <path  d="M 21 32   A 18 18 0 0 0 49 32"   style="stroke: var(--ring-self-shadow)" stroke-width="0.45"/>
+            <circle class="ring-edge"        cx="35" cy="25" r="19.8" stroke-width="0.45"/>
+            <circle cx="35" cy="25" r="18"   stroke="url(#goldRingH)" stroke-width="3.6" stroke-linecap="round"/>
+            <path   class="ring-highlight"   d="M 21 18.5 A 18 18 0 0 1 49 18.5" stroke-width="0.6"/>
+            <path   class="ring-self-shadow" d="M 21 32   A 18 18 0 0 0 49 32"   stroke-width="0.45"/>
             <ellipse cx="27" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingHSpec)" transform="rotate(-25 27 15.5)"/>
           </g>
 
           <g mask="url(#mRightH)">
-            <circle cx="65" cy="25" r="19.8" style="stroke: var(--ring-edge)" stroke-width="0.45"/>
-            <circle cx="65" cy="25" r="18"   stroke="url(#goldRingH)"         stroke-width="3.6" stroke-linecap="round"/>
-            <path  d="M 51 18.5 A 18 18 0 0 1 79 18.5" style="stroke: var(--ring-highlight)"   stroke-width="0.6"/>
-            <path  d="M 51 32   A 18 18 0 0 0 79 32"   style="stroke: var(--ring-self-shadow)" stroke-width="0.45"/>
+            <circle class="ring-edge"        cx="65" cy="25" r="19.8" stroke-width="0.45"/>
+            <circle cx="65" cy="25" r="18"   stroke="url(#goldRingH)" stroke-width="3.6" stroke-linecap="round"/>
+            <path   class="ring-highlight"   d="M 51 18.5 A 18 18 0 0 1 79 18.5" stroke-width="0.6"/>
+            <path   class="ring-self-shadow" d="M 51 32   A 18 18 0 0 0 79 32"   stroke-width="0.45"/>
             <ellipse cx="57" cy="15.5" rx="2.8" ry="1.3" fill="url(#goldRingHSpec)" transform="rotate(-25 57 15.5)"/>
           </g>
         </svg>
