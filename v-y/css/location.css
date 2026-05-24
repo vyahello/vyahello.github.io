@@ -1,0 +1,132 @@
+/* ============================================================
+   location.css — §5 Венюя + інтерактивна мапа
+     · venue kicker / name / address
+     · 360px map container з theme-aware CSS filter
+     · floating "Soprano Inn" label pin (top-left of map)
+     · custom golden marker з pulse ring
+     · "Відкрити в Google Maps" CTA
+   JS: js/location.js (Leaflet + CARTO tiles + theme-swap).
+   ============================================================ */
+
+.venue { text-align: center; }
+
+.venue-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+.venue-name {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 6vw, 34px);
+  color: var(--ink);
+  margin: 0 0 10px;
+  line-height: 1.2;
+  font-weight: 400;
+}
+.venue-addr {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+  text-transform: none;
+  line-height: 1.55;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.map-wrap {
+  position: relative;
+  height: 360px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  overflow: hidden;
+  margin: 0 auto;
+  background: var(--bg-grain);
+  max-width: var(--content-w);
+}
+@media (max-width: 480px) {
+  .map-wrap { height: 300px; }
+}
+#map { width: 100%; height: 100%; }
+
+/* Subtle per-theme tone — cream warms map slightly, gold sepia-shifts it,
+   dark just dims. */
+[data-theme="cream"] #map { filter: saturate(0.55) contrast(0.95) sepia(0.08); }
+[data-theme="gold"]  #map { filter: saturate(0.45) contrast(1.05) brightness(0.72) sepia(0.4); }
+[data-theme="dark"]  #map { filter: saturate(0.8)  brightness(0.95); }
+
+/* Frosted label floating over the map (decorative). */
+.map-pin {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: var(--bg-card);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  padding: 8px 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.route-btn {
+  display: inline-block;
+  margin-top: 26px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  border: 1px solid var(--line-strong);
+  padding: 14px 28px;
+  border-radius: 2px;
+  transition: all 0.3s var(--easing);
+  background: transparent;
+  cursor: pointer;
+}
+.route-btn:hover {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+
+/* Leaflet defaults — shrink + tint attribution, theme the bg under tiles. */
+.leaflet-control-attribution { font-size: 9px !important; opacity: 0.55; }
+.leaflet-container { background: var(--bg-grain) !important; }
+
+/* Custom pulsing gold marker (divIcon HTML) */
+.custom-marker {
+  position: relative;
+  width:  28px;
+  height: 28px;
+}
+.custom-marker::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--bg);
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 4px 12px rgba(0, 0, 0, 0.3);
+  animation: locMarkerPulse 2.2s ease-in-out infinite;
+}
+@keyframes locMarkerPulse {
+  0%, 100% { box-shadow: 0 0 0 1px var(--accent), 0 0 0 0   rgba(212, 176, 106, 0.5); }
+  50%      { box-shadow: 0 0 0 1px var(--accent), 0 0 0 18px rgba(212, 176, 106, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-marker::before { animation: none; }
+}
