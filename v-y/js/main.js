@@ -2,6 +2,7 @@
    main.js — entry; orchestrates per-section module init
    ============================================================ */
 
+import { initTheme }       from './theme.js';
 import { initHero }        from './hero.js';
 import { initReveal }      from './reveal.js';
 import { initUI }          from './ui.js';
@@ -10,6 +11,7 @@ import { initCalligraphy } from './calligraphy.js';
 import { initRSVP }        from './rsvp.js';
 
 function boot() {
+  initTheme();        // must run first — paints data-theme on body
   initHero();
   initReveal();
   initUI();

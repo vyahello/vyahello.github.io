@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@400;500&display=swap">
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Italiana&family=Inter:wght@300;400;500&display=swap">
 
   <link rel="stylesheet" href="css/theme.css">
   <link rel="stylesheet" href="css/base.css">
@@ -17,7 +17,18 @@
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/ui.css">
 </head>
-<body>
+<body data-theme="cream">
+
+  <!-- Floating controls dock (top-right): theme switcher. Music + share land in Step 11. -->
+  <div class="float-controls" aria-label="Налаштування">
+    <div class="theme-dots" role="group" aria-label="Тема">
+      <button type="button" class="theme-dot" data-theme-dot="cream" aria-label="Світла тема (cream)" aria-pressed="true"></button>
+      <button type="button" class="theme-dot" data-theme-dot="gold"  aria-label="Золота тема (gold)"  aria-pressed="false"></button>
+      <button type="button" class="theme-dot" data-theme-dot="dark"  aria-label="Темна тема (dark)"   aria-pressed="false"></button>
+    </div>
+  </div>
+
+  <main>
   <section id="hero" class="hero">
     <!-- Ambient floating particles. Positions and delays inline so we don't bloat CSS. -->
     <span class="particle" style="left:8%;  animation-delay:0.3s"></span>
@@ -387,6 +398,8 @@
       <p class="outro__footer">© 2026</p>
     </div>
   </section>
+
+  </main>
 
   <div class="scroll-progress" aria-hidden="true"></div>
   <button class="scroll-top" type="button" aria-label="Повернутись догори">↑</button>

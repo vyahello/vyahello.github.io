@@ -1,7 +1,61 @@
 /* ============================================================
-   ui.css — global overlay chrome (scroll progress bar,
-   scroll-to-top button). Behaviour driven by js/ui.js.
+   ui.css — global overlay chrome:
+     · scroll progress bar
+     · scroll-to-top button
+     · floating controls (theme switcher; music + share land in Step 11)
+   Behaviour driven by js/ui.js + js/theme.js.
    ============================================================ */
+
+/* ---- Floating controls dock (top-right) ---- */
+
+.float-controls {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 50;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Theme picker: 3 swatch dots inside a frosted pill. */
+.theme-dots {
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-card);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.theme-dot {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  cursor: pointer;
+  transition: transform 0.25s var(--easing), box-shadow 0.25s var(--easing);
+}
+.theme-dot[data-theme-dot="cream"] { background: #f0e8d8; }
+.theme-dot[data-theme-dot="gold"]  { background: linear-gradient(135deg, #f0dba2 0%, #b8924d 55%, #6b4f2a 100%); }
+.theme-dot[data-theme-dot="dark"]  { background: linear-gradient(135deg, #2a2218 0%, #15110c 60%, #0d0a06 100%); }
+.theme-dot:hover { transform: scale(1.12); }
+.theme-dot:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.theme-dot.is-active {
+  transform: scale(1.22);
+  box-shadow: 0 0 0 2px var(--accent), 0 0 12px rgba(255, 235, 170, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-dot { transition: none; }
+}
 
 /* ---- Scroll progress bar ---- */
 
