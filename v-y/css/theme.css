@@ -80,7 +80,10 @@
 [data-theme="cream"] {
   --bg:          #f0e8d8;
   --bg-grain:    #e8dfca;
-  --bg-card:     #f8f1e1;
+  /* Semi-transparent so floating particles + grain bleed through cards
+     (matches gold/dark themes' approach with rgba alphas in 0.04..0.07
+     range). Solid #f8f1e1 used to block the bg entirely. */
+  --bg-card:     rgba(255, 248, 226, 0.45);
   --bg-deep:     #e3d8bf;
   --ink:         #2a221a;
   --ink-soft:    #5a4d3d;
