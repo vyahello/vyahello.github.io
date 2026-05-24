@@ -7,9 +7,12 @@
    Behaviour wired by js/globals.js.
    ============================================================ */
 
-/* ---- Floating gold motes (18 spans created by JS) ----
+/* ---- Floating gold motes, 3-layer parallax depth ----
    Sits at z-index 3 — below page content (main is z-index 5)
-   but above body::before/::after overlays. */
+   but above body::before/::after overlays.
+   JS (globals.js) spawns 3 child .particle-layer wrappers; each is a
+   different "depth" (far/mid/near) with its own particle count, size,
+   blur, opacity and scroll-parallax factor. */
 .particles {
   position: fixed;
   inset: 0;
@@ -17,17 +20,25 @@
   z-index: 3;
   overflow: hidden;
 }
+.particle-layer {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
 .particles span {
   position: absolute;
   bottom: -10px;
-  width: 3px;
-  height: 3px;
   border-radius: 50%;
   background: var(--accent);
   opacity: 0;
   animation: globalsRise linear infinite;
-  filter: blur(0.4px);
 }
+/* Depth-specific blur (gives the parallax field its 3D feel). */
+.pl-far  span { filter: blur(1.6px); }
+.pl-mid  span { filter: blur(0.4px); }
+.pl-near span { filter: blur(0);
+                box-shadow: 0 0 6px color-mix(in oklab, var(--accent) 35%, transparent); }
+
 @keyframes globalsRise {
   0%   { transform: translateY(0)      translateX(0);    opacity: 0; }
   10%  {                                                  opacity: 0.6; }
