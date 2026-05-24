@@ -17,9 +17,20 @@
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/globals.css">
   <link rel="stylesheet" href="css/ui.css">
 </head>
 <body data-theme="cream">
+
+  <!-- ============================================================
+       GLOBAL CHROME — floating particles, cursor glow, floating
+       monogram. JS: js/globals.js. Particles spawn from #particles;
+       cursor follow + mono visibility wired on init.
+       ============================================================ -->
+  <div class="particles"   id="particles"   aria-hidden="true"></div>
+  <div class="cursor-glow" id="cursorGlow"  aria-hidden="true"></div>
+  <a   class="floating-mono brand-mono" id="floatingMono"
+       href="#hero" aria-label="Повернутись догори">В<span class="amp-char">&amp;</span>Ю</a>
 
   <!-- ============================================================
        CURTAIN INTRO (z-index 200, lifts on click or after 3s).
@@ -489,7 +500,6 @@
   </main>
 
   <div class="scroll-progress" aria-hidden="true"></div>
-  <button class="scroll-top" type="button" aria-label="Повернутись догори">↑</button>
 
   <script type="module" src="js/main.js"></script>
 </body>
