@@ -71,16 +71,26 @@
   transition: all 0.3s var(--easing);
   padding: 0;
 }
+/* Hover lifts accent — NO bg-invert (so toggling .playing off doesn't leave
+   the button looking stuck dark while the cursor is still over it). */
 .fc-btn:hover {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
 }
 .fc-btn:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 .fc-btn svg { width: 16px; height: 16px; }
+
+/* Brief "copied" confirmation flash for the share button. */
+.fc-btn.copied {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink);
+  transform: none;
+}
 
 /* ---- Music button: idle icon → 3 bouncing bars when playing ---- */
 
