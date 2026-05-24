@@ -109,7 +109,7 @@ function addGuestRow(list, addBtn, { focus = true, value = '' } = {}) {
   row.innerHTML = `
     <span class="guest-num">${padNum(idx)}</span>
     <input type="text" class="guest-name" placeholder="${SAMPLE_NAMES[idx] || 'Імʼя та прізвище'}" autocomplete="off" />
-    <button type="button" class="guest-remove" aria-label="Видалити" tabindex="-1">×</button>
+    <button type="button" class="guest-remove" aria-label="Видалити цього гостя">×</button>
   `;
   list.appendChild(row);
   if (value) row.querySelector('.guest-name').value = value;

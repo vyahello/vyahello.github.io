@@ -155,25 +155,33 @@
 }
 
 .guest-remove {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: 0;
   background: transparent;
   color: var(--ink-mute);
-  font-size: 20px;
+  font-size: 22px;
   line-height: 1;
   cursor: pointer;
   padding: 0;
-  opacity: 0;
-  transition: opacity 0.25s, color 0.25s, background 0.25s;
+  /* Always visible at half-opacity — discoverability on mobile (no hover) */
+  opacity: 0.5;
+  transition: opacity 0.25s, color 0.25s, background 0.25s, transform 0.25s;
   font-family: var(--font-display);
 }
 .guest-row:hover .guest-remove,
-.guest-row:focus-within .guest-remove { opacity: 0.5; }
-.guest-remove:hover { opacity: 1 !important; color: var(--ink); background: var(--bg-card); }
-/* First row keeps at least 1 guest — hide its remove button. */
-.guest-list > .guest-row:first-child .guest-remove { display: none; }
+.guest-row:focus-within .guest-remove { opacity: 0.85; }
+.guest-remove:hover,
+.guest-remove:focus-visible {
+  opacity: 1 !important;
+  color: var(--ink);
+  background: var(--bg-card);
+  transform: scale(1.08);
+}
+/* JS still guards against deleting the LAST remaining row, so we don't need
+   to hide the first-row X via CSS. Hiding it caused confusion when a guest
+   restored a 3-4 person reply and couldn't trim the household down. */
 
 .guest-add {
   margin-top: 16px;
