@@ -35,29 +35,60 @@ function insertSectionDividers() {
 }
 
 /**
- * Walk a title element's DOM, splitting every text node into per-character
- * <span class="title-char" style="--ci: N"> wrappers. Element children
- * (e.g. <em>) are preserved — chars inside them inherit italic.
- * Spaces become non-breaking so the inline-block letters don't collapse.
+ * Walk a title element's DOM and split every text node into:
+ *   <span class="title-word">          ← unbreakable group
+ *     <span class="title-char" --ci=N>Н</span>
+ *     <span class="title-char" --ci=N>е</span>
+ *     ...
+ *   </span>
+ *   ' '  ← raw whitespace text node (the only place a line-break is allowed)
+ *   <span class="title-word">...</span>
+ *
+ * Word grouping is the critical bit — without it, the browser treats
+ * every inline-block .title-char as a separate inline atom and is free
+ * to wrap a line INSIDE a word (e.g. "небаг|ато" on iPhone 14).
+ * The wrapper `.title-word { display: inline-block; white-space: nowrap }`
+ * makes the whole word atomic for line-breaking; chars still get the
+ * per-letter stagger animation.
+ *
+ * Nested element children (e.g. <em>) are preserved — chars inside them
+ * still get split and grouped per word; italic styling inherits.
  */
 function splitTitleChars(title) {
   if (!title || title.dataset.charsSplit === '1') return;
   let ci = 0;
+
+  function processTextNode(text) {
+    const frag = document.createDocumentFragment();
+    const tokens = text.split(/(\s+)/);   // alternating word / whitespace
+    for (const tok of tokens) {
+      if (!tok) continue;
+      if (/^\s+$/.test(tok)) {
+        // Keep whitespace as plain text so the browser can wrap ONLY at
+        // word boundaries — never inside a word.
+        frag.appendChild(document.createTextNode(tok));
+        continue;
+      }
+      const wordEl = document.createElement('span');
+      wordEl.className = 'title-word';
+      for (const ch of tok) {
+        const charEl = document.createElement('span');
+        charEl.className = 'title-char';
+        charEl.style.setProperty('--ci', String(ci));
+        charEl.textContent = ch;
+        wordEl.appendChild(charEl);
+        ci++;
+      }
+      frag.appendChild(wordEl);
+    }
+    return frag;
+  }
+
   function walk(node) {
     const children = [...node.childNodes];
     for (const child of children) {
       if (child.nodeType === Node.TEXT_NODE) {
-        const text = child.textContent;
-        const frag = document.createDocumentFragment();
-        for (const ch of text) {
-          const span = document.createElement('span');
-          span.className = 'title-char';
-          span.style.setProperty('--ci', String(ci));
-          span.textContent = ch === ' ' ? ' ' : ch;
-          frag.appendChild(span);
-          ci++;
-        }
-        node.replaceChild(frag, child);
+        node.replaceChild(processTextNode(child.textContent), child);
       } else if (child.nodeType === Node.ELEMENT_NODE) {
         walk(child);
       }
@@ -71,7 +102,8 @@ function splitTitleChars(title) {
  * Observe every element with the `.reveal` class and add `.is-visible`
  * the first time it crosses the viewport threshold. CSS handles the
  * actual transition. Also splits any nested `.section__title` into
- * per-character spans so they can stagger in like a turning page.
+ * per-character spans (grouped by word) so they can stagger in like
+ * a turning page.
  *
  * If IntersectionObserver is unavailable (very old browsers) or the
  * user prefers reduced motion, mark everything visible immediately

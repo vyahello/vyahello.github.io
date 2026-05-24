@@ -84,12 +84,17 @@
 }
 
 /* ---- Per-character stagger on section titles ----
-   js/reveal.js wraps every glyph in <span class="title-char" style="--ci:N">.
-   Each char starts slightly below + invisible; the cascade triggers when
-   the parent .reveal flips to .is-visible. ~28ms gap → a 16-char title
-   fully resolves in ~450ms, matching the parent's 0.8s fade tempo.
-   prefers-reduced-motion users keep chars static (set in reveal.js by
-   skipping the split entirely). */
+   js/reveal.js wraps every glyph in <span class="title-char">, and groups
+   chars under <span class="title-word"> per word. The word-wrapper is
+   critical: it forces line-break atomicity (browser may only wrap at
+   spaces, never INSIDE a word — fixes "небаг|ато" on iPhone 14 etc).
+   Each char then animates in with a ~28ms gap. prefers-reduced-motion
+   users keep chars static (split skipped entirely in reveal.js). */
+.section__title .title-word {
+  display: inline-block;
+  white-space: nowrap;     /* keep chars inside a word together */
+  /* No vertical-align tweak — defaults to baseline which matches text flow */
+}
 .section__title .title-char {
   display: inline-block;
   opacity: 0;
