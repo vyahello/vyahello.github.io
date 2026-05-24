@@ -374,6 +374,10 @@
   margin: 0;
   font-size: 16px;
   line-height: 1.6;
+  /* Cormorant за замовчуванням → old-style numerals (з descender у 7).
+     Перемикаємо на lining nums щоб «17» сиділо рівно з текстом. */
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: var(--num-feat);
 }
 /* ============================================================
    LOCKED STATE — shown when page opened without ?g=slug.
