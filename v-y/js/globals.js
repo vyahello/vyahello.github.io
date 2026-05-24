@@ -73,22 +73,6 @@ function attachFloatingMono(badge, hero) {
   onScroll();
 }
 
-/* ---- Floating scroll indicator ----
-   Hides on the first real scroll event — `{ once: true }` so the
-   listener auto-detaches and we don't need any scrollY threshold
-   (which was unreliable on iOS Safari during inertia scroll). */
-function attachScrollIndicator(indicator) {
-  if (!indicator) return;
-  const hide = () => indicator.classList.add('hidden');
-  // Defer attach by 500ms so layout-driven scroll blips during boot don't
-  // trigger the listener before the indicator has had a chance to appear.
-  setTimeout(() => {
-    window.addEventListener('scroll',      hide, { passive: true, once: true });
-    window.addEventListener('touchmove',   hide, { passive: true, once: true });
-    window.addEventListener('wheel',       hide, { passive: true, once: true });
-  }, 500);
-}
-
 /* ---- Swatch shimmer ----
    When the dress-code palette enters the viewport, add .shimmering
    so swatchPop + shine sweep animate sequentially (CSS-driven).
@@ -115,5 +99,4 @@ export function initGlobals() {
   attachCursorGlow(document.getElementById('cursorGlow'));
   attachFloatingMono(document.getElementById('floatingMono'), document.getElementById('hero'));
   attachSwatchShimmer(document.getElementById('swatches'));
-  attachScrollIndicator(document.getElementById('scrollIndicator'));
 }

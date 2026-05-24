@@ -95,51 +95,11 @@
   border-color: var(--accent);
 }
 
-/* ---- Floating scroll indicator ----
-   Single pulsing gold line anchored to viewport bottom. Reveals after
-   the hero composition has bloomed in, auto-hides on first scroll. */
-.scroll-indicator {
-  position: fixed;
-  left: 50%;
-  bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 18px));
-  transform: translateX(-50%);
-  z-index: 20;
-  width: 1px;
-  height: 52px;
-  pointer-events: none;
-  opacity: 0;
-  /* Delay matches end of hero intro stagger (~1.7s) so the indicator
-     reveals only after the hero has finished blooming in. */
-  animation: scrollIndicatorIn 0.8s 1.9s var(--easing) forwards;
-  transition: opacity 0.5s var(--easing), transform 0.5s var(--easing);
-}
-.scroll-indicator .line {
-  display: block;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, transparent, var(--accent) 35%, var(--accent) 100%);
-  animation: scrollIndicatorPulse 2s var(--easing) infinite;
-  transform-origin: top;
-}
-.scroll-indicator.hidden {
-  opacity: 0 !important;
-  transform: translateX(-50%) translateY(20px);
-  pointer-events: none;
-}
-
-@keyframes scrollIndicatorIn  { to { opacity: 1; } }
-@keyframes scrollIndicatorPulse {
-  0%, 100% { transform: scaleY(0.35); opacity: 0.45; }
-  50%      { transform: scaleY(1);    opacity: 1; }
-}
-
-/* Reduced motion: stop motes + freeze indicator. */
+/* Reduced motion: stop the rising motes + disable transitions. */
 @media (prefers-reduced-motion: reduce) {
-  .particles span       { animation: none; opacity: 0.3; }
-  .cursor-glow          { display: none; }
-  .floating-mono        { transition: none; }
-  .scroll-indicator     { animation: none; opacity: 1; }
-  .scroll-indicator .line { animation: none; }
+  .particles span { animation: none; opacity: 0.3; }
+  .cursor-glow    { display: none; }
+  .floating-mono  { transition: none; }
 }
 
 /* Print: no chrome at all. */
