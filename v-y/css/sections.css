@@ -101,19 +101,6 @@
 }
 
 /* ============================================================
-   §4 Ceremony + Banquet — two cards
-   ============================================================ */
-#details .details__grid {
-  display: grid;
-  gap: var(--s-5);
-  grid-template-columns: 1fr;
-  margin-top: var(--s-6);
-}
-@media (min-width: 720px) {
-  #details .details__grid { grid-template-columns: 1fr 1fr; }
-}
-
-/* ============================================================
    §6 Schedule
    ============================================================ */
 #schedule .timeline { max-width: 460px; margin: var(--s-6) auto 0; }
