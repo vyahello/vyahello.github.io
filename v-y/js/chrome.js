@@ -26,12 +26,17 @@ const SHARE_TEXT  = 'Запрошуємо на весілля Володимир
 const COPIED_MS   = 2000;
 
 /**
- * URL the user actually wants to forward — strip personal params so the
- * recipient doesn't see someone else's greeting ("Дорога Олена") or
- * theme/intro overrides baked in. Keeps the base path + origin.
+ * URL the user actually wants to forward. Preserves ?g=<slug> so the
+ * organiser can open a guest's personal link, hit Share, and forward
+ * the same personalised URL to that guest in Telegram/Viber/etc.
+ * Strips everything else (theme overrides, ?skipIntro=1, hash anchors)
+ * since those are dev / one-off conveniences, not part of the invite.
  */
 function shareableUrl() {
-  return `${window.location.origin}${window.location.pathname}`;
+  const url = new URL(window.location.href);
+  const slug = url.searchParams.get('g');
+  const tail = slug ? `?g=${encodeURIComponent(slug)}` : '';
+  return `${url.origin}${url.pathname}${tail}`;
 }
 
 /* ============================================================
