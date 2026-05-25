@@ -105,22 +105,14 @@ function attachAddToCal(btn) {
   // (or in-app WebView) handles the .ics navigation natively, which is what
   // makes Calendar import work in Telegram / iMessage preview / WhatsApp
   // contexts where the old blob+<a download> trick used to silently fail.
-
-  // iOS-specific upgrade: webcal:// triggers the system Calendar app
-  // directly (one-tap import) instead of forcing a download-then-open
-  // round trip. Safe to swap — webcal handler is built into iOS, and
-  // the URL still resolves to the same .ics over HTTPS under the hood.
-  // URL is derived from window.location so this still works on local
-  // dev / staging without rewriting hostnames.
-  const isIOS = /iP(ad|hone|od)/.test(navigator.userAgent) ||
-    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-  if (isIOS && btn.tagName === 'A' && window.location.protocol.startsWith('http')) {
-    const absHttp = new URL('media/event.ics', window.location.href).href;
-    btn.setAttribute('href', absHttp.replace(/^https?:/, 'webcal:'));
-    btn.removeAttribute('download');   // download attr is meaningless for webcal:
-  }
-
-  // Flash a "✓ збережено" confirmation on tap.
+  //
+  // NOTE: do NOT swap to webcal:// for iOS. webcal: is for *subscribing* to
+  // an ongoing feed (sports schedule, holidays) and triggers iOS's "Add
+  // Subscription Calendar" sheet — wrong UX for a one-shot event. Plain
+  // https + text/calendar MIME makes iOS Safari (and most in-app WebViews)
+  // show the proper event-preview sheet with "Add Event".
+  //
+  // This JS just flashes a "✓ збережено" confirmation on tap.
   btn.addEventListener('click', () => {
     const label = btn.querySelector('span');
     if (!label) return;
