@@ -10,11 +10,17 @@
    Parallax: every [data-depth] inside #parallaxNames follows the
    cursor by a depth-weighted offset. Desktop-only (matchMedia).
 
-   Add-to-calendar: clicking #addCalBtn synthesizes an .ics blob
-   and triggers a download. Fixed event metadata for 17.07.2026
-   15:00 Kyiv (= 12:00 UTC).
+   Add-to-calendar: clicking #addCalBtn navigates to the static
+   media/event.ics file. The blob+<a download> approach used to
+   silently fail in in-app WebViews (Telegram, FB, Instagram, even
+   iMessage's link preview opener) — direct URL navigation hands the
+   text/calendar MIME to the OS, which then offers Calendar import.
+   Fixed event metadata for 17.07.2026 15:00 Kyiv (= 12:00 UTC).
    ============================================================ */
 
+// Pre-rendered .ics file lives at media/event.ics (linked by index.html's
+// <a id="addCalBtn" href="media/event.ics" download>). EVENT object + buildICS
+// are kept so the static file is regenerable if event metadata ever changes.
 const EVENT = {
   uid:       'wedding-vandyu-17072026',
   dtStart:   '20260717T120000Z',
@@ -23,7 +29,6 @@ const EVENT = {
   desc:      'Запрошуємо на наше весілля. Збір гостей з 14:30, церемонія о 15:00.',
   location:  'Soprano Inn, вул. Кільцева 8, Пасіки-Зубрицькі, Львів',
   geo:       '49.7676623;24.0866213',
-  filename:  'wedding-volodymyr-yustyna-17-07-2026.ics',
 };
 
 /* ---- Letter splitting ----
@@ -94,23 +99,29 @@ export function buildICS({ uid, dtStart, dtEnd, summary, desc, location, geo } =
   ].join('\r\n');
 }
 
-function downloadICS() {
-  const blob = new Blob([buildICS()], { type: 'text/calendar;charset=utf-8' });
-  const url  = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = EVENT.filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
 function attachAddToCal(btn) {
   if (!btn) return;
+  // The button is now an <a href="media/event.ics" download> — the browser
+  // (or in-app WebView) handles the .ics navigation natively, which is what
+  // makes Calendar import work in Telegram / iMessage preview / WhatsApp
+  // contexts where the old blob+<a download> trick used to silently fail.
+
+  // iOS-specific upgrade: webcal:// triggers the system Calendar app
+  // directly (one-tap import) instead of forcing a download-then-open
+  // round trip. Safe to swap — webcal handler is built into iOS, and
+  // the URL still resolves to the same .ics over HTTPS under the hood.
+  // URL is derived from window.location so this still works on local
+  // dev / staging without rewriting hostnames.
+  const isIOS = /iP(ad|hone|od)/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  if (isIOS && btn.tagName === 'A' && window.location.protocol.startsWith('http')) {
+    const absHttp = new URL('media/event.ics', window.location.href).href;
+    btn.setAttribute('href', absHttp.replace(/^https?:/, 'webcal:'));
+    btn.removeAttribute('download');   // download attr is meaningless for webcal:
+  }
+
+  // Flash a "✓ збережено" confirmation on tap.
   btn.addEventListener('click', () => {
-    downloadICS();
-    // Brief visual confirmation
     const label = btn.querySelector('span');
     if (!label) return;
     const original = label.textContent;
