@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>OG card · В&Ю</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400&display=swap">
+
+  <style>
+    /* ============================================================
+       OG card — generic share preview, 1200×630.
+       Matches the site's cream theme (theme.css [data-theme="cream"]).
+
+       Regenerate og.jpg after any edit to names/date/venue:
+         chromium --headless --disable-gpu --no-sandbox --hide-scrollbars \
+           --default-background-color=f0e8d8ff \
+           --screenshot=/tmp/og_raw.png --window-size=1200,700 \
+           file://$PWD/og-card.html
+         convert /tmp/og_raw.png -crop 1200x630+0+0 +repage \
+                 -quality 88 -interlace plane og.jpg
+
+       The .canvas div is EXACTLY 1200×630 and pinned to body (0, 0).
+       Render viewport just needs to be ≥ 1200×630; we always crop the
+       top-left 1200×630 region. This removes any dependency on
+       Chromium's headless scrollbar reservation / viewport quirks.
+       ============================================================ */
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #f0e8d8; overflow: hidden; }
+    body { width: 1200px; }
+
+    .canvas {
+      width:  1200px;
+      height:  630px;
+      background: #f0e8d8;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: #2a221a;
+      font-family: 'Inter', system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Gold corner marks — inset symmetrically from .canvas edges.
+       Now guaranteed visible (canvas is fixed 1200×630, corners
+       at fixed offsets, screenshot crops exactly that region). */
+    .frame { position: absolute; inset: 36px; pointer-events: none; }
+    .frame > span {
+      position: absolute;
+      width: 40px; height: 40px;
+      border: 1.5px solid #a07b48;
+    }
+    .frame > .tl { top: 0;    left:  0; border-right: 0; border-bottom: 0; }
+    .frame > .tr { top: 0;    right: 0; border-left:  0; border-bottom: 0; }
+    .frame > .bl { bottom: 0; left:  0; border-right: 0; border-top:    0; }
+    .frame > .br { bottom: 0; right: 0; border-left:  0; border-top:    0; }
+
+    .card {
+      text-align: center;
+      max-width: 1040px;
+      padding: 0 40px;
+    }
+
+    .eyebrow {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: #5a4d3d;
+      margin-bottom: 48px;
+    }
+
+    .names {
+      font-family: 'Cormorant Garamond', 'Times New Roman', serif;
+      font-weight: 300;
+      font-size: 96px;
+      line-height: 1.0;
+      letter-spacing: -0.01em;
+      color: #2a221a;
+      margin-bottom: 36px;
+      white-space: nowrap;
+    }
+    .names .ita { font-style: italic; font-weight: 400; }
+    .names .amp {
+      font-family: 'Times New Roman', 'Cormorant Garamond', serif;
+      font-style: italic;
+      color: #a07b48;
+      font-size: 1.10em;
+      padding: 0 0.06em;
+      vertical-align: -0.02em;
+    }
+
+    .flourish {
+      display: block;
+      margin: 0 auto 36px;
+      color: #a07b48;
+    }
+    .flourish path { fill: none; stroke: currentColor; stroke-width: 1; }
+    .flourish .leaf { fill: currentColor; stroke: none; }
+
+    .meta {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: 0.03em;
+      color: #2a221a;
+      line-height: 1.5;
+    }
+    .meta .dot {
+      color: #a07b48;
+      padding: 0 0.45em;
+      font-weight: 300;
+    }
+    .meta .venue {
+      display: block;
+      margin-top: 4px;
+      font-style: italic;
+      color: #5a4d3d;
+      font-size: 0.82em;
+      letter-spacing: 0.04em;
+    }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+
+    <div class="frame">
+      <span class="tl"></span><span class="tr"></span>
+      <span class="bl"></span><span class="br"></span>
+    </div>
+
+    <div class="card">
+      <p class="eyebrow">Запрошення на весілля</p>
+
+      <h1 class="names">
+        <span class="ita">Володимир</span>
+        <span class="amp">&amp;</span>
+        <span class="ita">Юстина</span>
+      </h1>
+
+      <svg class="flourish" width="220" height="32" viewBox="0 0 220 32" aria-hidden="true">
+        <path d="M4 16 C 30 16, 50 6, 80 16 S 140 26, 110 16 S 170 6, 200 16 L 216 16"/>
+        <circle class="leaf" cx="110" cy="16" r="2.6"/>
+        <path class="leaf" d="M80 12 Q 82 7 88 9 Q 86 14 80 12 Z" opacity="0.75"/>
+        <path class="leaf" d="M140 20 Q 138 25 132 23 Q 134 18 140 20 Z" opacity="0.75"/>
+      </svg>
+
+      <p class="meta">
+        17 липня 2026<span class="dot">·</span>15:00
+        <span class="venue">Soprano Inn, Львів</span>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

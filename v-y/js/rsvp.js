@@ -152,6 +152,31 @@ function hasFullName(s) {
   return String(s || '').trim().split(/\s+/).filter(Boolean).length >= 2;
 }
 
+/** Surface a friendly hint when the user tried to submit without picking
+    «Так» or «На жаль». Shake the choices to draw the eye, drop an
+    inline message under them, scroll into view, auto-clear after ~4s. */
+function flagMissingAttendance(root) {
+  const choiceRow = root.querySelector('.choice-row');
+  if (!choiceRow) return;
+
+  let hint = choiceRow.parentElement.querySelector('.choice-error');
+  if (!hint) {
+    hint = document.createElement('p');
+    hint.className = 'choice-error';
+    choiceRow.parentElement.insertBefore(hint, choiceRow.nextSibling);
+  }
+  hint.textContent = 'Будь ласка, спочатку оберіть відповідь.';
+
+  choiceRow.classList.add('shake');
+  setTimeout(() => choiceRow.classList.remove('shake'), 500);
+
+  // If pills are off-screen (user scrolled to seal), bring them into view.
+  choiceRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+  clearTimeout(flagMissingAttendance._t);
+  flagMissingAttendance._t = setTimeout(() => hint.remove(), 4000);
+}
+
 /** Focus + briefly tint an invalid name input, and surface a small inline
     hint underneath the guest list. Auto-clears after ~3.5s. */
 function flagInvalidGuestInput(input, message) {
@@ -343,17 +368,26 @@ export function initRSVP() {
     state.slug = slug || null;
     state.displayName = guest?.display_name || null;
 
+    // Always prefill expected_guests as the BASELINE list — even when a
+    // previous rsvp exists. Two reasons:
+    //   1. If user previously said «Так» with custom names, restoreFromRsvp
+    //      below overlays their saved names on top (overwrites baseline).
+    //   2. If user previously said «На жаль» (guest_names is []), the
+    //      restore skips the list update — so baseline stays. When they
+    //      click «Змінити» → «Так» the list is already populated and
+    //      they don't have to retype every guest from scratch.
+    if (Array.isArray(guest?.expected_guests) && guest.expected_guests.length) {
+      setHousehold(list, addBtn, guest.expected_guests);
+    }
+
     if (rsvp) {
       state.submittedAt = rsvp.submitted_at || null;
-      // Restoring previous answer DOES fill values — that's the guest's
-      // own data from a prior submit, not couple's guess.
+      // Restoring previous answer fills values — that's the guest's own
+      // data from a prior submit. Only overlays the list when there were
+      // actually saved names; otherwise the expected baseline above wins.
       restoreFormFromRsvp(form, list, addBtn, rsvp);
-      // Show "already replied" confirmation — user can hit "Змінити" to edit.
+      // Show "already replied" confirmation — user can hit «Змінити» to edit.
       showConfirmation(form, confirm, rsvp.attending, { isExisting: true });
-    } else if (Array.isArray(guest?.expected_guests) && guest.expected_guests.length) {
-      // First-time visit + we have the expected guest list from the sheet.
-      // Pre-fill rows so the guest only confirms / removes / declines.
-      setHousehold(list, addBtn, guest.expected_guests);
     }
   });
 
@@ -363,6 +397,15 @@ export function initRSVP() {
 
     const fd = new FormData(form);
     const attending = parseAttendance(fd.get('attend'));
+
+    // Guard: attendance must be picked. The form has prefilled names from
+    // the sheet, so a naive submit before choosing yes/no used to POST
+    // attending=null → backend "bad-attending" → generic network-style
+    // error. Catch it client-side with a friendly inline message instead.
+    if (!attending) {
+      flagMissingAttendance(root);
+      return;
+    }
 
     // Guard: 'yes' requires at least one named guest.
     const rawNames = readGuestNames(list);

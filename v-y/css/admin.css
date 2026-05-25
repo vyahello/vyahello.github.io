@@ -210,23 +210,11 @@
   background: color-mix(in oklab, var(--accent) 14%, transparent);
 }
 
-/* ---- Dashboard grid ---- */
+/* ---- Dashboard grid (single column — every card is full width) ---- */
 .admin-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
-}
-@media (min-width: 720px) {
-  .admin-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .admin-summary,
-  .admin-headcount,
-  .admin-responders,
-  .admin-pending,
-  .admin-recent {
-    grid-column: 1 / -1;
-  }
 }
 
 /* ---- Stat rows (Summary + Headcount) ---- */
@@ -305,6 +293,125 @@
 }
 .admin-pill.is-yes   { border-color: color-mix(in oklab, #4a8b3f 50%, var(--line)); background: color-mix(in oklab, #4a8b3f 8%, transparent); }
 .admin-pill.is-no    { border-color: color-mix(in oklab, #8b4f3f 50%, var(--line)); background: color-mix(in oklab, #8b4f3f 8%, transparent); }
+
+/* ---- HERO card — the single number the organizer cares about most ---- */
+.admin-hero-card {
+  text-align: center;
+  padding: 40px 24px 36px;
+}
+.admin-hero-label {
+  margin: 0 0 16px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: var(--tracking-widest);
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+.admin-hero-num {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(64px, 14vw, 110px);
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: var(--tracking-tight);
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: var(--num-feat);
+}
+.admin-hero-num #heroPeople { color: var(--accent); }
+.admin-hero-unit {
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 0.34em;
+  color: var(--ink-soft);
+  margin-left: 0.18em;
+  vertical-align: 0.32em;
+}
+.admin-hero-sub {
+  margin: 18px 0 0;
+  font-family: var(--font-serif);
+  font-size: 15px;
+  color: var(--ink-soft);
+  font-style: italic;
+}
+.admin-hero-sub #heroYesFamilies {
+  font-style: normal;
+  color: var(--ink);
+  font-weight: 500;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/* ---- BREAKDOWN card — rows of status + counts + progress bar ---- */
+.admin-breakdown {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  background: var(--line);
+}
+.admin-breakdown-row {
+  background: var(--bg-card);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: baseline;
+  padding: 14px 16px;
+  border-left: 3px solid transparent;
+}
+.admin-breakdown-row.is-yes     { border-left-color: #4a8b3f; }
+.admin-breakdown-row.is-no      { border-left-color: #8b4f3f; }
+.admin-breakdown-row.is-pending { border-left-color: var(--ink-mute); }
+
+.admin-breakdown-key {
+  font-family: var(--font-serif);
+  font-size: 16px;
+  color: var(--ink);
+}
+.admin-breakdown-val {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.admin-breakdown-val strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+.admin-breakdown-people {
+  color: var(--ink-mute);
+  margin-left: 4px;
+}
+
+/* Progress bar — visual % of families that have responded ---- */
+.admin-progress-wrap {
+  margin-top: 4px;
+}
+.admin-progress {
+  position: relative;
+  height: 6px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.admin-progress-bar {
+  position: absolute;
+  top: 0; left: 0; bottom: 0;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width 0.6s var(--easing);
+}
+.admin-progress-text {
+  margin: 10px 0 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink-mute);
+  letter-spacing: 0.04em;
+}
 
 /* ---- Lists ---- */
 .admin-list {

@@ -1,6 +1,6 @@
 /* ============================================================
    admin.js — статистика для організаторів
-     · /admin.html?token=... → GET stats endpoint у Apps Script
+     · /admin/?token=... → GET stats endpoint
      · якщо токен валідний → рендер дашборду
      · якщо немає/невірний → форма "Введіть токен"
    ============================================================ */
@@ -28,7 +28,13 @@ function pluralUa(n, one, few, many) {
   return `${n} ${many}`;
 }
 const familiesText = (n) => pluralUa(n, 'родина', 'родини', 'родин');
-const peopleText   = (n) => pluralUa(n, 'людина', 'людей', 'людей');
+// Fixed: 2/3/4 → "людини" (not "людей" — that's genitive plural for 5+).
+const peopleText   = (n) => pluralUa(n, 'людина', 'людини', 'людей');
+
+// Word-only variants (no leading number) — useful when the number is
+// already rendered in a separate, differently-styled element (e.g. hero).
+const familiesWord = (n) => familiesText(n).replace(/^\d+\s+/, '');
+const peopleWord   = (n) => peopleText(n).replace(/^\d+\s+/, '');
 
 function setTokenInUrl(token) {
   const url = new URL(window.location.href);
@@ -83,21 +89,38 @@ function renderError(message) {
 }
 
 function renderStats(stats) {
-  const s = stats.summary || {};
-  $('statInvited').textContent   = s.total_invited ?? '—';
-  $('statResponded').textContent = s.responded ?? '—';
-  $('statPending').textContent   = s.not_responded ?? '—';
-  $('statRate').textContent      = (s.response_rate != null)
-    ? Math.round(s.response_rate * 100) + '%'
-    : '—';
-
+  const s = stats.summary  || {};
   const a = stats.attending || {};
-  $('cntYes').textContent   = a.yes ?? '—';
-  $('cntNo').textContent    = a.no ?? '—';
-
   const h = stats.headcount || {};
-  $('hcConfirmed').textContent = h.confirmed ?? '—';
-  $('hcTotal').textContent     = h.total_expected ?? '—';
+
+  const totalInvited = s.total_invited ?? 0;
+  const responded    = s.responded ?? 0;
+  const notResponded = s.not_responded ?? 0;
+  const yesFam       = a.yes ?? 0;
+  const noFam        = a.no  ?? 0;
+  const yesPeople    = h.confirmed ?? 0;
+
+  // HERO — the headline number organizer cares about most.
+  $('heroPeople').textContent          = yesPeople;
+  $('heroPeopleUnit').textContent      = peopleWord(yesPeople);
+  $('heroYesFamilies').textContent     = yesFam;
+  $('heroYesFamiliesUnit').textContent = familiesWord(yesFam);
+
+  // BREAKDOWN — counts per status, plus people count for "yes".
+  $('brkYesFam').textContent     = familiesText(yesFam);
+  $('brkYesPpl').textContent     = peopleText(yesPeople);
+  $('brkNoFam').textContent      = familiesText(noFam);
+  $('brkPendingFam').textContent = familiesText(notResponded);
+
+  // PROGRESS bar — % of families that have responded (any answer).
+  const pct = totalInvited > 0 ? Math.round((responded / totalInvited) * 100) : 0;
+  const bar = $('progressBar');
+  const wrap = $('progressBarWrap');
+  if (bar)  bar.style.width = pct + '%';
+  if (wrap) wrap.setAttribute('aria-valuenow', String(pct));
+  $('progressText').textContent = totalInvited > 0
+    ? `Відгукнулися ${responded} з ${totalInvited} родин · ${pct}%`
+    : 'Ще немає гостей у списку';
 
   // Who responded — grouped by attending, with persons count per row
   const respondersList = $('respondersList');
@@ -244,7 +267,7 @@ function renderStats(stats) {
   }
 
   showOnly('adminDash');
-  setSub('Картина по гостях. Дані з Google Sheet через Apps Script.');
+  setSub('Свіжа картина по гостях.');
 }
 
 async function loadStats(token) {

@@ -82,80 +82,72 @@
     <section class="admin-dash" id="adminDash" hidden>
 
       <div class="admin-grid">
-        <!-- Summary -->
-        <article class="admin-card admin-summary">
-          <h2 class="admin-card-title">Підсумок</h2>
-          <div class="admin-stat-row">
-            <div class="admin-stat">
-              <span class="admin-stat-num" id="statInvited">—</span>
-              <span class="admin-stat-lbl">Запрошено</span>
+
+        <!-- HERO: single headline number organizer cares about most. -->
+        <article class="admin-card admin-hero-card">
+          <p class="admin-hero-label">Прийдуть на весілля</p>
+          <p class="admin-hero-num">
+            <span id="heroPeople">—</span>
+            <span class="admin-hero-unit" id="heroPeopleUnit">людей</span>
+          </p>
+          <p class="admin-hero-sub">
+            від <span id="heroYesFamilies">—</span> <span id="heroYesFamiliesUnit">родин</span>, що сказали «Так»
+          </p>
+        </article>
+
+        <!-- BREAKDOWN: by-status counts with progress bar. -->
+        <article class="admin-card admin-breakdown-card">
+          <h2 class="admin-card-title">Як відповідають</h2>
+          <p class="admin-card-hint">Кожна родина — одне запрошення (один особистий лінк). Цифри показують скільки родин і скільки людей від них.</p>
+
+          <ul class="admin-breakdown">
+            <li class="admin-breakdown-row is-yes">
+              <span class="admin-breakdown-key">Так залюбки</span>
+              <span class="admin-breakdown-val">
+                <strong id="brkYesFam">—</strong>
+                <span class="admin-breakdown-people">· <span id="brkYesPpl">—</span></span>
+              </span>
+            </li>
+            <li class="admin-breakdown-row is-no">
+              <span class="admin-breakdown-key">На жаль не зможу</span>
+              <span class="admin-breakdown-val"><strong id="brkNoFam">—</strong></span>
+            </li>
+            <li class="admin-breakdown-row is-pending">
+              <span class="admin-breakdown-key">Ще не відповіли</span>
+              <span class="admin-breakdown-val"><strong id="brkPendingFam">—</strong></span>
+            </li>
+          </ul>
+
+          <div class="admin-progress-wrap">
+            <div class="admin-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBarWrap">
+              <div class="admin-progress-bar" id="progressBar" style="width: 0%"></div>
             </div>
-            <div class="admin-stat">
-              <span class="admin-stat-num" id="statResponded">—</span>
-              <span class="admin-stat-lbl">Відповіли</span>
-            </div>
-            <div class="admin-stat">
-              <span class="admin-stat-num" id="statPending">—</span>
-              <span class="admin-stat-lbl">Не відповіли</span>
-            </div>
-            <div class="admin-stat">
-              <span class="admin-stat-num" id="statRate">—</span>
-              <span class="admin-stat-lbl">% відгуку</span>
-            </div>
+            <p class="admin-progress-text" id="progressText">— з — родин відгукнулися</p>
           </div>
         </article>
 
-        <!-- Attending breakdown -->
-        <article class="admin-card admin-attend">
-          <h2 class="admin-card-title">По відповідях</h2>
-          <div class="admin-pills admin-pills-2">
-            <div class="admin-pill is-yes">
-              <span class="admin-pill-num" id="cntYes">—</span>
-              <span class="admin-pill-lbl">Так</span>
-            </div>
-            <div class="admin-pill is-no">
-              <span class="admin-pill-num" id="cntNo">—</span>
-              <span class="admin-pill-lbl">Ні</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Headcount -->
-        <article class="admin-card admin-headcount">
-          <h2 class="admin-card-title">Очікувана к-сть людей</h2>
-          <p class="admin-card-hint">З колонки «Гості» вкладки Відповіді — реальна, з урахуванням додавання/прибирання.</p>
-          <div class="admin-stat-row">
-            <div class="admin-stat">
-              <span class="admin-stat-num" id="hcConfirmed">—</span>
-              <span class="admin-stat-lbl">Точно</span>
-            </div>
-            <div class="admin-stat admin-stat-total">
-              <span class="admin-stat-num" id="hcTotal">—</span>
-              <span class="admin-stat-lbl">Всього</span>
-            </div>
-          </div>
-        </article>
-
-        <!-- Who responded (full list, grouped by attending) -->
+        <!-- Confirmed guests, grouped + with names. -->
         <article class="admin-card admin-responders">
-          <h2 class="admin-card-title">Хто відповів</h2>
-          <p class="admin-card-hint">Один запис = одна родина / запрошення. Колонка справа — скільки людей від них прийде.</p>
+          <h2 class="admin-card-title">Підтверджені гості</h2>
+          <p class="admin-card-hint">Хто точно буде на весіллі — згруповано по родинах. Під назвою родини — перелік імен; справа — скільки людей від кожної.</p>
           <ul class="admin-list admin-list-responders" id="respondersList">
             <li class="admin-list-empty">—</li>
           </ul>
         </article>
 
-        <!-- Pending list -->
+        <!-- Pending — needs follow-up. -->
         <article class="admin-card admin-pending">
-          <h2 class="admin-card-title">Хто ще не відповів</h2>
+          <h2 class="admin-card-title">Ще не відповіли — варто нагадати</h2>
+          <p class="admin-card-hint">Ці родини ще не сказали «Так» чи «Ні». Можливо запрошення загубилось серед інших повідомлень — варто м'яко нагадати.</p>
           <ul class="admin-list" id="pendingList">
             <li class="admin-list-empty">—</li>
           </ul>
         </article>
 
-        <!-- Recent replies -->
+        <!-- Recent activity. -->
         <article class="admin-card admin-recent">
-          <h2 class="admin-card-title">Останні відповіді</h2>
+          <h2 class="admin-card-title">Останні зміни</h2>
+          <p class="admin-card-hint">10 найсвіжіших відповідей — щоб бачити, хто щойно підтвердив, відмовився або оновив свою відповідь.</p>
           <ul class="admin-list admin-list-recent" id="recentList">
             <li class="admin-list-empty">—</li>
           </ul>
