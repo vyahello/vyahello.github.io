@@ -1,7 +1,11 @@
 /* ============================================================
    dresscode.css — §7 fabric swatch palette
      · 5 round swatches (champagne / pink / sage / chocolate / black)
-     · multi-layer radial-gradient stacks simulating draped satin
+     · each swatch uses a real cropped satin photo as background-image
+       (media/fabric-{1..5}-{name}.jpg) — replaces the previous synthetic
+       radial-gradient stack. Photos already carry highlights/shadows/
+       weave so the CSS layer just adds a top ambient highlight + sheen
+       for round-sphere depth.
      · sequential swatchPop on viewport entry, one-time shine sweep
    Trigger: globals.js adds .shimmering to #swatches on intersect.
    ============================================================ */
@@ -28,95 +32,39 @@
   aspect-ratio: 1;
   border-radius: 50%;
   overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   box-shadow:
     0 14px 30px -10px rgba(40, 25, 5, 0.4),
-    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
-    inset 0 -10px 22px -6px rgba(0, 0, 0, 0.4),
-    inset 0 8px 16px -4px rgba(255, 255, 255, 0.18);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.10),
+    inset 0 -10px 22px -6px rgba(0, 0, 0, 0.35),
+    inset 0 8px 16px -4px rgba(255, 255, 255, 0.14);
 }
 
-/* Top ambient highlight curve (subtle — NOT a sheen line). */
+/* Top ambient highlight curve — gives the round tile a lit-from-above
+   3D feel even though the fabric photo itself is flat-faced. Softer
+   than before since the satin photo already has its own highlights. */
 .swatch-tile::before {
   content: '';
   position: absolute;
   inset: 0;
   background: radial-gradient(ellipse 90% 55% at 50% -10%,
-    rgba(255, 255, 255, 0.18), transparent 60%);
+    rgba(255, 255, 255, 0.12), transparent 60%);
   pointer-events: none;
   mix-blend-mode: overlay;
-}
-
-/* SVG turbulence woven on top — micro fabric texture. */
-.swatch-tile::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='2.2' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.4'/></svg>");
-  opacity: 0.5;
-  mix-blend-mode: overlay;
-  pointer-events: none;
 }
 
 /* ============================================================
-   FABRIC COLORS — 6-layer radial-gradient stacks
-   (highlight pool / inner pool / sheen drift / shadow pool /
-    mid-bottom shadow / base linear tonal)
+   FABRIC PHOTOS — real cropped silk swatches from the Pinterest
+   palette board. Photo paths are relative to v-y/css/ → ../media/.
    ============================================================ */
 
-.sw-champagne {
-  background-color: #c4b08b;
-  background-image:
-    radial-gradient(ellipse 80%  65% at 28% 22%, rgba(255, 248, 230, 0.85), transparent 60%),
-    radial-gradient(ellipse 45%  35% at 42% 38%, rgba(255, 244, 220, 0.45), transparent 65%),
-    radial-gradient(ellipse 100% 18% at 55% 50%, rgba(255, 250, 235, 0.30), transparent 70%),
-    radial-gradient(ellipse 80%  70% at 80% 82%, rgba( 90,  72,  45, 0.45), transparent 60%),
-    radial-gradient(ellipse 50%  40% at 50% 88%, rgba(110,  90,  60, 0.30), transparent 60%),
-    linear-gradient(140deg, #ece0c5 0%, #b8a380 65%, #7e6c4c 100%);
-}
-
-.sw-pink {
-  background-color: #8e555c;
-  background-image:
-    radial-gradient(ellipse 80%  65% at 28% 22%, rgba(255, 225, 228, 0.78), transparent 60%),
-    radial-gradient(ellipse 45%  35% at 42% 38%, rgba(252, 215, 220, 0.38), transparent 65%),
-    radial-gradient(ellipse 100% 18% at 55% 50%, rgba(255, 230, 234, 0.25), transparent 70%),
-    radial-gradient(ellipse 80%  70% at 80% 82%, rgba( 55,  12,  20, 0.78), transparent 60%),
-    radial-gradient(ellipse 50%  40% at 50% 88%, rgba( 75,  22,  32, 0.50), transparent 60%),
-    linear-gradient(140deg, #dca6ad 0%, #8a4f56 65%, #4c2026 100%);
-}
-
-.sw-sage {
-  background-color: #5a6644;
-  background-image:
-    radial-gradient(ellipse 80%  65% at 28% 22%, rgba(232, 235, 200, 0.70), transparent 60%),
-    radial-gradient(ellipse 45%  35% at 42% 38%, rgba(220, 225, 180, 0.38), transparent 65%),
-    radial-gradient(ellipse 100% 18% at 55% 50%, rgba(225, 228, 190, 0.22), transparent 70%),
-    radial-gradient(ellipse 80%  70% at 80% 82%, rgba( 15,  25,   6, 0.78), transparent 60%),
-    radial-gradient(ellipse 50%  40% at 50% 88%, rgba( 22,  34,  12, 0.50), transparent 60%),
-    linear-gradient(140deg, #adb992 0%, #4f5a3a 65%, #1f2812 100%);
-}
-
-.sw-chocolate {
-  background-color: #3a2310;
-  background-image:
-    radial-gradient(ellipse 80%  65% at 28% 22%, rgba(195, 140,  90, 0.75), transparent 60%),
-    radial-gradient(ellipse 45%  35% at 42% 38%, rgba(165, 110,  68, 0.40), transparent 65%),
-    radial-gradient(ellipse 100% 18% at 55% 50%, rgba(180, 118,  72, 0.20), transparent 70%),
-    radial-gradient(ellipse 80%  70% at 80% 82%, rgba(  5,   2,   0, 0.88), transparent 60%),
-    radial-gradient(ellipse 50%  40% at 50% 88%, rgba(  8,   4,   1, 0.65), transparent 60%),
-    linear-gradient(140deg, #885832 0%, #3a210c 65%, #0e0602 100%);
-}
-
-.sw-black {
-  background-color: #060504;
-  background-image:
-    radial-gradient(ellipse 80%  65% at 28% 22%, rgba(120, 115, 108, 0.55), transparent 60%),
-    radial-gradient(ellipse 45%  35% at 42% 38%, rgba( 90,  85,  80, 0.32), transparent 65%),
-    radial-gradient(ellipse 100% 18% at 55% 50%, rgba(110, 105,  98, 0.18), transparent 70%),
-    radial-gradient(ellipse 80%  70% at 80% 82%, rgba(  0,   0,   0, 0.92), transparent 60%),
-    radial-gradient(ellipse 50%  40% at 50% 88%, rgba(  0,   0,   0, 0.60), transparent 60%),
-    linear-gradient(140deg, #2c2824 0%, #0a0907 65%, #020201 100%);
-}
+.sw-champagne { background-image: url("../media/fabric-1-champagne.jpg"); }
+.sw-pink      { background-image: url("../media/fabric-2-pink.jpg"); }
+.sw-sage      { background-image: url("../media/fabric-3-sage.jpg"); }
+.sw-chocolate { background-image: url("../media/fabric-4-chocolate.jpg"); }
+.sw-black     { background-image: url("../media/fabric-5-black.jpg"); }
 
 /* ============================================================
    SEQUENTIAL POP-IN — triggered by .shimmering on .swatches

@@ -14,13 +14,13 @@
        OG card — generic share preview, 1200×630.
        Matches the site's cream theme (theme.css [data-theme="cream"]).
 
-       Regenerate og.jpg after any edit to names/date/venue:
+       Regenerate media/og.jpg after any edit to names/date/venue:
          chromium --headless --disable-gpu --no-sandbox --hide-scrollbars \
            --default-background-color=f0e8d8ff \
            --screenshot=/tmp/og_raw.png --window-size=1200,700 \
            file://$PWD/og-card.html
          convert /tmp/og_raw.png -crop 1200x630+0+0 +repage \
-                 -quality 88 -interlace plane og.jpg
+                 -quality 88 -interlace plane media/og.jpg
 
        The .canvas div is EXACTLY 1200×630 and pinned to body (0, 0).
        Render viewport just needs to be ≥ 1200×630; we always crop the

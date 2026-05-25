@@ -10,7 +10,7 @@
    Both buttons mount inside .float-controls; theme dots live next.
    ============================================================ */
 
-const MUSIC_SRC      = 'another-love.mp3';
+const MUSIC_SRC      = 'media/another-love.mp3';
 const MUSIC_VOLUME   = 0.42;
 const MUSIC_FADE_IN_MS  = 700;   // snappier — no "slow ramp" feel on iPhone
 

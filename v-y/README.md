@@ -58,7 +58,8 @@ Useful URL params:
 .
 ├── index.html              # invitation entry
 ├── admin/index.html        # organiser dashboard (token-gated)
-├── favicon.svg             # SVG favicon (scales 16×16 → 180×180)
+├── og-card.html            # 1200×630 share-card template (→ media/og.jpg)
+├── media/                  # static assets: favicon, audio, share image
 ├── data/event.json         # event date + Apps Script URL
 ├── css/                    # ~14 stylesheets, one per section/concern
 ├── js/                     # ~14 ES modules
