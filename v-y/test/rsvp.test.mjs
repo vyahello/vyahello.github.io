@@ -15,21 +15,21 @@ import {
 
 /* ---- parseAttendance ---- */
 
-test('parseAttendance: yes / maybe / no pass through', () => {
+test('parseAttendance: yes / no pass through', () => {
   assert.equal(parseAttendance('yes'),   'yes');
-  assert.equal(parseAttendance('maybe'), 'maybe');
   assert.equal(parseAttendance('no'),    'no');
 });
 
 test('parseAttendance: case-insensitive + trims', () => {
   assert.equal(parseAttendance('YES'),    'yes');
-  assert.equal(parseAttendance('  Maybe '), 'maybe');
-  assert.equal(parseAttendance('NO\n'),    'no');
+  assert.equal(parseAttendance('  No '),  'no');
+  assert.equal(parseAttendance('NO\n'),   'no');
 });
 
-test('parseAttendance: invalid input → null', () => {
+test('parseAttendance: invalid input → null (incl. retired "maybe")', () => {
   assert.equal(parseAttendance(''),         null);
   assert.equal(parseAttendance('bogus'),    null);
+  assert.equal(parseAttendance('maybe'),    null);
   assert.equal(parseAttendance(null),       null);
   assert.equal(parseAttendance(undefined),  null);
   assert.equal(parseAttendance(42),         null);
@@ -92,15 +92,14 @@ test('buildPayload: no empties guest_names but keeps wishes', () => {
   assert.equal(p.wishes, 'на жаль не зможу');
 });
 
-test('buildPayload: maybe keeps guest_names', () => {
+test('buildPayload: retired "maybe" is rejected → attending null, names preserved', () => {
   const p = buildPayload({
     attending:  'maybe',
     guestNames: ['Олена'],
     wishes:     '',
   });
-  assert.equal(p.attending, 'maybe');
+  assert.equal(p.attending, null);
   assert.deepEqual(p.guest_names, ['Олена']);
-  assert.equal(p.wishes, '');
 });
 
 test('buildPayload: guest_names array is a copy, not a live ref', () => {

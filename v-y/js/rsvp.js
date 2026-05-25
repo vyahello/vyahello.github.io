@@ -1,6 +1,6 @@
 /* ============================================================
    rsvp.js — single-screen RSVP form
-     · 3 attendance pills (yes / maybe / no)
+     · 2 attendance pills (yes / no)
      · dynamic guest-name list (1..MAX_GUESTS rows)
      · wishes textarea
      · wax-seal submit button (magnetic hover, idle pulse)
@@ -19,9 +19,9 @@ import { submitRsvp, getGuestSlug } from './guest.js';
    ============================================================ */
 
 export const MAX_GUESTS  = 9;
-const VALID_ATTENDANCE   = ['yes', 'maybe', 'no'];
+const VALID_ATTENDANCE   = ['yes', 'no'];
 
-/** Sanitize free-form attendance input. Returns 'yes'|'maybe'|'no'|null. */
+/** Sanitize free-form attendance input. Returns 'yes'|'no'|null. */
 export function parseAttendance(raw) {
   if (typeof raw !== 'string') return null;
   const v = raw.trim().toLowerCase();
@@ -232,9 +232,6 @@ function showConfirmation(form, confirm, attending, { isExisting = false } = {})
   } else if (attending === 'yes') {
     title.textContent = 'Дякуємо!';
     body.textContent  = 'Вашу відповідь збережено. Чекаємо на Вас 17 липня.';
-  } else if (attending === 'maybe') {
-    title.textContent = 'Будемо чекати';
-    body.textContent  = 'Будь ласка, підтвердіть Вашу присутність ближче до дати.';
   } else {
     title.textContent = 'Шкода, що не зможете';
     body.textContent  = 'Дякуємо, що повідомили. Будемо думати про Вас.';
@@ -248,10 +245,12 @@ function hideConfirmation(form, confirm) {
   confirm.classList.remove('show');
 }
 
-/** Backend stores attending in Ukrainian (так/мабуть/ні) but the radio
-    inputs in the form use the English codes (yes/maybe/no) that the
-    submit handler expects. Normalize both directions when restoring. */
-const UA_TO_EN_ATTENDING = { 'так': 'yes', 'мабуть': 'maybe', 'ні': 'no' };
+/** Backend stores attending in Ukrainian (так/ні) but the radio
+    inputs in the form use the English codes (yes/no) that the
+    submit handler expects. Normalize both directions when restoring.
+    Legacy 'мабуть' rows (from a previous 3-option variant) are
+    treated as 'yes' so the form still restores instead of going blank. */
+const UA_TO_EN_ATTENDING = { 'так': 'yes', 'мабуть': 'yes', 'ні': 'no' };
 
 /** Restore form values from a previously-saved RSVP. */
 function restoreFormFromRsvp(form, list, addBtn, rsvp) {
@@ -264,7 +263,7 @@ function restoreFormFromRsvp(form, list, addBtn, rsvp) {
       radio.dispatchEvent(new Event('change', { bubbles: true }));
     }
   }
-  // Guest names (overrides household_default)
+  // Guest names — restore from previous submission.
   if (Array.isArray(rsvp.guest_names) && rsvp.guest_names.length) {
     setHousehold(list, addBtn, rsvp.guest_names);
   }
@@ -351,6 +350,10 @@ export function initRSVP() {
       restoreFormFromRsvp(form, list, addBtn, rsvp);
       // Show "already replied" confirmation — user can hit "Змінити" to edit.
       showConfirmation(form, confirm, rsvp.attending, { isExisting: true });
+    } else if (Array.isArray(guest?.expected_guests) && guest.expected_guests.length) {
+      // First-time visit + we have the expected guest list from the sheet.
+      // Pre-fill rows so the guest only confirms / removes / declines.
+      setHousehold(list, addBtn, guest.expected_guests);
     }
   });
 
@@ -361,9 +364,9 @@ export function initRSVP() {
     const fd = new FormData(form);
     const attending = parseAttendance(fd.get('attend'));
 
-    // Guard: 'yes' or 'maybe' require at least one named guest.
+    // Guard: 'yes' requires at least one named guest.
     const rawNames = readGuestNames(list);
-    const needsNames = attending === 'yes' || attending === 'maybe';
+    const needsNames = attending === 'yes';
 
     if (needsNames && rawNames.length === 0) {
       const first = list.querySelector('.guest-name');

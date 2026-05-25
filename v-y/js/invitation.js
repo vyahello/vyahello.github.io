@@ -102,7 +102,25 @@ export function initInvitation() {
   // 2. Override once backend data arrives — sheet wins over URL params.
   document.addEventListener('guest:loaded', (e) => {
     const g = e.detail?.guest;
-    if (g?.display_name) renderGreeting(el, g.display_name, g.form);
+    if (!g) return;
+    // If column B in the sheet already contains the full salutation phrase
+    // (e.g. "Дорогі Ірина та Володимир"), backend returns it as `greeting`
+    // and we render it verbatim. Split at first space so the name keeps
+    // its .gname accent styling.
+    if (g.greeting) {
+      const idx = g.greeting.indexOf(' ');
+      if (idx > 0) {
+        const prefix = g.greeting.slice(0, idx);
+        const name   = g.greeting.slice(idx + 1);
+        el.innerHTML = `${escapeHtml(prefix)} <span class="gname">${escapeHtml(name)}</span>,`;
+      } else {
+        el.innerHTML = `${escapeHtml(g.greeting)},`;
+      }
+      return;
+    }
+    // Legacy fallback: cell holds just the name (no whitelisted prefix) →
+    // let renderGreeting auto-detect form from the name itself.
+    if (g.display_name) renderGreeting(el, g.display_name);
   });
 
   calibrateFlourish();

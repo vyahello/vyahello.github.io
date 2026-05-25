@@ -241,7 +241,7 @@
   }
 }
 .admin-headcount .admin-stat-row {
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 }
 .admin-stat {
   text-align: center;
@@ -275,6 +275,9 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
 }
+.admin-pills.admin-pills-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
 .admin-pill {
   text-align: center;
   padding: 16px 8px;
@@ -301,7 +304,6 @@
   color: var(--ink-soft);
 }
 .admin-pill.is-yes   { border-color: color-mix(in oklab, #4a8b3f 50%, var(--line)); background: color-mix(in oklab, #4a8b3f 8%, transparent); }
-.admin-pill.is-maybe { border-color: color-mix(in oklab, var(--accent) 60%, var(--line)); background: color-mix(in oklab, var(--accent) 10%, transparent); }
 .admin-pill.is-no    { border-color: color-mix(in oklab, #8b4f3f 50%, var(--line)); background: color-mix(in oklab, #8b4f3f 8%, transparent); }
 
 /* ---- Lists ---- */
@@ -364,7 +366,6 @@
   gap: 10px;
 }
 .admin-list-group.is-yes   { background: color-mix(in oklab, #4a8b3f 16%, var(--bg-card)); }
-.admin-list-group.is-maybe { background: color-mix(in oklab, var(--accent) 16%, var(--bg-card)); }
 .admin-list-group.is-no    { background: color-mix(in oklab, #8b4f3f 14%, var(--bg-card)); }
 .admin-list-group-sub {
   color: var(--ink-soft);
@@ -374,12 +375,25 @@
   font-size: 11px;
 }
 
-/* ---- Responders rows: name | persons ---- */
+/* ---- Responders rows: name + names | persons ---- */
 .admin-resp-item {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 14px;
-  align-items: baseline;
+  align-items: start;
+}
+.admin-resp-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.admin-resp-names {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  font-style: italic;
+  color: var(--ink-soft);
+  line-height: 1.5;
 }
 .admin-resp-persons {
   font-family: var(--font-mono);
@@ -389,6 +403,7 @@
   min-width: 60px;
   text-align: right;
   font-variant-numeric: lining-nums tabular-nums;
+  padding-top: 3px;
 }
 
 /* ---- Recent replies ---- */
@@ -411,7 +426,6 @@
   color: var(--ink-soft);
 }
 .admin-attend-badge.is-yes   { background: color-mix(in oklab, #4a8b3f 18%, transparent); border-color: color-mix(in oklab, #4a8b3f 55%, var(--line)); color: var(--ink); }
-.admin-attend-badge.is-maybe { background: color-mix(in oklab, var(--accent) 18%, transparent); border-color: var(--accent); color: var(--ink); }
 .admin-attend-badge.is-no    { background: color-mix(in oklab, #8b4f3f 18%, transparent); border-color: color-mix(in oklab, #8b4f3f 55%, var(--line)); color: var(--ink); }
 
 .admin-recent-names {

@@ -11,15 +11,13 @@ const $ = (id) => document.getElementById(id);
 
 const ATTEND_LABEL = {
   'так': 'Так',
-  'мабуть': 'Можемо',
   'ні': 'Ні',
 };
 const ATTEND_CLASS = {
   'так': 'is-yes',
-  'мабуть': 'is-maybe',
   'ні': 'is-no',
 };
-const ATTEND_ORDER = ['так', 'мабуть', 'ні'];
+const ATTEND_ORDER = ['так', 'ні'];
 
 // Ukrainian plural: 1 родина / 2 родини / 5 родин
 function pluralUa(n, one, few, many) {
@@ -95,12 +93,10 @@ function renderStats(stats) {
 
   const a = stats.attending || {};
   $('cntYes').textContent   = a.yes ?? '—';
-  $('cntMaybe').textContent = a.maybe ?? '—';
   $('cntNo').textContent    = a.no ?? '—';
 
   const h = stats.headcount || {};
   $('hcConfirmed').textContent = h.confirmed ?? '—';
-  $('hcMaybe').textContent     = h.maybe ?? '—';
   $('hcTotal').textContent     = h.total_expected ?? '—';
 
   // Who responded — grouped by attending, with persons count per row
@@ -113,9 +109,12 @@ function renderStats(stats) {
     li.textContent = 'Ще немає відповідей';
     respondersList.appendChild(li);
   } else {
-    const groups = { 'так': [], 'мабуть': [], 'ні': [] };
+    const groups = { 'так': [], 'ні': [] };
     for (const r of responders) {
-      if (groups[r.attending]) groups[r.attending].push(r);
+      // Backstop: tolerate any legacy 'мабуть' value that slipped past
+      // server-side normalization by grouping it with 'так'.
+      const key = r.attending === 'мабуть' ? 'так' : r.attending;
+      if (groups[key]) groups[key].push(r);
     }
     for (const key of ATTEND_ORDER) {
       const list = groups[key];
@@ -137,13 +136,27 @@ function renderStats(stats) {
       for (const r of list) {
         const li = document.createElement('li');
         li.className = 'admin-list-item admin-resp-item';
+
+        const main = document.createElement('div');
+        main.className = 'admin-resp-main';
         const name = document.createElement('span');
         name.className = 'admin-list-name';
         name.textContent = r.display_name || r.slug;
+        main.appendChild(name);
+
+        const names = Array.isArray(r.guest_names) ? r.guest_names.filter(Boolean) : [];
+        if (names.length) {
+          const namesEl = document.createElement('div');
+          namesEl.className = 'admin-resp-names';
+          namesEl.textContent = names.join(', ');
+          main.appendChild(namesEl);
+        }
+
         const persons = document.createElement('span');
         persons.className = 'admin-resp-persons';
         persons.textContent = r.persons > 0 ? `${r.persons} ос.` : '—';
-        li.appendChild(name);
+
+        li.appendChild(main);
         li.appendChild(persons);
         respondersList.appendChild(li);
       }
