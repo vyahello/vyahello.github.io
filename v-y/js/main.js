@@ -18,7 +18,7 @@ import { initGuest }      from './guest.js';
 function boot() {
   initTheme();        // must run first — paints data-theme on body
   initCurtain();      // auto-lifts after 3s or on click
-  initHero();         // letter splits + parallax + .ics download
+  initHero();         // letter splits + parallax (add-to-calendar is a plain anchor)
   initInvitation();   // smart greeting + flourish — listens for guest:loaded
   initLocation();     // Leaflet map + CARTO basemap + golden marker
   initReveal();

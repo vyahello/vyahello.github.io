@@ -81,7 +81,7 @@ Pure modules with named exports. `js/main.js` orchestrates boot order. Each modu
 |---|---|
 | `theme.js` | Resolve initial theme (URL > localStorage > default), wire dot picker |
 | `curtain.js` | Intro overlay lift (auto/click/escape), dispatch `curtain:lifted` |
-| `hero.js` | Letter-split reveal, mouse parallax, `.ics` calendar download |
+| `hero.js` | Letter-split reveal, mouse parallax (add-to-calendar is a plain anchor to Google Calendar — no JS) |
 | `invitation.js` | Greeting personalisation, `normalizeForm()` for grammatical form |
 | `location.js` | Leaflet map + theme-aware CARTO basemap swap |
 | `countdown.js` | Calendar widget + countdown rollup with easing |

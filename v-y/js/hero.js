@@ -1,5 +1,5 @@
 /* ============================================================
-   hero.js — letter reveal + mouse parallax + add-to-calendar
+   hero.js — letter reveal + mouse parallax
 
    Letter reveal: each .names .n element is split into per-char
    <span class="ch" style="--i: N"> so CSS can stagger the reveal.
@@ -10,26 +10,14 @@
    Parallax: every [data-depth] inside #parallaxNames follows the
    cursor by a depth-weighted offset. Desktop-only (matchMedia).
 
-   Add-to-calendar: clicking #addCalBtn navigates to the static
-   media/event.ics file. The blob+<a download> approach used to
-   silently fail in in-app WebViews (Telegram, FB, Instagram, even
-   iMessage's link preview opener) — direct URL navigation hands the
-   text/calendar MIME to the OS, which then offers Calendar import.
-   Fixed event metadata for 17.07.2026 15:00 Kyiv (= 12:00 UTC).
+   Add-to-calendar: handled entirely by index.html — #addCalBtn is
+   an <a> linking straight to a Google Calendar event-edit URL with
+   target="_blank". No JS needed. Google Cal works identically in
+   every browser/WebView (Telegram, iMessage, WhatsApp, Safari,
+   Chrome) — it's just a webpage with the event pre-filled, user
+   taps Save. countdown.js still triggers it via .click() on day-17
+   of the calendar, which fires the anchor's default navigation.
    ============================================================ */
-
-// Pre-rendered .ics file lives at media/event.ics (linked by index.html's
-// <a id="addCalBtn" href="media/event.ics" download>). EVENT object + buildICS
-// are kept so the static file is regenerable if event metadata ever changes.
-const EVENT = {
-  uid:       'wedding-vandyu-17072026',
-  dtStart:   '20260717T120000Z',
-  dtEnd:     '20260717T210000Z',
-  summary:   'Весілля Володимира та Юстини',
-  desc:      'Запрошуємо на наше весілля. Збір гостей з 14:30, церемонія о 15:00.',
-  location:  'Soprano Inn, вул. Кільцева 8, Пасіки-Зубрицькі, Львів',
-  geo:       '49.7676623;24.0866213',
-};
 
 /* ---- Letter splitting ----
    Wrap each character in `text` in a <span class="ch" style="--i: i">.
@@ -71,57 +59,6 @@ function attachParallax(root) {
   document.addEventListener('mousemove', onMove);
 }
 
-/* ---- .ics generator ----
-   Synthesizes a valid VCALENDAR/VEVENT and triggers a download.
-   Returns the URL so callers can clean up if needed (here we revoke
-   asynchronously). */
-export function buildICS({ uid, dtStart, dtEnd, summary, desc, location, geo } = EVENT) {
-  const dtstamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-  // Escape commas + semicolons in LOCATION per RFC 5545
-  const safeLocation = location.replace(/([,;])/g, '\\$1');
-  return [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//VandY//Wedding//UK',
-    'CALSCALE:GREGORIAN',
-    'METHOD:PUBLISH',
-    'BEGIN:VEVENT',
-    `UID:${uid}-${Date.now()}@vandyu.wedding`,
-    `DTSTAMP:${dtstamp}`,
-    `DTSTART:${dtStart}`,
-    `DTEND:${dtEnd}`,
-    `SUMMARY:${summary}`,
-    `DESCRIPTION:${desc}`,
-    `LOCATION:${safeLocation}`,
-    `GEO:${geo}`,
-    'END:VEVENT',
-    'END:VCALENDAR',
-  ].join('\r\n');
-}
-
-function attachAddToCal(btn) {
-  if (!btn) return;
-  // The button is now an <a href="media/event.ics" download> — the browser
-  // (or in-app WebView) handles the .ics navigation natively, which is what
-  // makes Calendar import work in Telegram / iMessage preview / WhatsApp
-  // contexts where the old blob+<a download> trick used to silently fail.
-  //
-  // NOTE: do NOT swap to webcal:// for iOS. webcal: is for *subscribing* to
-  // an ongoing feed (sports schedule, holidays) and triggers iOS's "Add
-  // Subscription Calendar" sheet — wrong UX for a one-shot event. Plain
-  // https + text/calendar MIME makes iOS Safari (and most in-app WebViews)
-  // show the proper event-preview sheet with "Add Event".
-  //
-  // This JS just flashes a "✓ збережено" confirmation on tap.
-  btn.addEventListener('click', () => {
-    const label = btn.querySelector('span');
-    if (!label) return;
-    const original = label.textContent;
-    label.textContent = '✓ збережено';
-    setTimeout(() => { label.textContent = original; }, 2000);
-  });
-}
-
 /* ---- intro-done choreography ----
    curtain.js adds .intro-done when the curtain lifts. If the curtain
    was skipped (?skipIntro=1 or sessionStorage), curtain.js still adds
@@ -145,9 +82,6 @@ export function initHero() {
   const parallaxRoot = document.getElementById('parallaxNames');
   if (parallaxRoot) attachParallax(parallaxRoot);
 
-  // 3. Wire add-to-calendar.
-  attachAddToCal(document.getElementById('addCalBtn'));
-
-  // 4. Make sure intro animation fires even if curtain was skipped.
+  // 3. Make sure intro animation fires even if curtain was skipped.
   ensureIntroDone(hero);
 }
