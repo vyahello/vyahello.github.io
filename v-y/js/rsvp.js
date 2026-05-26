@@ -182,26 +182,39 @@ function flagMissingAttendance(root) {
   flagMissingAttendance._t = setTimeout(() => hint.remove(), 4000);
 }
 
-/** Focus + briefly tint an invalid name input, and surface a small inline
-    hint underneath the guest list. Auto-clears after ~3.5s. */
-function flagInvalidGuestInput(input, message) {
-  if (!input) return;
-  input.focus();
-  input.classList.add('is-invalid');
-  setTimeout(() => input.classList.remove('is-invalid'), 1400);
+/** Returns every guest-name input that is filled-but-incomplete
+    (single-token value — no surname). Empty rows pass; user can have
+    blank slots without being nagged. */
+function findInvalidGuestInputs(list) {
+  return [...list.querySelectorAll('.guest-name')]
+    .filter((i) => i.value.trim() && !hasFullName(i.value));
+}
 
-  const list = input.closest('#guestList') || input.closest('.guest-list');
-  if (list) {
-    let hint = list.parentElement.querySelector('.guest-list-error');
-    if (!hint) {
-      hint = document.createElement('p');
-      hint.className = 'guest-list-error';
-      list.parentElement.insertBefore(hint, list.nextSibling);
-    }
-    hint.textContent = message;
-    clearTimeout(flagInvalidGuestInput._t);
-    flagInvalidGuestInput._t = setTimeout(() => hint.remove(), 3500);
+/** Mark a batch of guest-name inputs as invalid: red tint + shake on
+    EACH, focus the first, surface a single inline hint under the list.
+    Tint persists until the user fixes the field (live-clear via the
+    input listener wired in initRSVP) — re-submitting retriggers the
+    shake via the offsetWidth reflow trick. */
+function flagInvalidGuestInputs(inputs, message, list) {
+  if (!inputs?.length || !list) return;
+  // Drop prior is-invalid across the whole list so stale red doesn't
+  // linger on rows that the new validation pass considers fine.
+  list.querySelectorAll('.guest-name.is-invalid').forEach((i) => i.classList.remove('is-invalid'));
+  // Force reflow so re-adding the class on the same input retriggers
+  // the shake CSS animation (otherwise it only plays on first add).
+  void list.offsetWidth;
+  inputs.forEach((i) => i.classList.add('is-invalid'));
+  inputs[0].focus();
+
+  let hint = list.parentElement.querySelector('.guest-list-error');
+  if (!hint) {
+    hint = document.createElement('p');
+    hint.className = 'guest-list-error';
+    list.parentElement.insertBefore(hint, list.nextSibling);
   }
+  hint.textContent = message;
+  clearTimeout(flagInvalidGuestInputs._t);
+  flagInvalidGuestInputs._t = setTimeout(() => hint.remove(), 3500);
 }
 
 /* ---- Magnetic seal (desktop) ---- */
@@ -336,8 +349,20 @@ export function initRSVP() {
   renumberGuestRows(list, addBtn);
   attachMagneticSeal(seal);
 
-  // Add-guest button
-  addBtn.addEventListener('click', () => addGuestRow(list, addBtn, { focus: true }));
+  // Validate any incomplete rows BEFORE adding a new one — same check
+  // as the submit handler, just earlier. Catches typos at the moment
+  // they happen instead of surprising the user at submit time.
+  function tryAddRow() {
+    const invalids = findInvalidGuestInputs(list);
+    if (invalids.length) {
+      flagInvalidGuestInputs(invalids, 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.', list);
+      return;
+    }
+    addGuestRow(list, addBtn, { focus: true });
+  }
+
+  // Add-guest button — validates filled rows first.
+  addBtn.addEventListener('click', tryAddRow);
 
   // Delegated remove — single tap. The trash icon makes the intent
   // unambiguous; removeGuestRow already guards against deleting the
@@ -352,9 +377,20 @@ export function initRSVP() {
       const row    = e.target.closest('.guest-row');
       const rows   = [...list.querySelectorAll('.guest-row')];
       const idx    = rows.indexOf(row);
-      if (idx === rows.length - 1) addGuestRow(list, addBtn, { focus: true });
+      // Enter on the LAST row mimics the "+" button → same validation path.
+      if (idx === rows.length - 1) tryAddRow();
       else rows[idx + 1].querySelector('.guest-name').focus();
     }
+  });
+
+  // Live-clear: drop the red .is-invalid the moment the user types a
+  // valid full name (or empties the field). Gives instant "I fixed it"
+  // feedback without making them re-submit to learn the tint is gone.
+  list.addEventListener('input', (e) => {
+    const input = e.target.closest('.guest-name');
+    if (!input || !input.classList.contains('is-invalid')) return;
+    const v = input.value.trim();
+    if (!v || hasFullName(v)) input.classList.remove('is-invalid');
   });
 
   // Hide the guest list if attendance flips to 'no'.
@@ -420,17 +456,18 @@ export function initRSVP() {
 
     if (needsNames && rawNames.length === 0) {
       const first = list.querySelector('.guest-name');
-      flagInvalidGuestInput(first, 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.');
+      flagInvalidGuestInputs([first], 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.', list);
       return;
     }
 
     // Each filled row must contain BOTH name and surname (2+ words) so the
-    // sheet doesn't get half-identified guests like "Ірина".
+    // sheet doesn't get half-identified guests like "Ірина". Flag ALL
+    // offenders at once — partial flagging confused users who fixed one,
+    // re-submitted, then got bounced again for the next invalid row.
     if (needsNames) {
-      const invalidInput = [...list.querySelectorAll('.guest-name')]
-        .find((i) => i.value.trim() && !hasFullName(i.value));
-      if (invalidInput) {
-        flagInvalidGuestInput(invalidInput, 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.');
+      const invalids = findInvalidGuestInputs(list);
+      if (invalids.length) {
+        flagInvalidGuestInputs(invalids, 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.', list);
         return;
       }
     }
