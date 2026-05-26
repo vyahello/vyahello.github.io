@@ -139,12 +139,14 @@
 }
 .guest-row {
   display: grid;
-  grid-template-columns: 34px 1fr 28px;
+  /* `auto` on the trailing column lets the "−" button grow into a wider
+     "прибрати?" pill when the row is .armed (without absolute positioning). */
+  grid-template-columns: 34px 1fr auto;
   align-items: center;
   gap: 10px;
   padding: 6px 0;
   border-bottom: 1px solid var(--line);
-  transition: border-color 0.3s var(--easing);
+  transition: border-color 0.3s var(--easing), background-color 0.25s var(--easing);
   position: relative;
 }
 .guest-row:focus-within { border-bottom-color: var(--accent); }
@@ -248,16 +250,63 @@
   color: color-mix(in oklab, #c44a2f 75%, var(--accent));
   transform: scale(1.08);
 }
-/* Hover/focus preview: strike-through the name in the same row so the
-   guest sees who's about to be removed BEFORE clicking. :has() makes
-   this stateless (no JS class toggling required). */
+/* Strike-through preview on the row's name. Three trigger paths so the
+   visual stays consistent across input modes:
+     · desktop :hover    — early hint while the cursor is over "−"
+     · keyboard :focus-visible — same hint for tab-navigation
+     · .armed (set by JS) — touch path: first tap arms, this state shows
+       what's about to be removed, second tap on the pill confirms */
 .guest-row:has(.guest-remove:hover) .guest-name,
-.guest-row:has(.guest-remove:focus-visible) .guest-name {
+.guest-row:has(.guest-remove:focus-visible) .guest-name,
+.guest-row.armed .guest-name {
   text-decoration: line-through;
   text-decoration-color: color-mix(in oklab, #c44a2f 60%, var(--ink-mute));
   text-decoration-thickness: 1px;
   color: var(--ink-mute);
   transition: color 0.2s, text-decoration-color 0.2s;
+}
+
+/* Armed row — warm-tinted background telegraphs the destructive intent
+   without alarming red. Reuses the same warm hue as the strike-through
+   so the row reads as one cohesive "about to be removed" state. */
+.guest-row.armed {
+  background: color-mix(in oklab, #c44a2f 9%, transparent);
+  border-radius: 6px;
+  border-bottom-color: transparent;
+}
+
+/* "−" morphs into a wider "прибрати?" pill when armed. Same circle-end
+   geometry, just stretched horizontally with text + a soft pulse to
+   draw the user's eye to the changed area before their second tap. */
+.guest-row.armed .guest-remove {
+  width: auto;
+  padding: 0 12px 0 8px;
+  border-radius: 14px;
+  background: color-mix(in oklab, #c44a2f 16%, transparent);
+  color: color-mix(in oklab, #c44a2f 85%, var(--ink));
+  opacity: 1;
+  gap: 6px;
+  animation: armedPulse 1.4s ease-in-out infinite;
+}
+.guest-row.armed .guest-remove .minus {
+  /* Border collapses into the pill's own rounded background — keep just
+     the bare "−" stroke so the icon doesn't look like a button-in-pill. */
+  border-color: transparent;
+}
+.guest-row.armed .guest-remove::after {
+  content: 'прибрати?';
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: lowercase;
+  line-height: 1;
+}
+@keyframes armedPulse {
+  0%, 100% { transform: scale(1);    }
+  50%      { transform: scale(1.04); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .guest-row.armed .guest-remove { animation: none; }
 }
 /* JS still guards against deleting the LAST remaining row, so we don't need
    to hide the first-row "−" via CSS. Hiding it caused confusion when a guest

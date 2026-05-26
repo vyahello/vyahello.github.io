@@ -129,6 +129,46 @@ function removeGuestRow(row, list, addBtn) {
   setTimeout(() => { row.remove(); renumberGuestRows(list, addBtn); }, 320);
 }
 
+/* ---- Two-tap remove confirm ----
+   Touch devices skip :hover entirely, so the hover-preview strikethrough
+   never gets a chance to teach the consequence. Instead we use a uniform
+   two-tap pattern: first tap arms the row (visible "прибрати?" pill +
+   strikethrough + warm tint), second tap removes. Cancel paths: tap
+   outside the row, tap another row's "−", or 5-second silent timeout. */
+
+const ARM_TIMEOUT_MS = 5000;
+let armedRow = null;
+let armedTimer = null;
+
+function armRow(row) {
+  if (armedRow && armedRow !== row) disarmRow();
+  row.classList.add('armed');
+  armedRow = row;
+  clearTimeout(armedTimer);
+  armedTimer = setTimeout(disarmRow, ARM_TIMEOUT_MS);
+}
+
+function disarmRow() {
+  if (armedRow) armedRow.classList.remove('armed');
+  armedRow = null;
+  clearTimeout(armedTimer);
+  armedTimer = null;
+}
+
+function shakeButton(btn) {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  btn.animate(
+    [
+      { transform: 'translateX(0)' },
+      { transform: 'translateX(-4px)' },
+      { transform: 'translateX(4px)' },
+      { transform: 'translateX(-2px)' },
+      { transform: 'translateX(0)' },
+    ],
+    { duration: 320, easing: 'ease-out' }
+  );
+}
+
 function readGuestNames(list) {
   return [...list.querySelectorAll('.guest-name')]
     .map((i) => i.value.trim())
@@ -338,11 +378,33 @@ export function initRSVP() {
   // Add-guest button
   addBtn.addEventListener('click', () => addGuestRow(list, addBtn, { focus: true }));
 
-  // Delegated remove + Enter-to-add
+  // Delegated remove (two-tap: arm → confirm) + Enter-to-add
   list.addEventListener('click', (e) => {
     const removeBtn = e.target.closest('.guest-remove');
-    if (removeBtn) removeGuestRow(removeBtn.closest('.guest-row'), list, addBtn);
+    if (!removeBtn) return;
+    const row = removeBtn.closest('.guest-row');
+    // Last person standing — can't have an empty household. Shake the
+    // button to acknowledge the tap without arming a dead-end state.
+    if (list.querySelectorAll('.guest-row').length <= 1) {
+      shakeButton(removeBtn);
+      return;
+    }
+    if (row.classList.contains('armed')) {
+      disarmRow();
+      removeGuestRow(row, list, addBtn);
+    } else {
+      armRow(row);
+    }
   });
+
+  // Cancel armed state on any tap outside the armed row. Capture phase
+  // so we run before the list's own click handler — guarantees that
+  // tapping a DIFFERENT row's "−" disarms the prior row first, then
+  // arms the new one (instead of confirming the wrong row).
+  document.addEventListener('pointerdown', (e) => {
+    if (!armedRow) return;
+    if (!armedRow.contains(e.target)) disarmRow();
+  }, true);
   list.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && e.target.classList.contains('guest-name')) {
       e.preventDefault();
