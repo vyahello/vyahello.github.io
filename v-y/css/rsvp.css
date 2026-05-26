@@ -208,27 +208,47 @@
   height: 15px;
   display: block;
 }
-.guest-row:hover .guest-remove,
+
+/* Focus paths (touch-safe): opacity bump when any descendant has focus
+   (e.g. user typing in the input), full warm intensity + strikethrough
+   preview when the trash itself has keyboard focus. :focus-visible
+   only fires on keyboard navigation, never on pointer/touch — so these
+   rules can't cause sticky state after a tap. */
 .guest-row:focus-within .guest-remove { opacity: 0.9; }
-.guest-remove:hover,
 .guest-remove:focus-visible {
   opacity: 1;
-  /* Warm terracotta on hover — reads as "removal" without alarm-red. */
   color: color-mix(in oklab, #c44a2f 80%, var(--ink-mute));
   transform: scale(1.1);
 }
-
-/* Desktop nicety: hovering / keyboard-focusing the trash strikes the
-   name in the same row so the consequence is previewed before the
-   click. Touch devices skip this (no :hover) and rely on the icon's
-   inherent clarity. */
-.guest-row:has(.guest-remove:hover) .guest-name,
 .guest-row:has(.guest-remove:focus-visible) .guest-name {
   text-decoration: line-through;
   text-decoration-color: color-mix(in oklab, #c44a2f 60%, var(--ink-mute));
   text-decoration-thickness: 1px;
   color: var(--ink-mute);
   transition: color 0.2s, text-decoration-color 0.2s;
+}
+
+/* Hover paths — desktop only. Touch devices leave :hover stuck on
+   whatever element is under the finger after a tap, which caused the
+   strikethrough to land on the WRONG row after a delete (the next row
+   slides up under the same coordinates and inherits the hover state).
+   @media (hover: hover) reports true only for devices whose primary
+   pointing device can actually hover (mouse / trackpad) — mobile and
+   stylus fall through and get no hover styling at all. */
+@media (hover: hover) {
+  .guest-row:hover .guest-remove { opacity: 0.9; }
+  .guest-remove:hover {
+    opacity: 1;
+    color: color-mix(in oklab, #c44a2f 80%, var(--ink-mute));
+    transform: scale(1.1);
+  }
+  .guest-row:has(.guest-remove:hover) .guest-name {
+    text-decoration: line-through;
+    text-decoration-color: color-mix(in oklab, #c44a2f 60%, var(--ink-mute));
+    text-decoration-thickness: 1px;
+    color: var(--ink-mute);
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
 }
 /* JS still guards against deleting the LAST remaining row, so we don't need
    to hide the first-row trash via CSS. Hiding it caused confusion when a
