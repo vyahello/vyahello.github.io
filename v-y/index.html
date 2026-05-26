@@ -554,11 +554,16 @@
 
         <div id="guestCountWrap">
           <label class="field-label">Будь ласка, перевірте склад родини — приберіть тих, хто не зможе <span class="req">*</span></label>
+          <p class="field-hint">Натисніть <span class="hint-minus" aria-hidden="true">−</span> поруч з ім'ям, щоб прибрати.</p>
           <div class="guest-list" id="guestList">
             <div class="guest-row">
               <span class="guest-num">01</span>
               <input type="text" class="guest-name" placeholder="Олена Шевченко" autocomplete="off">
-              <button type="button" class="guest-remove" aria-label="Видалити цього гостя">×</button>
+              <button type="button" class="guest-remove" aria-label="Прибрати цього гостя">
+                <span class="minus" aria-hidden="true">
+                  <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M2 6 L10 6"/></svg>
+                </span>
+              </button>
             </div>
           </div>
           <button type="button" class="guest-add" id="guestAdd">
