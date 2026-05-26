@@ -423,6 +423,28 @@
   margin: 0 auto 20px;
   color: var(--accent);
 }
+
+/* Couple sticker that crowns the "Дякуємо!" / "Шкода..." card after
+   submit. Replaces the small SVG check circle — sticker IS the moment
+   of celebration. Soft entrance animation matches the card fade-in. */
+.rsvp-confirm .confirm-sticker {
+  display: block;
+  width: 180px;
+  max-width: 60vw;
+  height: auto;
+  margin: 0 auto 8px;
+  /* PNG drop shadow: subtle ground-floor for the cutout, no halo. */
+  filter: drop-shadow(0 12px 18px rgba(40, 25, 5, 0.18));
+  animation: stickerPop 0.7s var(--easing) 0.15s backwards;
+}
+@keyframes stickerPop {
+  0%   { opacity: 0; transform: translateY(12px) scale(0.88); }
+  60%  {              transform: translateY(-3px) scale(1.04); }
+  100% { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rsvp-confirm .confirm-sticker { animation: none; }
+}
 .rsvp-confirm h3 {
   font-family: var(--font-display);
   font-size: 30px;

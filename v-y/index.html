@@ -311,17 +311,29 @@
         <path class="leaf" d="M75 22 Q 73 26 68 24 Q 70 20 75 22 Z" opacity="0.7"/>
       </svg>
 
-      <div class="letter">
-        <p class="letter-greeting" id="greeting">Дорогі гості,</p>
-        <p class="letter-body">
-          ми маємо честь запросити Вас на найважливіший день нашого життя —
-          день, коли наша <em>історія кохання</em> отримає своє ім'я,
-          а наша <em>сім'я</em> — свій початок.
-        </p>
-        <p class="letter-body">
-          Будемо щиро вдячні, якщо Ви розділите цей день поряд з нами.
-        </p>
-        <div class="signature">з любов'ю, <span class="brand-mono">В<span class="amp-char">&amp;</span>Ю</span></div>
+      <div class="invitation-grid">
+        <figure class="letter-portrait">
+          <picture>
+            <!-- WebP with baked-in alpha (corners chromakey'd to transparent
+                 so the painted frame blends invisibly into any page bg).
+                 JPEG fallback for browsers without WebP support (~4% global). -->
+            <source srcset="media/base1.webp" type="image/webp">
+            <img src="media/base1.jpeg" alt="Володимир та Юстина" loading="lazy" width="626" height="757">
+          </picture>
+        </figure>
+
+        <div class="letter">
+          <p class="letter-greeting" id="greeting">Дорогі гості,</p>
+          <p class="letter-body">
+            ми маємо честь запросити Вас на найважливіший день нашого життя —
+            день, коли наша <em>історія кохання</em> отримає своє ім'я,
+            а наша <em>сім'я</em> — свій початок.
+          </p>
+          <p class="letter-body">
+            Будемо щиро вдячні, якщо Ви розділите цей день поряд з нами.
+          </p>
+          <div class="signature">з любов'ю, <span class="brand-mono">В<span class="amp-char">&amp;</span>Ю</span></div>
+        </div>
       </div>
     </div>
   </section>
@@ -568,9 +580,7 @@
       </form>
 
       <div class="rsvp-confirm" id="rsvpConfirm" role="status" aria-live="polite">
-        <div class="ck">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><polyline points="4 12 10 18 20 6"/></svg>
-        </div>
+        <img class="confirm-sticker" src="media/base.png" alt="" width="600" height="600" loading="lazy">
         <h3 data-confirm-title>Дякуємо!</h3>
         <p  data-confirm-text>Вашу відповідь збережено. Чекаємо на Вас 17 липня.</p>
         <a class="edit-link" id="editLink" role="button" tabindex="0">Змінити відповідь</a>

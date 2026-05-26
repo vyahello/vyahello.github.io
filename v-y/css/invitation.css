@@ -8,10 +8,54 @@
    Smart greeting + ?guest=/?form= live in js/invitation.js.
    ============================================================ */
 
+/* Two-column wrapper: painted couple portrait + letter copy.
+   Mobile stacks them (portrait first → emotional setup before reading).
+   Desktop ≥720px goes side-by-side, letter text-aligned left so it reads
+   like a real wedding invitation card. */
+.invitation-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  align-items: center;
+  max-width: 880px;
+  margin: 28px auto 0;
+}
+@media (min-width: 720px) {
+  .invitation-grid {
+    grid-template-columns: 320px 1fr;
+    gap: 56px;
+    margin-top: 36px;
+  }
+}
+
+.letter-portrait {
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+.letter-portrait img {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  /* WebP source has baked-in alpha (corners chromakey'd via flood-fill).
+     drop-shadow respects the alpha shape — gives organic painting-on-wall
+     depth without a rectangular box-shadow halo around an invisible bg.
+     Theme-agnostic: alpha lets page bg (cream or dark) show through. */
+  filter: drop-shadow(0 18px 30px rgba(40, 25, 5, 0.32));
+}
+
 .letter {
   text-align: center;
   max-width: var(--content-w);
   margin: 0 auto;
+}
+@media (min-width: 720px) {
+  /* Side-by-side: letter reads left-aligned, signature gold rule moves
+     to the left edge so it doesn't float unaligned in the middle. */
+  .letter            { text-align: left;  margin: 0; }
+  .signature         { text-align: left; }
+  .signature::before { margin-left: 0; margin-right: auto; }
 }
 
 .letter-greeting {
