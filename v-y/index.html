@@ -313,13 +313,10 @@
 
       <div class="invitation-grid">
         <figure class="letter-portrait">
-          <picture>
-            <!-- WebP with baked-in alpha (corners chromakey'd to transparent
-                 so the painted frame blends invisibly into any page bg).
-                 JPEG fallback for browsers without WebP support (~4% global). -->
-            <source srcset="media/base1.webp" type="image/webp">
-            <img src="media/base1.jpeg" alt="Володимир та Юстина" loading="lazy" width="626" height="757">
-          </picture>
+          <!-- Painted couple portrait. Corners chromakey'd to transparent
+               (soft rounded + feathered alpha) so the image blends invisibly
+               into any page bg (cream or dark). -->
+          <img src="media/base2.webp" alt="Володимир та Юстина" loading="lazy" width="720" height="1082">
         </figure>
 
         <div class="letter">

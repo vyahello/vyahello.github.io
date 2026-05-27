@@ -281,6 +281,18 @@ function showConfirmation(form, confirm, attending, { isExisting = false } = {})
   }
   form.style.display = 'none';
   confirm.classList.add('show');
+
+  // Fresh submit: the form (tall, at the section's bottom) collapses and
+  // the confirm card takes its place — but viewport scroll stays put, so
+  // the sticker + «Дякуємо!» often end up above the fold. Pull them into
+  // view. Skipped on isExisting (page load) — would jolt every revisit.
+  // rAF waits for the form-hide reflow before measuring.
+  if (!isExisting) {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    requestAnimationFrame(() => {
+      confirm.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+    });
+  }
 }
 
 function hideConfirmation(form, confirm) {

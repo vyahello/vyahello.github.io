@@ -50,13 +50,6 @@
   max-width: var(--content-w);
   margin: 0 auto;
 }
-@media (min-width: 720px) {
-  /* Side-by-side: letter reads left-aligned, signature gold rule moves
-     to the left edge so it doesn't float unaligned in the middle. */
-  .letter            { text-align: left;  margin: 0; }
-  .signature         { text-align: left; }
-  .signature::before { margin-left: 0; margin-right: auto; }
-}
 
 .letter-greeting {
   font-family: var(--font-italic);
