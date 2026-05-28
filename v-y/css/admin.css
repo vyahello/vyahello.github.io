@@ -432,9 +432,17 @@
 }
 .admin-pending .admin-list-item {
   flex-direction: row;
-  justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
   gap: 12px;
+}
+/* Name grows to fill, action group stays at fixed width on the right.
+   Without flex:1 the previous justify-content:space-between distributed
+   gaps unevenly when names varied in length — the slug text drifted from
+   right-aligned to center-ish on rows with very long names. */
+.admin-pending .admin-list-name {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
 }
 .admin-list-name {
   font-family: var(--font-serif);
@@ -630,6 +638,50 @@
 
 .admin-list-overnight .admin-list-item {
   padding: 12px 14px;
+}
+
+/* ============================================================
+   ROW ACTIONS — per-row icon buttons (copy / open link). Used in
+   pending list, generic enough to be added to other cards later.
+   Fixed width (32×32) → right column stays aligned regardless of
+   left-side content length.
+   ============================================================ */
+
+.admin-row-actions {
+  display: inline-flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+.admin-row-action {
+  appearance: none;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: color 0.2s var(--easing),
+              background 0.2s var(--easing),
+              border-color 0.2s var(--easing);
+}
+@media (hover: hover) {
+  .admin-row-action:hover {
+    color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 8%, transparent);
+    border-color: var(--accent);
+  }
+}
+.admin-row-action:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.admin-row-action:active {
+  transform: scale(0.95);
 }
 
 /* ============================================================

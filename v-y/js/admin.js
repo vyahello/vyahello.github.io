@@ -19,6 +19,12 @@ const ATTEND_CLASS = {
 };
 const ATTEND_ORDER = ['так', 'ні'];
 
+// Public site URL — used to build per-guest invitation links shown in the
+// pending list copy/open action buttons. Hardcoded since the site lives at
+// a stable URL; local dev (localhost:8123) will still copy the production
+// link which is what organizer wants to share anyway.
+const SITE_URL = 'https://vyahello.pro/v-y/';
+
 // Ukrainian plural: 1 родина / 2 родини / 5 родин
 function pluralUa(n, one, few, many) {
   const mod10 = n % 10;
@@ -235,15 +241,23 @@ function renderStats(stats) {
   } else {
     for (const g of pending) {
       const li = document.createElement('li');
-      li.className = 'admin-list-item';
+      li.className = 'admin-list-item admin-pending-item';
       const name = document.createElement('span');
       name.className = 'admin-list-name';
       name.textContent = bestName(g);
-      const slug = document.createElement('span');
-      slug.className = 'admin-list-meta';
-      slug.textContent = g.slug;
+
+      // Fixed-width action group on the right — replaces the slug text
+      // that was previously here. Two icon buttons: copy the personal
+      // invitation link (most common — paste into Telegram/Viber) and
+      // open it in a new tab (preview that the personalized page works).
+      // Title shows the slug as a fallback identifier for hover.
+      const actions = document.createElement('div');
+      actions.className = 'admin-row-actions';
+      actions.appendChild(makeRowActionBtn('copy', g.slug));
+      actions.appendChild(makeRowActionBtn('open', g.slug));
+
       li.appendChild(name);
-      li.appendChild(slug);
+      li.appendChild(actions);
       pendingList.appendChild(li);
     }
   }
@@ -457,6 +471,64 @@ function showToast(message) {
   showToast._t = setTimeout(() => { el.hidden = true; }, 2500);
 }
 
+// Build a 32×32 icon button for per-row actions in pending list.
+// type = 'copy' (clipboard) or 'open' (external link).
+function makeRowActionBtn(type, slug) {
+  const btn = document.createElement('button');
+  btn.type = 'button';
+  btn.className = 'admin-row-action admin-row-action-' + type;
+  btn.dataset.slug = slug;
+  btn.dataset.action = type;
+  const label = type === 'copy'
+    ? 'Скопіювати лінк для ' + slug
+    : 'Відкрити лінк ' + slug + ' у новій вкладці';
+  btn.setAttribute('aria-label', label);
+  btn.title = label;
+  btn.innerHTML = type === 'copy'
+    ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<rect x="8" y="8" width="12" height="12" rx="2"/>' +
+        '<path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/>' +
+      '</svg>'
+    : '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+        '<path d="M14 4h6v6"/>' +
+        '<path d="M10 14L20 4"/>' +
+        '<path d="M20 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h6"/>' +
+      '</svg>';
+  return btn;
+}
+
+// Delegated click handler for row-action buttons. Wired once in boot();
+// works for any future card that uses .admin-row-action buttons.
+function handleRowActionClick(e) {
+  const btn = e.target.closest('.admin-row-action');
+  if (!btn) return;
+  const slug = btn.dataset.slug;
+  if (!slug) return;
+  const url = SITE_URL + '?g=' + encodeURIComponent(slug);
+  if (btn.dataset.action === 'copy') {
+    (navigator.clipboard?.writeText(url) || Promise.reject())
+      .then(() => showToast('Лінк скопійовано'))
+      .catch(() => {
+        // Older browsers / non-HTTPS contexts — fallback via temp textarea.
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = url;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          showToast('Лінк скопійовано');
+        } catch {
+          showToast('Не вдалось скопіювати');
+        }
+      });
+  } else if (btn.dataset.action === 'open') {
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }
+}
+
 function openDeleteModal(payload) {
   const modal = $('deleteModal');
   if (!modal) return;
@@ -569,6 +641,10 @@ function boot() {
   wireTokenForm();
   wireRetry();
   wireDeleteFlow();
+  // Delegated row-action handler on document — picks up copy/open clicks
+  // from any card. Currently only pending list uses these, but the handler
+  // is generic if other cards add action buttons later.
+  document.addEventListener('click', handleRowActionClick);
 
   let token = getTokenFromUrl();
   if (!token) {
