@@ -33,6 +33,21 @@ function pluralUa(n, one, few, many) {
 function isUaSingular(n) {
   return n % 10 === 1 && n % 100 !== 11;
 }
+
+// Compute the best human-readable name for a record. Priority order:
+//   1. guest_names (full names with surnames — what guest typed in RSVP)
+//   2. expected_guests (manually entered in Гості C — for «Ні» / pending)
+//   3. display_name (short, no surname — last resort)
+//   4. slug (technical fallback when nothing else)
+// Display always favors surnames so organizer can identify guests for hotel
+// bookings, contact lookups etc — short «Олег» is too ambiguous.
+function bestName(r) {
+  const names = Array.isArray(r?.guest_names) ? r.guest_names.filter(Boolean) : [];
+  if (names.length) return names.join(', ');
+  const expected = Array.isArray(r?.expected_guests) ? r.expected_guests.filter(Boolean) : [];
+  if (expected.length) return expected.join(', ');
+  return r?.display_name || r?.slug || '—';
+}
 const familiesText = (n) => pluralUa(n, 'родина', 'родини', 'родин');
 // Fixed: 2/3/4 → "людини" (not "людей" — that's genitive plural for 5+).
 const peopleText   = (n) => pluralUa(n, 'людина', 'людини', 'людей');
@@ -191,22 +206,8 @@ function renderStats(stats) {
         main.className = 'admin-resp-main';
         const name = document.createElement('span');
         name.className = 'admin-list-name';
-        name.textContent = r.display_name || r.slug;
+        name.textContent = bestName(r);
         main.appendChild(name);
-
-        const names = Array.isArray(r.guest_names) ? r.guest_names.filter(Boolean) : [];
-        const expected = Array.isArray(r.expected_guests) ? r.expected_guests.filter(Boolean) : [];
-        // For «Ні» replies guest_names is empty by design — fall back to
-        // expected_guests so organizer still sees who was supposed to come.
-        // No visual distinction — group header already says «На жаль не
-        // зможу», so context disambiguates from confirmed attendees.
-        const displayNames = names.length ? names : expected;
-        if (displayNames.length) {
-          const namesEl = document.createElement('div');
-          namesEl.className = 'admin-resp-names';
-          namesEl.textContent = displayNames.join(', ');
-          main.appendChild(namesEl);
-        }
 
         const persons = document.createElement('span');
         persons.className = 'admin-resp-persons';
@@ -237,7 +238,7 @@ function renderStats(stats) {
       li.className = 'admin-list-item';
       const name = document.createElement('span');
       name.className = 'admin-list-name';
-      name.textContent = g.display_name || g.slug;
+      name.textContent = bestName(g);
       const slug = document.createElement('span');
       slug.className = 'admin-list-meta';
       slug.textContent = g.slug;
@@ -264,7 +265,7 @@ function renderStats(stats) {
       row1.className = 'admin-recent-row';
       const name = document.createElement('span');
       name.className = 'admin-list-name';
-      name.textContent = r.display_name || r.slug;
+      name.textContent = bestName(r);
       const badge = document.createElement('span');
       badge.className = 'admin-attend-badge ' + (ATTEND_CLASS[r.attending] || '');
       badge.textContent = ATTEND_LABEL[r.attending] || r.attending;
@@ -296,24 +297,16 @@ function renderStats(stats) {
       meta.className = 'admin-list-meta';
       const ts = r.updated_at || r.submitted_at || '';
       const names = Array.isArray(r.guest_names) ? r.guest_names.filter(Boolean) : [];
-      const expected = Array.isArray(r.expected_guests) ? r.expected_guests.filter(Boolean) : [];
-      // Same fallback as the responders card — «Ні» rows show expected
-      // guests instead of empty space, so layout stays consistent.
-      const displayNames = names.length ? names : expected;
-      // Overnight (🛏️ + count) inline у meta — це сильний сигнал
-      // для організатора («хтось щойно попросив бронь у готелі»).
+      // Overnight (🛏️ + count) inline у meta — strong signal for organizer
+      // («хтось щойно попросив бронь у готелі»). Persons count from real
+      // confirmed names only — never inflate with expected.
       const ovStr = r.overnight && r.overnight_count > 0
         ? ' · 🛏️ ' + r.overnight_count
         : '';
       meta.textContent = ts + (names.length ? ' · ' + names.length + ' ос.' : '') + ovStr;
       li.appendChild(meta);
-
-      if (displayNames.length) {
-        const guestList = document.createElement('div');
-        guestList.className = 'admin-recent-names';
-        guestList.textContent = displayNames.join(', ');
-        li.appendChild(guestList);
-      }
+      // Secondary .admin-recent-names line removed — main name now already
+      // shows full names via bestName(), so a second pass would duplicate.
 
       if (r.wishes) {
         const wishes = document.createElement('div');
@@ -365,15 +358,9 @@ function renderOvernight(overnight) {
     li.className = 'admin-list-item';
     const name = document.createElement('span');
     name.className = 'admin-list-name';
-    // Prefer full names (with surnames) from guest_names array — organizer
-    // needs surnames to book hotel rooms. Fall back to short display_name
-    // if guest_names is empty (legacy rows / edge cases).
-    const fullNames = Array.isArray(fam.guest_names)
-      ? fam.guest_names.filter(Boolean)
-      : [];
-    name.textContent = fullNames.length
-      ? fullNames.join(', ')
-      : (fam.display_name || fam.slug);
+    // Unified naming via bestName — full names with surnames for hotel
+    // bookings. Same priority order as everywhere else in admin.
+    name.textContent = bestName(fam);
     const persons = document.createElement('span');
     persons.className = 'admin-resp-persons';
     persons.textContent = (fam.count || 0) + ' ' + osibWord(fam.count || 0);

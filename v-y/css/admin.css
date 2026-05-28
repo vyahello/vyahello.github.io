@@ -495,13 +495,6 @@
   gap: 4px;
   min-width: 0;
 }
-.admin-resp-names {
-  font-family: var(--font-serif);
-  font-size: 13px;
-  font-style: italic;
-  color: var(--ink-soft);
-  line-height: 1.5;
-}
 .admin-resp-persons {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -548,13 +541,6 @@
 .admin-attend-badge.is-yes   { background: color-mix(in oklab, #4a8b3f 18%, transparent); border-color: color-mix(in oklab, #4a8b3f 55%, var(--line)); color: var(--ink); }
 .admin-attend-badge.is-no    { background: color-mix(in oklab, #8b4f3f 18%, transparent); border-color: color-mix(in oklab, #8b4f3f 55%, var(--line)); color: var(--ink); }
 
-.admin-recent-names {
-  margin-top: 4px;
-  font-family: var(--font-serif);
-  font-size: 13px;
-  color: var(--ink-soft);
-  font-style: italic;
-}
 .admin-recent-wishes {
   margin-top: 6px;
   font-family: var(--font-serif);
