@@ -663,6 +663,36 @@
           <textarea name="wishes" id="wishesField" placeholder="Кілька теплих слів — або просто залиште порожнім..."></textarea>
         </div>
 
+        <!-- ============================================================
+             Overnight stay block — checkbox toggles a reveal-pane з
+             number input для кількості осіб. Прихований якщо attendance
+             = «no» (як і #guestCountWrap). Backend → Відповіді!H+I.
+             ============================================================ -->
+        <div id="overnightWrap" class="overnight-block">
+          <label class="overnight-check" for="overnightToggle">
+            <input type="checkbox" id="overnightToggle" name="overnight">
+            <span class="ov-box" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor"
+                   stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 7.5 L6 10.5 L11 4.5"/>
+              </svg>
+            </span>
+            <span class="ov-text">
+              Залишимось на ніч у готелі <em>Soprano Inn</em>
+            </span>
+          </label>
+
+          <div class="overnight-count" id="overnightCountWrap" data-revealed="false">
+            <div class="ov-count-row">
+              <label class="ov-count-label" for="overnightCount">Кількість осіб</label>
+              <input type="number" id="overnightCount" name="overnight_count"
+                     min="1" max="9" value="1" step="1" inputmode="numeric"
+                     autocomplete="off">
+            </div>
+            <p class="ov-hint">Оплата здійснюється при заселенні в готель.</p>
+          </div>
+        </div>
+
         <div class="submit-row">
           <button type="submit" class="seal-btn" id="submitBtn"><span>Запечатати<br>відповідь</span></button>
         </div>
@@ -764,10 +794,9 @@
             <span class="faq-toggle" aria-hidden="true"></span>
           </summary>
           <div class="faq-a">
-            Так, звичайно. У формі підтвердження вище — у полі
-            <em>«Побажання нам»</em> — напишіть, скільки осіб
-            планують залишитися на ніч. Оплата здійснюється
-            при заселенні в готель Soprano Inn.
+            Так, звичайно. У формі підтвердження вище позначте
+            <em>«Залишимось на ніч у Soprano Inn»</em> та вкажіть кількість
+            осіб. Оплата здійснюється при заселенні в готель.
           </div>
         </details>
       </div>

@@ -54,17 +54,34 @@ export function sanitizeGuestNames(input) {
  * one row per `slug`; supplying the same slug again triggers an
  * upsert (edit) instead of a new row.
  */
+/** Coerce raw overnight count into safe integer (1..MAX_GUESTS) or 0.
+    Used both at submit-time and when restoring from server response.
+    Returns 0 when overnight flag is false — so backend never gets a
+    nonzero count without a true flag. */
+export function sanitizeOvernightCount(raw, overnight) {
+  if (!overnight) return 0;
+  const n = parseInt(raw, 10);
+  if (!Number.isFinite(n) || n < 1) return 1;
+  if (n > MAX_GUESTS) return MAX_GUESTS;
+  return n;
+}
+
 export function buildPayload(state = {}) {
   const attending = parseAttendance(state.attending);
   const names = sanitizeGuestNames(state.guestNames);
   const wishes = typeof state.wishes === 'string' ? state.wishes.trim() : '';
+  // «На жаль» — overnight is moot; force it off regardless of UI state.
+  const overnight = attending === 'yes' && !!state.overnight;
+  const overnight_count = overnight ? sanitizeOvernightCount(state.overnightCount, true) : 0;
   return {
-    slug:         state.slug         ?? null,
-    display_name: state.displayName  ?? null,
+    slug:            state.slug         ?? null,
+    display_name:    state.displayName  ?? null,
     attending,
-    guest_names:  attending === 'no' ? [] : names,
+    guest_names:     attending === 'no' ? [] : names,
     wishes,
-    submitted_at: state.submittedAt || new Date().toISOString(),
+    overnight,
+    overnight_count,
+    submitted_at:    state.submittedAt || new Date().toISOString(),
   };
 }
 
@@ -327,6 +344,22 @@ function restoreFormFromRsvp(form, list, addBtn, rsvp) {
     const ta = form.querySelector('#wishesField');
     if (ta) ta.value = rsvp.wishes;
   }
+  // Overnight stay — restore checkbox + count. Backend stores overnight as
+  // boolean or UA string ('так'/'ні') — accept both.
+  const ovToggle = form.querySelector('#overnightToggle');
+  const ovCount  = form.querySelector('#overnightCount');
+  const ovWrap   = form.querySelector('#overnightCountWrap');
+  if (ovToggle) {
+    const wantsOvernight = rsvp.overnight === true ||
+                           rsvp.overnight === 'так' ||
+                           rsvp.overnight === 'true';
+    ovToggle.checked = wantsOvernight;
+    if (wantsOvernight && ovCount) {
+      const n = parseInt(rsvp.overnight_count, 10);
+      ovCount.value = (Number.isFinite(n) && n >= 1) ? String(Math.min(n, MAX_GUESTS)) : '1';
+    }
+    if (ovWrap) ovWrap.dataset.revealed = wantsOvernight ? 'true' : 'false';
+  }
 }
 
 /* ---- Browser entry ---- */
@@ -405,11 +438,40 @@ export function initRSVP() {
     if (!v || hasFullName(v)) input.classList.remove('is-invalid');
   });
 
-  // Hide the guest list if attendance flips to 'no'.
-  const guestWrap = root.querySelector('#guestCountWrap');
+  // Hide the guest list + overnight block if attendance flips to 'no'.
+  // Overnight is meaningless for declines, so we hide AND uncheck it.
+  const guestWrap     = root.querySelector('#guestCountWrap');
+  const overnightWrap = root.querySelector('#overnightWrap');
+  const ovToggle      = root.querySelector('#overnightToggle');
+  const ovCountWrap   = root.querySelector('#overnightCountWrap');
   for (const r of root.querySelectorAll('input[name="attend"]')) {
     r.addEventListener('change', () => {
-      if (guestWrap) guestWrap.style.display = (r.checked && r.value === 'no') ? 'none' : '';
+      const isNo = r.checked && r.value === 'no';
+      if (guestWrap)     guestWrap.style.display     = isNo ? 'none' : '';
+      if (overnightWrap) overnightWrap.style.display = isNo ? 'none' : '';
+      // When user declines, force-uncheck overnight (don't keep ghost state
+      // that would be sent on a later flip-back to «yes»).
+      if (isNo && ovToggle && ovToggle.checked) {
+        ovToggle.checked = false;
+        if (ovCountWrap) ovCountWrap.dataset.revealed = 'false';
+      }
+    });
+  }
+
+  // Overnight checkbox → reveal/hide count input via data-revealed flag
+  // (CSS handles max-height + opacity transition). Auto-focus the count
+  // when first revealed so user can immediately type.
+  if (ovToggle && ovCountWrap) {
+    ovToggle.addEventListener('change', () => {
+      ovCountWrap.dataset.revealed = ovToggle.checked ? 'true' : 'false';
+      if (ovToggle.checked) {
+        // Default to total filled guests (or 1 if empty/not picked yet).
+        const ovCount = root.querySelector('#overnightCount');
+        if (ovCount && ovCount.value === '1') {
+          const filledGuests = readGuestNames(list).length;
+          if (filledGuests >= 2) ovCount.value = String(Math.min(filledGuests, MAX_GUESTS));
+        }
+      }
     });
   }
 
@@ -485,12 +547,14 @@ export function initRSVP() {
     }
 
     const payload = buildPayload({
-      slug:        state.slug,
-      displayName: state.displayName,
+      slug:           state.slug,
+      displayName:    state.displayName,
       attending,
-      guestNames:  rawNames,
-      wishes:      fd.get('wishes') || '',
-      submittedAt: state.submittedAt,
+      guestNames:     rawNames,
+      wishes:         fd.get('wishes') || '',
+      overnight:      fd.get('overnight') === 'on',
+      overnightCount: fd.get('overnight_count'),
+      submittedAt:    state.submittedAt,
     });
 
     // Heart burst originating at the seal's center.

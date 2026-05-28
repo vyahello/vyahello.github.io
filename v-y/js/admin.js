@@ -30,11 +30,14 @@ function pluralUa(n, one, few, many) {
 const familiesText = (n) => pluralUa(n, 'родина', 'родини', 'родин');
 // Fixed: 2/3/4 → "людини" (not "людей" — that's genitive plural for 5+).
 const peopleText   = (n) => pluralUa(n, 'людина', 'людини', 'людей');
+// «особа/особи/осіб» — used for overnight count (matches the email & form copy).
+const osibText     = (n) => pluralUa(n, 'особа', 'особи', 'осіб');
 
 // Word-only variants (no leading number) — useful when the number is
 // already rendered in a separate, differently-styled element (e.g. hero).
 const familiesWord = (n) => familiesText(n).replace(/^\d+\s+/, '');
 const peopleWord   = (n) => peopleText(n).replace(/^\d+\s+/, '');
+const osibWord     = (n) => osibText(n).replace(/^\d+\s+/, '');
 
 function setTokenInUrl(token) {
   const url = new URL(window.location.href);
@@ -186,6 +189,9 @@ function renderStats(stats) {
     }
   }
 
+  // Overnight stays
+  renderOvernight(stats.overnight);
+
   // Pending list
   const pendingList = $('pendingList');
   pendingList.innerHTML = '';
@@ -240,7 +246,12 @@ function renderStats(stats) {
       meta.className = 'admin-list-meta';
       const ts = r.updated_at || r.submitted_at || '';
       const names = Array.isArray(r.guest_names) ? r.guest_names.filter(Boolean) : [];
-      meta.textContent = ts + (names.length ? ' · ' + names.length + ' ос.' : '');
+      // Include overnight (🛏️ + count) inline у meta — це сильний сигнал
+      // для організатора («хтось щойно попросив бронь у готелі»).
+      const ovStr = r.overnight && r.overnight_count > 0
+        ? ' · 🛏️ ' + r.overnight_count
+        : '';
+      meta.textContent = ts + (names.length ? ' · ' + names.length + ' ос.' : '') + ovStr;
       li.appendChild(meta);
 
       if (names.length) {
@@ -268,6 +279,46 @@ function renderStats(stats) {
 
   showOnly('adminDash');
   setSub('Свіжа картина по гостях.');
+}
+
+/**
+ * Render the «Залишаються на ніч» card.
+ *   · headline: total people + families count з UA-plurals
+ *   · list: одна рядок на родину з display_name + count
+ *   · empty state — friendly placeholder коли ніхто ще не позначив
+ */
+function renderOvernight(overnight) {
+  const o = overnight || {};
+  const totalPeople = o.total_people ?? 0;
+  const families = Array.isArray(o.families) ? o.families : [];
+
+  $('overnightPeople').textContent  = totalPeople;
+  $('overnightUnit').textContent    = osibWord(totalPeople);
+  $('overnightFamCount').textContent = families.length;
+  $('overnightFamUnit').textContent  = familiesWord(families.length);
+
+  const list = $('overnightList');
+  list.innerHTML = '';
+  if (families.length === 0) {
+    const li = document.createElement('li');
+    li.className = 'admin-list-empty';
+    li.textContent = 'Поки ніхто не позначив бронь.';
+    list.appendChild(li);
+    return;
+  }
+  for (const fam of families) {
+    const li = document.createElement('li');
+    li.className = 'admin-list-item';
+    const name = document.createElement('span');
+    name.className = 'admin-list-name';
+    name.textContent = fam.display_name || fam.slug;
+    const persons = document.createElement('span');
+    persons.className = 'admin-resp-persons';
+    persons.textContent = (fam.count || 0) + ' ' + osibWord(fam.count || 0);
+    li.appendChild(name);
+    li.appendChild(persons);
+    list.appendChild(li);
+  }
 }
 
 async function loadStats(token) {

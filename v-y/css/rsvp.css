@@ -306,6 +306,169 @@
 .rsvp-form textarea::placeholder { color: var(--ink-mute); font-style: italic; }
 
 /* ============================================================
+   OVERNIGHT STAY BLOCK — checkbox + reveal-on-check count input
+     · luxe gold custom checkbox (square, animated check stroke)
+     · revealed count row uses max-height transition for smooth open
+     · backed by Відповіді!H (так/ні) + I (count) у Sheets
+   ============================================================ */
+
+.overnight-block {
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  padding: 18px 20px;
+  transition: border-color 0.3s var(--easing);
+}
+.overnight-block:focus-within { border-color: var(--accent); }
+
+/* The clickable label — flex row: hidden native input + custom box + text. */
+.overnight-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.overnight-check input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+}
+
+/* Custom check box — 20px square, 1px gold border, animated check. */
+.ov-box {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.25s var(--easing),
+              background    0.25s var(--easing);
+  margin-top: 1px;             /* optical align with text baseline */
+}
+.ov-box svg {
+  width: 14px;
+  height: 14px;
+  color: #ffffff;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity 0.25s var(--easing),
+              transform 0.3s var(--easing);
+  stroke-dasharray: 16;
+  stroke-dashoffset: 16;
+}
+
+.overnight-check input:checked ~ .ov-box {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.overnight-check input:checked ~ .ov-box svg {
+  opacity: 1;
+  transform: scale(1);
+  animation: ovCheckDraw 0.4s var(--easing) forwards;
+}
+@keyframes ovCheckDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+.overnight-check input:focus-visible ~ .ov-box {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (hover: hover) {
+  .overnight-check:hover .ov-box { border-color: var(--accent); }
+}
+
+.ov-text {
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1.45;
+  color: var(--ink);
+  font-weight: 400;
+}
+.ov-text em {
+  font-family: var(--font-italic);
+  font-style: normal;
+  color: var(--accent);
+  font-size: 1.04em;
+  letter-spacing: 0.005em;
+}
+
+/* Reveal panel — max-height + opacity transition.
+   max-height value (160px) is generous enough for label + input + hint
+   on any viewport but doesn't make the closed state laggy. */
+.overnight-count {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-height 0.35s var(--easing),
+              opacity    0.3s  var(--easing),
+              margin-top 0.35s var(--easing);
+  margin-top: 0;
+}
+.overnight-count[data-revealed="true"] {
+  max-height: 200px;
+  opacity: 1;
+  margin-top: 16px;
+}
+
+.ov-count-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.ov-count-label {
+  flex: 1;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+}
+#overnightCount {
+  width: 70px;
+  text-align: center;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  padding: 10px 6px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+  transition: border-color 0.25s;
+  -moz-appearance: textfield;          /* Firefox: hide spinner buttons */
+}
+#overnightCount::-webkit-outer-spin-button,
+#overnightCount::-webkit-inner-spin-button {
+  -webkit-appearance: none;             /* WebKit: hide arrows for cleaner look */
+  margin: 0;
+}
+#overnightCount:focus { outline: none; border-color: var(--accent); }
+
+.ov-hint {
+  margin: 10px 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overnight-count { transition: none; }
+  .ov-box, .ov-box svg { transition: none; animation: none; }
+}
+
+/* ============================================================
    WAX-SEAL SUBMIT — 130px, magnetic on hover, idle pulse
    ============================================================ */
 

@@ -581,3 +581,54 @@
   .admin-card { padding: 22px 16px; }
   .admin-token-form { flex-direction: column; }
 }
+
+/* ============================================================
+   OVERNIGHT CARD — total people headline + per-family list
+   ============================================================ */
+
+.admin-overnight .admin-card-title {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+}
+.admin-card-icon {
+  font-size: 18px;
+  line-height: 1;
+  display: inline-block;
+}
+
+/* Hero-style headline: big number + soft sub-line «від X родин». */
+.admin-overnight-headline {
+  text-align: center;
+  margin: 8px 0 22px;
+  font-family: var(--font-display);
+  color: var(--ink);
+}
+.admin-overnight-headline > #overnightPeople {
+  font-size: clamp(38px, 7vw, 48px);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+.admin-overnight-unit {
+  font-family: var(--font-italic);
+  font-style: normal;
+  font-size: clamp(16px, 3vw, 20px);
+  color: var(--accent);
+  margin-left: 4px;
+}
+.admin-overnight-sub {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-mute);
+  margin-top: 8px;
+  text-transform: lowercase;
+}
+
+.admin-list-overnight .admin-list-item {
+  padding: 12px 14px;
+}
