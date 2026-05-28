@@ -196,17 +196,14 @@ function renderStats(stats) {
 
         const names = Array.isArray(r.guest_names) ? r.guest_names.filter(Boolean) : [];
         const expected = Array.isArray(r.expected_guests) ? r.expected_guests.filter(Boolean) : [];
-        // For «Ні» replies guest_names is empty by design — show who was
-        // expected instead, so organizer sees the full picture of the
-        // family's potential attendance. Visual hint via dimmed italic
-        // class on the names line.
+        // For «Ні» replies guest_names is empty by design — fall back to
+        // expected_guests so organizer still sees who was supposed to come.
+        // No visual distinction — group header already says «На жаль не
+        // зможу», so context disambiguates from confirmed attendees.
         const displayNames = names.length ? names : expected;
         if (displayNames.length) {
           const namesEl = document.createElement('div');
           namesEl.className = 'admin-resp-names';
-          if (r.attending === 'ні' && !names.length && expected.length) {
-            namesEl.classList.add('admin-resp-names-expected');
-          }
           namesEl.textContent = displayNames.join(', ');
           main.appendChild(namesEl);
         }
