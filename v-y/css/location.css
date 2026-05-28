@@ -52,34 +52,10 @@
     box-shadow 0.5s var(--easing);
 }
 
-/* Кутові «золоті» засічки — ТІЛЬКИ TL + TR (верхні два кути).
-   Малюємо одним псевдо-елементом через 4 background-image gradients
-   (по 2 на кут: горизонтальна + вертикальна риска). Inset 8px від
-   верху/боків картки. Нижні два кути не малюємо — на скрінах гостей
-   вони читались як «недоробка» (тонка вертикальна риска без видимої
-   горизонталі), а top-only варіант дає делікатний photo-frame look,
-   як підвішена фотографія в альбомі. */
-.venue-card::before {
-  content: '';
-  position: absolute;
-  inset: 8px;
-  pointer-events: none;
-  opacity: 0.6;
-  z-index: 2;
-  transition: opacity 0.5s var(--easing);
-  background-image:
-    /* TL h */ linear-gradient(to right,  var(--accent), var(--accent)),
-    /* TL v */ linear-gradient(to bottom, var(--accent), var(--accent)),
-    /* TR h */ linear-gradient(to right,  var(--accent), var(--accent)),
-    /* TR v */ linear-gradient(to bottom, var(--accent), var(--accent));
-  background-size:
-    14px 1px, 1px 14px,
-    14px 1px, 1px 14px;
-  background-position:
-    /* TL */ 0 0,                  0 0,
-    /* TR */ 100% 0,               calc(100% - 1px) 0;
-  background-repeat: no-repeat;
-}
+/* Декоративних кутових L-засічок немає — попередні варіанти
+   (4 кути / 2 верхні) перекривали верх фото і читалися як
+   випадкові штрихи. Картка тримається на власному 1px border +
+   photo inset frame; цього достатньо для відчуття «framed shot». */
 
 @media (hover: hover) {
   .venue-card:hover {
@@ -89,7 +65,6 @@
       0 12px 32px -16px rgba(0, 0, 0, 0.25),
       0 4px 12px -8px rgba(0, 0, 0, 0.15);
   }
-  .venue-card:hover::before { opacity: 1; }
 }
 
 /* ---------- Photo (top of card) ---------- */
