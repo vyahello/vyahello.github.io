@@ -33,9 +33,13 @@ const BANQUET = {
   lat:      49.7676623,
   lng:      24.0866213,
   name:     'Soprano Inn',
-  // Прямий search-url — у нас немає фірмового shortlink для Soprano Inn,
-  // тому формуємо стандартний Google Maps query по координатах + назві.
-  url:      `https://www.google.com/maps/search/?api=1&query=49.7676623,24.0866213(Soprano%20Inn)`,
+  // Officially-documented Google Maps URL form: `?api=1&query=<text>` плюс
+  // `query_place_id=<id>` — гарантовано відкриває цей конкретний заклад
+  // (не випадковий "Soprano" у світі). place_id виловлено з Google Maps
+  // search для «Soprano Inn Кільцева 8 Пасіки-Зубрицькі». Раніше URL мав
+  // формат `query=lat,lng(label)` — Google інтерпретував дужки літерально
+  // як текстовий пошук і повертав «no result».
+  url:      'https://www.google.com/maps/search/?api=1&query=Soprano+Inn&query_place_id=ChIJu2qmJ2DpOkcR3Yh2ExtpQU8',
   zoom:     16,
 };
 
