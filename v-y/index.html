@@ -59,7 +59,10 @@
   <link rel="stylesheet" href="css/countdown.css">
   <link rel="stylesheet" href="css/location.css">
   <link rel="stylesheet" href="css/dresscode.css">
-  <link rel="stylesheet" href="css/rsvp.css">
+  <!-- ?v=20260528-ov bumps cache-bust whenever rsvp.css schema/visuals
+       change. Without it, returning guests see the old cached version
+       (e.g. broken overnight checkbox layout was reported 2026-05-28). -->
+  <link rel="stylesheet" href="css/rsvp.css?v=20260528-ov">
   <link rel="stylesheet" href="css/polish.css">
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/globals.css">
@@ -669,7 +672,10 @@
           <label class="overnight-check" for="overnightToggle">
             <input type="checkbox" id="overnightToggle" name="overnight">
             <span class="ov-box" aria-hidden="true">
-              <svg viewBox="0 0 14 14" fill="none" stroke="currentColor"
+              <!-- Explicit width/height attrs — guarantees 14×14 render
+                   навіть якщо css/rsvp.css не завантажиться (інакше SVG
+                   defaults до 300×150px і виглядає як гігантська галочка). -->
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor"
                    stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 7.5 L6 10.5 L11 4.5"/>
               </svg>
