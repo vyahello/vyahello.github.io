@@ -52,32 +52,40 @@
     box-shadow 0.5s var(--easing);
 }
 
-/* Кутові «золоті» засічки — тонкі L-подібні штрихи в кожному
-   куті, як у запрошенні на матовому картоні. ::before — верх-лівий,
-   ::after — низ-правий (через 4-сторонню комбінацію border + size).
-   Симетричні штрихи з протилежних кутів даються кращим псевдо-балансом
-   за один-два дешеві шари. */
-.venue-card::before,
-.venue-card::after {
+/* Кутові «золоті» засічки — 4 симетричні L-штрихи в усіх кутах,
+   як рамка фото в весільному альбомі. Малюємо одним псевдо-елементом
+   через 8 background-image gradients (по 2 на кут: горизонтальна +
+   вертикальна риска). Inset 8px від країв картки — однаковий gap
+   звідусіль. Колір — var(--accent), opacity 0.6 за замовчуванням,
+   1.0 на hover. */
+.venue-card::before {
   content: '';
   position: absolute;
-  width: 14px;
-  height: 14px;
-  border-color: var(--accent);
+  inset: 8px;
   pointer-events: none;
-  opacity: 0.65;
-  transition: opacity 0.5s var(--easing), border-color 0.5s var(--easing);
+  opacity: 0.6;
   z-index: 2;
-}
-.venue-card::before {
-  top: 8px; left: 8px;
-  border-top: 1px solid;
-  border-left: 1px solid;
-}
-.venue-card::after {
-  bottom: 8px; right: 8px;
-  border-bottom: 1px solid;
-  border-right: 1px solid;
+  transition: opacity 0.5s var(--easing);
+  background-image:
+    /* TL h */ linear-gradient(to right,  var(--accent), var(--accent)),
+    /* TL v */ linear-gradient(to bottom, var(--accent), var(--accent)),
+    /* TR h */ linear-gradient(to right,  var(--accent), var(--accent)),
+    /* TR v */ linear-gradient(to bottom, var(--accent), var(--accent)),
+    /* BL h */ linear-gradient(to right,  var(--accent), var(--accent)),
+    /* BL v */ linear-gradient(to bottom, var(--accent), var(--accent)),
+    /* BR h */ linear-gradient(to right,  var(--accent), var(--accent)),
+    /* BR v */ linear-gradient(to bottom, var(--accent), var(--accent));
+  background-size:
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px,
+    14px 1px, 1px 14px;
+  background-position:
+    /* TL */ 0 0,                                  0 0,
+    /* TR */ 100% 0,                               calc(100% - 1px) 0,
+    /* BL */ 0 100%,                               0 calc(100% - 14px),
+    /* BR */ 100% 100%,                            calc(100% - 1px) calc(100% - 14px);
+  background-repeat: no-repeat;
 }
 
 @media (hover: hover) {
@@ -88,8 +96,7 @@
       0 12px 32px -16px rgba(0, 0, 0, 0.25),
       0 4px 12px -8px rgba(0, 0, 0, 0.15);
   }
-  .venue-card:hover::before,
-  .venue-card:hover::after { opacity: 1; }
+  .venue-card:hover::before { opacity: 1; }
 }
 
 /* ---------- Photo (top of card) ---------- */
