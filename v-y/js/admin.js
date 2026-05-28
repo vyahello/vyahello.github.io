@@ -311,7 +311,15 @@ function renderOvernight(overnight) {
     li.className = 'admin-list-item';
     const name = document.createElement('span');
     name.className = 'admin-list-name';
-    name.textContent = fam.display_name || fam.slug;
+    // Prefer full names (with surnames) from guest_names array — organizer
+    // needs surnames to book hotel rooms. Fall back to short display_name
+    // if guest_names is empty (legacy rows / edge cases).
+    const fullNames = Array.isArray(fam.guest_names)
+      ? fam.guest_names.filter(Boolean)
+      : [];
+    name.textContent = fullNames.length
+      ? fullNames.join(', ')
+      : (fam.display_name || fam.slug);
     const persons = document.createElement('span');
     persons.className = 'admin-resp-persons';
     persons.textContent = (fam.count || 0) + ' ' + osibWord(fam.count || 0);
