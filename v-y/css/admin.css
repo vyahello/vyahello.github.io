@@ -528,6 +528,10 @@
   letter-spacing: var(--tracking-wider);
   text-transform: uppercase;
   padding: 4px 10px;
+  /* min-width so «ТАК» (3 chars) and «НІ» (2 chars) render at the same
+     width — keeps right edges aligned across rows in «Усі відповіді». */
+  min-width: 56px;
+  text-align: center;
   border-radius: 999px;
   border: 1px solid var(--line);
   color: var(--ink-soft);

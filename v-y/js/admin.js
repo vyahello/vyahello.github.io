@@ -296,7 +296,11 @@ function renderStats(stats) {
       meta.className = 'admin-list-meta';
       const ts = r.updated_at || r.submitted_at || '';
       const names = Array.isArray(r.guest_names) ? r.guest_names.filter(Boolean) : [];
-      // Include overnight (🛏️ + count) inline у meta — це сильний сигнал
+      const expected = Array.isArray(r.expected_guests) ? r.expected_guests.filter(Boolean) : [];
+      // Same fallback as the responders card — «Ні» rows show expected
+      // guests instead of empty space, so layout stays consistent.
+      const displayNames = names.length ? names : expected;
+      // Overnight (🛏️ + count) inline у meta — це сильний сигнал
       // для організатора («хтось щойно попросив бронь у готелі»).
       const ovStr = r.overnight && r.overnight_count > 0
         ? ' · 🛏️ ' + r.overnight_count
@@ -304,10 +308,10 @@ function renderStats(stats) {
       meta.textContent = ts + (names.length ? ' · ' + names.length + ' ос.' : '') + ovStr;
       li.appendChild(meta);
 
-      if (names.length) {
+      if (displayNames.length) {
         const guestList = document.createElement('div');
         guestList.className = 'admin-recent-names';
-        guestList.textContent = names.join(', ');
+        guestList.textContent = displayNames.join(', ');
         li.appendChild(guestList);
       }
 
