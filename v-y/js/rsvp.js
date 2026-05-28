@@ -115,6 +115,21 @@ function renumberGuestRows(list, addBtn) {
     if (!input.value) input.placeholder = SAMPLE_NAMES[i] || 'Імʼя та прізвище';
   });
   if (addBtn) addBtn.disabled = rows.length >= MAX_GUESTS;
+  // Keep overnight verb in sync with how many real guests are filled.
+  // Called from every add/remove/restore path because renumber is the
+  // single chokepoint after any list mutation.
+  updateOvernightVerb(list);
+}
+
+/** Swap «Залишимось» (plural, default) → «Залишусь» (1st person singular)
+    when exactly one guest name is filled. Helps RSVP read naturally for
+    solo invitees. Operates on whatever ovVerb span is in the DOM — safe
+    no-op if checkbox markup is missing. */
+function updateOvernightVerb(list) {
+  const verbEl = document.getElementById('ovVerb');
+  if (!verbEl || !list) return;
+  const count = readGuestNames(list).length;
+  verbEl.textContent = count === 1 ? 'Залишусь' : 'Залишимось';
 }
 
 function addGuestRow(list, addBtn, { focus = true, value = '' } = {}) {
@@ -460,11 +475,17 @@ export function initRSVP() {
   // Live-clear: drop the red .is-invalid the moment the user types a
   // valid full name (or empties the field). Gives instant "I fixed it"
   // feedback without making them re-submit to learn the tint is gone.
+  // Also re-evaluate overnight verb live as user types/erases — the
+  // first character flips «Залишимось» → «Залишусь» (and vice versa
+  // when a second name appears).
   list.addEventListener('input', (e) => {
     const input = e.target.closest('.guest-name');
-    if (!input || !input.classList.contains('is-invalid')) return;
-    const v = input.value.trim();
-    if (!v || hasFullName(v)) input.classList.remove('is-invalid');
+    if (!input) return;
+    if (input.classList.contains('is-invalid')) {
+      const v = input.value.trim();
+      if (!v || hasFullName(v)) input.classList.remove('is-invalid');
+    }
+    updateOvernightVerb(list);
   });
 
   // Hide the guest list + overnight block if attendance flips to 'no'.
