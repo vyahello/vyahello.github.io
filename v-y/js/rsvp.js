@@ -115,10 +115,11 @@ function renumberGuestRows(list, addBtn) {
     if (!input.value) input.placeholder = SAMPLE_NAMES[i] || 'Імʼя та прізвище';
   });
   if (addBtn) addBtn.disabled = rows.length >= MAX_GUESTS;
-  // Keep overnight verb in sync with how many real guests are filled.
-  // Called from every add/remove/restore path because renumber is the
-  // single chokepoint after any list mutation.
+  // Keep count-dependent UI in sync — renumber is the single chokepoint
+  // after any list mutation (add, remove, restore from server).
   updateOvernightVerb(list);
+  updateRsvpTitle(list);
+  syncOvernightCountPanel(list);
 }
 
 /** Swap «Залишимось» (plural, default) → «Залишусь» (1st person singular)
@@ -130,6 +131,44 @@ function updateOvernightVerb(list) {
   if (!verbEl || !list) return;
   const count = readGuestNames(list).length;
   verbEl.textContent = count === 1 ? 'Залишусь' : 'Залишимось';
+}
+
+/** RSVP section title: «Будемо з Вами?» (plural, default) → «Буду з Вами?»
+    when exactly one guest is filled. Same per-count agreement pattern. */
+function updateRsvpTitle(list) {
+  const verbEl = document.getElementById('rsvpTitleVerb');
+  if (!verbEl || !list) return;
+  const count = readGuestNames(list).length;
+  verbEl.textContent = count === 1 ? 'Буду' : 'Будемо';
+}
+
+/** Sync overnight count panel visibility + value based on household size.
+    Solo invitee (≤1 guest): the count input is meaningless — checkbox
+    alone carries the «am I staying» intent. We force-hide the count
+    panel and pin its value to 1 so submit semantics stay correct
+    (overnight=true → count=1). Multi (≥2): standard reveal-on-check. */
+function syncOvernightCountPanel(list) {
+  const toggle = document.getElementById('overnightToggle');
+  const wrap   = document.getElementById('overnightCountWrap');
+  const input  = document.getElementById('overnightCount');
+  if (!toggle || !wrap || !input || !list) return;
+  const count = readGuestNames(list).length;
+  const checked = toggle.checked;
+  if (count <= 1) {
+    wrap.dataset.revealed = 'false';
+    input.value = '1';
+    input.classList.remove('is-invalid');
+    wrap.querySelector('.overnight-error')?.remove();
+    return;
+  }
+  wrap.dataset.revealed = checked ? 'true' : 'false';
+  if (checked && input.value === '1') {
+    input.value = String(Math.min(count, MAX_GUESTS));
+  }
+  if (!checked) {
+    input.classList.remove('is-invalid');
+    wrap.querySelector('.overnight-error')?.remove();
+  }
 }
 
 function addGuestRow(list, addBtn, { focus = true, value = '' } = {}) {
@@ -389,10 +428,10 @@ function restoreFormFromRsvp(form, list, addBtn, rsvp) {
     if (ta) ta.value = rsvp.wishes;
   }
   // Overnight stay — restore checkbox + count. Backend stores overnight as
-  // boolean or UA string ('так'/'ні') — accept both.
+  // boolean or UA string ('так'/'ні') — accept both. Panel reveal state
+  // is driven by syncOvernightCountPanel below (single source of truth).
   const ovToggle = form.querySelector('#overnightToggle');
   const ovCount  = form.querySelector('#overnightCount');
-  const ovWrap   = form.querySelector('#overnightCountWrap');
   if (ovToggle) {
     const wantsOvernight = rsvp.overnight === true ||
                            rsvp.overnight === 'так' ||
@@ -402,8 +441,10 @@ function restoreFormFromRsvp(form, list, addBtn, rsvp) {
       const n = parseInt(rsvp.overnight_count, 10);
       ovCount.value = (Number.isFinite(n) && n >= 1) ? String(Math.min(n, MAX_GUESTS)) : '1';
     }
-    if (ovWrap) ovWrap.dataset.revealed = wantsOvernight ? 'true' : 'false';
   }
+  // Final sync — covers all paths: ensures panel reveal state matches
+  // (count, checked) regardless of whether setHousehold above ran or not.
+  syncOvernightCountPanel(list);
 }
 
 /* ---- Browser entry ---- */
@@ -486,6 +527,8 @@ export function initRSVP() {
       if (!v || hasFullName(v)) input.classList.remove('is-invalid');
     }
     updateOvernightVerb(list);
+    updateRsvpTitle(list);
+    syncOvernightCountPanel(list);
   });
 
   // Hide the guest list + overnight block if attendance flips to 'no'.
@@ -508,25 +551,12 @@ export function initRSVP() {
     });
   }
 
-  // Overnight checkbox → reveal/hide count input via data-revealed flag
-  // (CSS handles max-height + opacity transition). Auto-focus the count
-  // when first revealed so user can immediately type.
+  // Overnight checkbox → reveal/hide handled by syncOvernightCountPanel
+  // which also handles the solo-mode case (≤1 guest → panel stays hidden,
+  // count pinned to 1). Single source of truth for the panel state.
   const ovCountInput = root.querySelector('#overnightCount');
-  if (ovToggle && ovCountWrap) {
-    ovToggle.addEventListener('change', () => {
-      ovCountWrap.dataset.revealed = ovToggle.checked ? 'true' : 'false';
-      if (ovToggle.checked) {
-        // Default to total filled guests (or 1 if empty/not picked yet).
-        if (ovCountInput && ovCountInput.value === '1') {
-          const filledGuests = readGuestNames(list).length;
-          if (filledGuests >= 2) ovCountInput.value = String(Math.min(filledGuests, MAX_GUESTS));
-        }
-      } else {
-        // Unchecking — clear any stale validation state.
-        ovCountInput?.classList.remove('is-invalid');
-        ovCountWrap.querySelector('.overnight-error')?.remove();
-      }
-    });
+  if (ovToggle) {
+    ovToggle.addEventListener('change', () => syncOvernightCountPanel(list));
   }
 
   // Live-clear: drop red .is-invalid коли користувач вводить валідне
