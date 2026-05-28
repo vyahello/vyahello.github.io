@@ -658,15 +658,12 @@
           </button>
         </div>
 
-        <div>
-          <label class="field-label">Побажання нам</label>
-          <textarea name="wishes" id="wishesField" placeholder="Кілька теплих слів — або просто залиште порожнім..."></textarea>
-        </div>
-
         <!-- ============================================================
              Overnight stay block — checkbox toggles a reveal-pane з
              number input для кількості осіб. Прихований якщо attendance
-             = «no» (як і #guestCountWrap). Backend → Відповіді!H+I.
+             = «no» (як і #guestCountWrap). Backend → Відповіді!E+F.
+             Розташований ПЕРЕД wishes — структуровані дані спершу,
+             вільний текст наприкінці (mirror sheet column order).
              ============================================================ -->
         <div id="overnightWrap" class="overnight-block">
           <label class="overnight-check" for="overnightToggle">
@@ -691,6 +688,11 @@
             </div>
             <p class="ov-hint">Оплата здійснюється при заселенні в готель.</p>
           </div>
+        </div>
+
+        <div>
+          <label class="field-label">Побажання нам</label>
+          <textarea name="wishes" id="wishesField" placeholder="Кілька теплих слів — або просто залиште порожнім..."></textarea>
         </div>
 
         <div class="submit-row">
