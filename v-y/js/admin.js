@@ -73,6 +73,19 @@ async function fetchStats(appsScriptUrl, token) {
   return res.json();
 }
 
+// POST a delete-reply request. Uses text/plain body so the Apps Script Web App
+// runtime treats it as a simple request without CORS-preflight overhead, matching
+// the existing RSVP-submit pattern (see guest.js).
+async function postDeleteReply(appsScriptUrl, token, slug) {
+  const res = await fetch(appsScriptUrl, {
+    method:  'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body:    JSON.stringify({ action: 'delete-reply', token, slug }),
+  });
+  if (!res.ok) throw new Error('http-' + res.status);
+  return res.json();
+}
+
 function showOnly(id) {
   for (const which of ['adminLocked', 'adminDash', 'adminError']) {
     const el = $(which);
@@ -249,8 +262,28 @@ function renderStats(stats) {
       const badge = document.createElement('span');
       badge.className = 'admin-attend-badge ' + (ATTEND_CLASS[r.attending] || '');
       badge.textContent = ATTEND_LABEL[r.attending] || r.attending;
+
+      // Per-row delete button — dataset carries the modal payload
+      // (no separate lookup needed when click fires).
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'admin-row-delete';
+      delBtn.setAttribute('aria-label', 'Видалити цю відповідь');
+      delBtn.dataset.slug    = r.slug || '';
+      delBtn.dataset.name    = r.display_name || r.slug || '';
+      delBtn.dataset.persons = String((r.guest_names || []).filter(Boolean).length);
+      delBtn.dataset.attend  = r.attending || '';
+      delBtn.dataset.ts      = r.updated_at || r.submitted_at || '';
+      delBtn.innerHTML =
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+          '<path d="M4 7 L20 7 M 9 7 L 9 4 L 15 4 L 15 7"/>' +
+          '<path d="M6 7 L7 20 Q 7 21 8 21 L16 21 Q 17 21 17 20 L 18 7"/>' +
+          '<path d="M10 11 L10 17 M14 11 L14 17"/>' +
+        '</svg>';
+
       row1.appendChild(name);
       row1.appendChild(badge);
+      row1.appendChild(delBtn);
       li.appendChild(row1);
 
       const meta = document.createElement('div');
@@ -353,6 +386,10 @@ async function loadStats(token) {
     renderError('У data/event.json не задано appsScriptUrl.');
     return;
   }
+  // Cache config + token so the delete-modal confirm handler can re-POST
+  // without re-running this whole bootstrap flow.
+  lastConfig = cfg;
+  lastToken  = token;
 
   let data;
   try {
@@ -401,10 +438,140 @@ function wireRetry() {
   });
 }
 
+/* ============================================================
+   Delete-reply modal — state machine + toast.
+
+   Flow:
+     · Click × on a recent-list row     → openDeleteModal(payload)
+     · Cancel / backdrop / ESC          → closeDeleteModal()
+     · Confirm                          → POST → close + toast + reload
+     · Backend error                    → inline modal error, modal stays open
+   ============================================================ */
+
+let lastConfig = null; // {appsScriptUrl} cached so confirm can re-POST
+let lastToken  = '';
+
+function showToast(message) {
+  const el = $('adminToast');
+  if (!el) return;
+  el.textContent = message;
+  el.hidden = false;
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { el.hidden = true; }, 2500);
+}
+
+function openDeleteModal(payload) {
+  const modal = $('deleteModal');
+  if (!modal) return;
+  $('deleteModalMeta').textContent = formatDeleteMeta(payload);
+  $('deleteConfirmBtn').dataset.slug = payload.slug;
+  $('deleteConfirmBtn').disabled = false;
+  $('deleteConfirmBtn').textContent = 'Так, видалити';
+  const errEl = $('deleteModalError');
+  if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+  modal.hidden = false;
+  // Defer focus so the modal is paint-stable before the cancel-button grabs
+  // it — instant focus on a hidden-then-shown element occasionally jumps
+  // scroll position in WebKit.
+  requestAnimationFrame(() => $('deleteCancelBtn')?.focus());
+}
+
+function closeDeleteModal() {
+  const modal = $('deleteModal');
+  if (!modal) return;
+  modal.hidden = true;
+}
+
+function formatDeleteMeta({ name, persons, attend, ts }) {
+  const bits = [name || '—'];
+  const n = parseInt(persons, 10);
+  if (Number.isFinite(n) && n > 0) bits.push(`${n} ${osibWord(n)}`);
+  if (attend) bits.push(ATTEND_LABEL[attend] || attend);
+  if (ts) bits.push(ts);
+  return bits.join(' · ');
+}
+
+async function performDelete(slug) {
+  if (!lastConfig?.appsScriptUrl || !lastToken) {
+    return { ok: false, error: 'no-config' };
+  }
+  try {
+    return await postDeleteReply(lastConfig.appsScriptUrl, lastToken, slug);
+  } catch (err) {
+    return { ok: false, error: 'network' };
+  }
+}
+
+function wireDeleteFlow() {
+  // Delegated click on recent-list: any row's × triggers the modal.
+  const recentList = $('recentList');
+  if (recentList) {
+    recentList.addEventListener('click', (e) => {
+      const btn = e.target.closest('.admin-row-delete');
+      if (!btn) return;
+      e.preventDefault();
+      openDeleteModal({
+        slug:    btn.dataset.slug,
+        name:    btn.dataset.name,
+        persons: btn.dataset.persons,
+        attend:  btn.dataset.attend,
+        ts:      btn.dataset.ts,
+      });
+    });
+  }
+
+  // Modal close handlers — backdrop, Cancel, ESC.
+  const modal = $('deleteModal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target.closest('[data-modal-close]')) closeDeleteModal();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !$('deleteModal')?.hidden) closeDeleteModal();
+  });
+
+  // Confirm click — fires the POST + handles success/error states.
+  const confirmBtn = $('deleteConfirmBtn');
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', async () => {
+      const slug = confirmBtn.dataset.slug;
+      if (!slug) return;
+      confirmBtn.disabled = true;
+      confirmBtn.textContent = 'Видаляємо…';
+      const errEl = $('deleteModalError');
+      if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+
+      const result = await performDelete(slug);
+
+      if (result.ok) {
+        closeDeleteModal();
+        showToast(result.deleted === false
+          ? 'Запис уже відсутній — оновлюю дані.'
+          : 'Відповідь видалено.');
+        // Reload stats so the row disappears from the dashboard.
+        loadStats(lastToken);
+        return;
+      }
+
+      // Inline error inside the modal — keep it open so user can retry.
+      confirmBtn.disabled = false;
+      confirmBtn.textContent = 'Так, видалити';
+      if (errEl) {
+        errEl.hidden = false;
+        errEl.textContent = result.error === 'unauthorized'
+          ? 'Сесія минула — оновіть сторінку і введіть токен ще раз.'
+          : 'Не вдалось видалити. Перевірте з\'єднання й спробуйте ще раз.';
+      }
+    });
+  }
+}
+
 function boot() {
   initTheme();
   wireTokenForm();
   wireRetry();
+  wireDeleteFlow();
 
   let token = getTokenFromUrl();
   if (!token) {

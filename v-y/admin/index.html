@@ -189,6 +189,29 @@
 
   </main>
 
+  <!-- Delete-reply confirmation modal. Hidden by default; admin.js shows it
+       when × is clicked on a recent-list row. Backdrop click + ESC + Cancel
+       all close. Confirm posts to Apps Script with action=delete-reply. -->
+  <div class="admin-modal" id="deleteModal" hidden role="dialog"
+       aria-modal="true" aria-labelledby="deleteModalTitle">
+    <div class="admin-modal-backdrop" data-modal-close></div>
+    <div class="admin-modal-panel">
+      <h2 class="admin-modal-title" id="deleteModalTitle">Видалити відповідь?</h2>
+      <p class="admin-modal-meta" id="deleteModalMeta">—</p>
+      <p class="admin-modal-body">
+        Цю дію не можна скасувати. Якщо родина передумає — вона зможе надіслати нову відповідь через свій особистий лінк.
+      </p>
+      <div class="admin-modal-actions">
+        <button type="button" class="admin-btn admin-btn-ghost" id="deleteCancelBtn" data-modal-close>Скасувати</button>
+        <button type="button" class="admin-btn admin-btn-danger" id="deleteConfirmBtn">Так, видалити</button>
+      </div>
+      <p class="admin-modal-error" id="deleteModalError" hidden></p>
+    </div>
+  </div>
+
+  <!-- Inline toast — short success/info messages, auto-dismiss after 2.5s. -->
+  <div class="admin-toast" id="adminToast" hidden role="status" aria-live="polite"></div>
+
   <script type="module" src="../js/admin.js"></script>
 </body>
 </html>

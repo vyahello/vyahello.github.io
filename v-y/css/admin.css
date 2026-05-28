@@ -632,3 +632,184 @@
 .admin-list-overnight .admin-list-item {
   padding: 12px 14px;
 }
+
+/* ============================================================
+   DELETE BUTTON (× per row in «Усі відповіді»)
+   ============================================================ */
+
+.admin-row-delete {
+  appearance: none;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-mute);
+  cursor: pointer;
+  transition: color 0.2s var(--easing),
+              background 0.2s var(--easing),
+              border-color 0.2s var(--easing);
+  flex: 0 0 auto;
+}
+@media (hover: hover) {
+  .admin-row-delete:hover {
+    color: #c44a2f;
+    background: color-mix(in oklab, #c44a2f 8%, transparent);
+    border-color: color-mix(in oklab, #c44a2f 30%, transparent);
+  }
+}
+.admin-row-delete:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ============================================================
+   DELETE MODAL — centered panel, dim backdrop, accent-warning
+   confirm button. Hidden via [hidden] attr until JS shows.
+   ============================================================ */
+
+.admin-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  animation: adminModalIn 0.22s var(--easing);
+}
+.admin-modal[hidden] { display: none; }
+
+@keyframes adminModalIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.admin-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 12, 8, 0.55);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.admin-modal-panel {
+  position: relative;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+  padding: 32px 28px 24px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.55);
+  text-align: center;
+  animation: adminModalPanelIn 0.3s var(--easing);
+}
+@keyframes adminModalPanelIn {
+  from { transform: translateY(8px) scale(0.98); opacity: 0; }
+  to   { transform: translateY(0)    scale(1);    opacity: 1; }
+}
+
+.admin-modal-title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(22px, 4vw, 26px);
+  color: var(--ink);
+  margin: 0 0 14px;
+  letter-spacing: -0.005em;
+}
+.admin-modal-meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-soft);
+  margin: 0 0 18px;
+  padding: 10px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  border-radius: 2px;
+}
+.admin-modal-body {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+}
+.admin-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.admin-modal-error {
+  margin: 14px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklab, #c44a2f 80%, var(--ink));
+  text-align: center;
+}
+
+/* Reuse .admin-btn base but add danger + ghost variants for the modal. */
+.admin-btn-ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  border: 1px solid var(--line-strong);
+}
+.admin-btn-ghost:hover { background: var(--bg-card); color: var(--ink); }
+
+.admin-btn-danger {
+  background: color-mix(in oklab, #c44a2f 14%, var(--bg));
+  color: color-mix(in oklab, #c44a2f 85%, var(--ink));
+  border: 1px solid color-mix(in oklab, #c44a2f 55%, transparent);
+}
+.admin-btn-danger:hover {
+  background: color-mix(in oklab, #c44a2f 22%, var(--bg));
+  border-color: color-mix(in oklab, #c44a2f 70%, transparent);
+}
+.admin-btn-danger:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* ============================================================
+   TOAST — bottom-center, auto-dismiss, dark-on-cream readable
+   in both themes via var(--ink-deep) inversion fallback.
+   ============================================================ */
+
+.admin-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  transform: translateX(-50%);
+  z-index: 110;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 12px 22px;
+  border-radius: 2px;
+  box-shadow: 0 12px 30px -8px rgba(0, 0, 0, 0.4);
+  animation: adminToastIn 0.3s var(--easing);
+  max-width: calc(100% - 32px);
+  text-align: center;
+}
+.admin-toast[hidden] { display: none; }
+
+@keyframes adminToastIn {
+  from { transform: translate(-50%, 12px); opacity: 0; }
+  to   { transform: translate(-50%, 0);    opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-modal, .admin-modal-panel, .admin-toast { animation: none; }
+}
