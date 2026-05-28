@@ -83,15 +83,20 @@
 
       <div class="admin-grid">
 
-        <!-- HERO: single headline number organizer cares about most. -->
+        <!-- HERO: single headline number organizer cares about most.
+             Verb («Прийдуть» / «Прийде») swaps via JS to agree with count.
+             Sub-line uses fragment «N родин · «Так»» instead of relative
+             clause — reads cleaner and dodges UA case-after-«від» rules. -->
         <article class="admin-card admin-hero-card">
-          <p class="admin-hero-label">Прийдуть на весілля</p>
+          <p class="admin-hero-label">
+            <span id="heroVerb">Прийдуть</span> на весілля
+          </p>
           <p class="admin-hero-num">
             <span id="heroPeople">—</span>
             <span class="admin-hero-unit" id="heroPeopleUnit">людей</span>
           </p>
           <p class="admin-hero-sub">
-            від <span id="heroYesFamilies">—</span> <span id="heroYesFamiliesUnit">родин</span>, що сказали «Так»
+            <span id="heroYesFamilies">—</span> <span id="heroYesFamiliesUnit">родин</span> · «Так»
           </p>
         </article>
 

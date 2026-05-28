@@ -27,6 +27,12 @@ function pluralUa(n, one, few, many) {
   if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return `${n} ${few}`;
   return `${n} ${many}`;
 }
+
+// Returns true when n agrees with a singular verb in UA — covers 1, 21, 31,
+// 101 etc. but NOT 11 (which takes plural). Used for hero verb conjugation.
+function isUaSingular(n) {
+  return n % 10 === 1 && n % 100 !== 11;
+}
 const familiesText = (n) => pluralUa(n, 'родина', 'родини', 'родин');
 // Fixed: 2/3/4 → "людини" (not "людей" — that's genitive plural for 5+).
 const peopleText   = (n) => pluralUa(n, 'людина', 'людини', 'людей');
@@ -104,6 +110,11 @@ function renderStats(stats) {
   const yesPeople    = h.confirmed ?? 0;
 
   // HERO — the headline number organizer cares about most.
+  // Hero verb conjugates with people count: «Прийде 1 людина» (singular)
+  // vs «Прийдуть 6 людей» (plural). Same rule on subject side for the
+  // sub-line — «1 родина · «Так»» vs «2 родини · «Так»» — handled by
+  // pluralUa returning the right nominative form for each count.
+  $('heroVerb').textContent            = isUaSingular(yesPeople) ? 'Прийде' : 'Прийдуть';
   $('heroPeople').textContent          = yesPeople;
   $('heroPeopleUnit').textContent      = peopleWord(yesPeople);
   $('heroYesFamilies').textContent     = yesFam;
