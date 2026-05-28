@@ -111,7 +111,11 @@
       opacity: 0.6;
     }
 
-    /* —— Names (hero) ————————————————————————— */
+    /* —— Names (hero) —————————————————————————
+       Italic Cormorant slants right → optical center усього блоку
+       зміщується правіше за geometric center. transform translateX
+       (post-layout, не зсувається flex-логікою) тягне візуально
+       вліво на ~16px до оптично-центрованої позиції. */
     .names {
       font-family: 'Cormorant Garamond', 'Times New Roman', serif;
       font-weight: 300;
@@ -122,6 +126,7 @@
       color: #2a221a;
       margin: 8px 0 14px;
       white-space: nowrap;
+      transform: translateX(-42px);
     }
     .names .amp {
       font-family: 'Italiana', 'Times New Roman', serif;
