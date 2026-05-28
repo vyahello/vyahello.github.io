@@ -207,6 +207,35 @@ function findInvalidGuestInputs(list) {
     .filter((i) => i.value.trim() && !hasFullName(i.value));
 }
 
+/** Mark the overnight-count input as invalid: red tint + shake + inline
+    hint right under the count row. Same pattern as guest-name validation
+    so error voice is consistent across the form. Tint clears live via
+    the input listener wired in initRSVP. */
+function flagInvalidOvernightCount(input, message) {
+  if (!input) return;
+  // Force reflow so re-adding class retriggers shake on repeat submits.
+  input.classList.remove('is-invalid');
+  void input.offsetWidth;
+  input.classList.add('is-invalid');
+  input.focus();
+  // Find/create inline hint inside the .overnight-count wrap.
+  const wrap = input.closest('.overnight-count');
+  if (!wrap) return;
+  let hint = wrap.querySelector('.overnight-error');
+  if (!hint) {
+    hint = document.createElement('p');
+    hint.className = 'overnight-error';
+    // Place AFTER the count row but BEFORE the soft .ov-hint so error
+    // visually wins focus over the payment-disclaimer text.
+    const countRow = wrap.querySelector('.ov-count-row');
+    if (countRow) countRow.insertAdjacentElement('afterend', hint);
+    else wrap.appendChild(hint);
+  }
+  hint.textContent = message;
+  clearTimeout(flagInvalidOvernightCount._t);
+  flagInvalidOvernightCount._t = setTimeout(() => hint.remove(), 4000);
+}
+
 /** Mark a batch of guest-name inputs as invalid: red tint + shake on
     EACH, focus the first, surface a single inline hint under the list.
     Tint persists until the user fixes the field (live-clear via the
@@ -461,16 +490,34 @@ export function initRSVP() {
   // Overnight checkbox → reveal/hide count input via data-revealed flag
   // (CSS handles max-height + opacity transition). Auto-focus the count
   // when first revealed so user can immediately type.
+  const ovCountInput = root.querySelector('#overnightCount');
   if (ovToggle && ovCountWrap) {
     ovToggle.addEventListener('change', () => {
       ovCountWrap.dataset.revealed = ovToggle.checked ? 'true' : 'false';
       if (ovToggle.checked) {
         // Default to total filled guests (or 1 if empty/not picked yet).
-        const ovCount = root.querySelector('#overnightCount');
-        if (ovCount && ovCount.value === '1') {
+        if (ovCountInput && ovCountInput.value === '1') {
           const filledGuests = readGuestNames(list).length;
-          if (filledGuests >= 2) ovCount.value = String(Math.min(filledGuests, MAX_GUESTS));
+          if (filledGuests >= 2) ovCountInput.value = String(Math.min(filledGuests, MAX_GUESTS));
         }
+      } else {
+        // Unchecking — clear any stale validation state.
+        ovCountInput?.classList.remove('is-invalid');
+        ovCountWrap.querySelector('.overnight-error')?.remove();
+      }
+    });
+  }
+
+  // Live-clear: drop red .is-invalid коли користувач вводить валідне
+  // число (≥1). Same UX as guest-name live-clear — instant «I fixed
+  // it» feedback без потреби resubmit'ити щоб побачити що тінт зник.
+  if (ovCountInput) {
+    ovCountInput.addEventListener('input', () => {
+      if (!ovCountInput.classList.contains('is-invalid')) return;
+      const n = parseInt(ovCountInput.value, 10);
+      if (Number.isFinite(n) && n >= 1) {
+        ovCountInput.classList.remove('is-invalid');
+        ovCountWrap?.querySelector('.overnight-error')?.remove();
       }
     });
   }
@@ -542,6 +589,23 @@ export function initRSVP() {
       const invalids = findInvalidGuestInputs(list);
       if (invalids.length) {
         flagInvalidGuestInputs(invalids, 'Будь ласка, вкажіть повне імʼя — разом з прізвищем.', list);
+        return;
+      }
+    }
+
+    // Overnight guard: якщо гість позначив «залишимось», але стер
+    // дефолтну «1», ми силоміць писали 1 — гість думав «не вибрав»,
+    // а в Sheet їх ставили на 1 особу. Тепер блокуємо submit і
+    // просимо вказати кількість явно.
+    const ovChecked = fd.get('overnight') === 'on';
+    const ovCountRaw = fd.get('overnight_count');
+    if (needsNames && ovChecked) {
+      const n = parseInt(ovCountRaw, 10);
+      if (!Number.isFinite(n) || n < 1) {
+        flagInvalidOvernightCount(
+          ovCountInput,
+          'Будь ласка, вкажіть кількість осіб (1–9).'
+        );
         return;
       }
     }

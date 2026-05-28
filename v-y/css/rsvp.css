@@ -454,6 +454,28 @@
 }
 #overnightCount:focus { outline: none; border-color: var(--accent); }
 
+/* Validation state — empty / 0 count while overnight is checked.
+   Same red/shake pattern as .guest-name.is-invalid for visual
+   consistency. Persists until user types a valid number; submit
+   handler force-reflows to retrigger shake on repeat submits. */
+#overnightCount.is-invalid {
+  animation: guestNameShake 0.42s var(--easing);
+  background: color-mix(in oklab, #c44a2f 14%, var(--bg));
+  border-color: color-mix(in oklab, #c44a2f 60%, var(--line-strong));
+}
+
+/* Inline hint shown directly під overnight count row when validation fails.
+   Matches .guest-list-error styling — same colour + size = same «error
+   voice» across the form. */
+.overnight-error {
+  margin: 8px 0 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: color-mix(in oklab, #c44a2f 80%, var(--ink));
+  text-align: center;
+}
+
 .ov-hint {
   margin: 10px 0 0;
   font-family: var(--font-display);
