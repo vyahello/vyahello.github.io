@@ -26,7 +26,7 @@
   <meta property="og:locale"          content="uk_UA">
   <meta property="og:site_name"       content="Володимир &amp; Юстина">
   <meta property="og:title"           content="Запрошення на весілля · Володимир та Юстина">
-  <meta property="og:description"     content="17 липня 2026 · Soprano Inn, Львів. Будемо щиро вдячні, якщо Ви розділите цей день поряд з нами.">
+  <meta property="og:description"     content="17 липня 2026 · Soprano Inn, Львів. Будемо щиро вдячні, якщо Ви розділите цей день з нами.">
   <meta property="og:url"             content="https://vyahello.pro/v-y/">
   <meta property="og:image"           content="https://vyahello.pro/v-y/media/og.jpg">
   <meta property="og:image:type"      content="image/jpeg">
@@ -327,7 +327,7 @@
             а наша <em>сім'я</em> — свій початок.
           </p>
           <p class="letter-body">
-            Будемо щиро вдячні, якщо Ви розділите цей день поряд з нами.
+            Будемо щиро вдячні, якщо Ви розділите цей день з нами.
           </p>
           <div class="signature">з любов'ю, <span class="brand-mono">В<span class="amp-char">&amp;</span>Ю</span></div>
         </div>
@@ -336,29 +336,93 @@
   </section>
 
   <!-- ============================================================
-       §5 LOCATION — Soprano Inn з інтерактивною Leaflet мапою.
-       CARTO basemap auto-swaps (light_all ↔ dark_all) when theme
-       changes. Custom pulsing golden marker. JS: js/location.js.
+       §5 LOCATION — дві локації одного дня:
+         · Шлюб → Домініканський собор (15:00)
+         · Бенкет → Soprano Inn (17:30)
+       Кожна картка має своє фото, адресу, компактну мапу та CTA
+       з персональним посиланням на Google Maps. CARTO basemap
+       auto-swaps (light_all ↔ dark_all) when theme changes. Custom
+       pulsing golden marker on both maps. JS: js/location.js.
        ============================================================ -->
   <section id="location" class="section reveal">
     <div class="section__inner">
       <p class="section__eyebrow">Локація</p>
       <h2 class="section__title">Де ми Вас <em>чекаємо</em>?</h2>
+      <p class="section__lead">
+        Спочатку — <em>таїнство шлюбу</em>, а потім <em>святковий бенкет</em>.
+      </p>
 
-      <div class="venue">
-        <div class="venue-kicker">Готельно-ресторанний комплекс</div>
-        <div class="venue-name">Soprano Inn</div>
-        <div class="venue-addr">
-          м. Львів<br>
-          вул. Кільцева 8, Пасіки-Зубрицькі
-        </div>
+      <div class="venues">
+        <article class="venue-card" data-venue="church">
+          <figure class="venue-photo">
+            <img src="media/church.webp"
+                 alt="Домініканський собор у Львові"
+                 loading="lazy" width="867" height="893">
+            <span class="venue-photo-frame" aria-hidden="true"></span>
+          </figure>
 
-        <div class="map-wrap">
-          <div class="map-pin">Soprano Inn</div>
-          <div id="map" role="img" aria-label="Мапа: Soprano Inn, Львів"></div>
-        </div>
+          <div class="venue-body">
+            <div class="venue-stage">
+              <span class="vs-name">Шлюб</span>
+              <span class="vs-dot" aria-hidden="true"></span>
+              <span class="vs-time">15:00</span>
+            </div>
+            <h3 class="venue-name">Домініканський собор</h3>
+            <p class="venue-addr">пл. Музейна, 1<br>Львів</p>
 
-        <a class="route-btn" id="routeBtn" target="_blank" rel="noopener">Відкрити в Google Maps</a>
+            <div class="venue-map-wrap">
+              <div class="venue-map" id="mapChurch" role="img"
+                   aria-label="Мапа: Домініканський собор, Львів"></div>
+            </div>
+
+            <a class="venue-link" id="routeChurch"
+               href="https://maps.app.goo.gl/raL1iWuaL2DRXqRh6"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Відкрити маршрут до Домініканського собору в Google Maps">
+              <span>Прокласти маршрут</span>
+              <svg viewBox="0 0 18 10" aria-hidden="true">
+                <path d="M0 5 L15 5 M11 1 L15 5 L11 9"
+                      fill="none" stroke="currentColor" stroke-width="1"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="venue-card" data-venue="banquet">
+          <figure class="venue-photo">
+            <img src="media/hotel.webp"
+                 alt="Готельно-ресторанний комплекс Soprano Inn"
+                 loading="lazy" width="907" height="1000">
+            <span class="venue-photo-frame" aria-hidden="true"></span>
+          </figure>
+
+          <div class="venue-body">
+            <div class="venue-stage">
+              <span class="vs-name">Бенкет</span>
+              <span class="vs-dot" aria-hidden="true"></span>
+              <span class="vs-time">17:30</span>
+            </div>
+            <h3 class="venue-name">Soprano Inn</h3>
+            <p class="venue-addr">вул. Кільцева, 8<br>Пасіки-Зубрицькі, Львів</p>
+
+            <div class="venue-map-wrap">
+              <div class="venue-map" id="mapBanquet" role="img"
+                   aria-label="Мапа: Soprano Inn, Львів"></div>
+            </div>
+
+            <a class="venue-link" id="routeBanquet"
+               target="_blank" rel="noopener noreferrer"
+               aria-label="Відкрити маршрут до Soprano Inn у Google Maps">
+              <span>Прокласти маршрут</span>
+              <svg viewBox="0 0 18 10" aria-hidden="true">
+                <path d="M0 5 L15 5 M11 1 L15 5 L11 9"
+                      fill="none" stroke="currentColor" stroke-width="1"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+          </div>
+        </article>
       </div>
     </div>
   </section>

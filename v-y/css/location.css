@@ -1,112 +1,269 @@
 /* ============================================================
-   location.css — §5 Венюя + інтерактивна мапа
-     · venue kicker / name / address
-     · 360px map container з theme-aware CSS filter
-     · floating "Soprano Inn" label pin (top-left of map)
-     · custom golden marker з pulse ring
-     · "Відкрити в Google Maps" CTA
-   JS: js/location.js (Leaflet + CARTO tiles + theme-swap).
+   location.css — §5 Дві локації:
+     · .venues — 1-кол на мобайлі, 2-кол на desktop (≥720px)
+     · .venue-card — фото зверху + body (kicker, name, address,
+       компактна мапа, link). Subtle border + hover lift.
+     · .venue-photo — aspect-ratio 4/3 з object-cover, ніжна
+       inset «золота рамка» зверху (декоративний span).
+     · .venue-map — 180px (раніше 360px на одну мапу), темо-aware
+       filter, кастомний золотий маркер з pulse-кільцем.
+     · .venue-link — мінімалістичне посилання «Прокласти маршрут →».
+
+   Section override: розширюємо max-width до 760px тільки тут,
+   щоб дві картки мали достатньо повітря на desktop без виходу
+   за рамки загальної композиції листа.
    ============================================================ */
 
-.venue { text-align: center; }
+/* Дозволяємо секції бути ширшою лише для двох карток поряд. */
+#location .section__inner {
+  max-width: 760px;
+}
 
-.venue-kicker {
+/* ---------- Grid: 1 col mobile, 2 col desktop ---------- */
+
+.venues {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  margin: 0 auto;
+  max-width: var(--content-w);
+}
+@media (min-width: 720px) {
+  .venues {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    max-width: 100%;
+  }
+}
+
+/* ---------- Venue card ---------- */
+
+.venue-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-card);
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+  transition:
+    transform 0.5s var(--easing),
+    border-color 0.5s var(--easing),
+    box-shadow 0.5s var(--easing);
+}
+
+/* Кутові «золоті» засічки — тонкі L-подібні штрихи в кожному
+   куті, як у запрошенні на матовому картоні. ::before — верх-лівий,
+   ::after — низ-правий (через 4-сторонню комбінацію border + size).
+   Симетричні штрихи з протилежних кутів даються кращим псевдо-балансом
+   за один-два дешеві шари. */
+.venue-card::before,
+.venue-card::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--accent);
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 0.5s var(--easing), border-color 0.5s var(--easing);
+  z-index: 2;
+}
+.venue-card::before {
+  top: 8px; left: 8px;
+  border-top: 1px solid;
+  border-left: 1px solid;
+}
+.venue-card::after {
+  bottom: 8px; right: 8px;
+  border-bottom: 1px solid;
+  border-right: 1px solid;
+}
+
+@media (hover: hover) {
+  .venue-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+    box-shadow:
+      0 12px 32px -16px rgba(0, 0, 0, 0.25),
+      0 4px 12px -8px rgba(0, 0, 0, 0.15);
+  }
+  .venue-card:hover::before,
+  .venue-card:hover::after { opacity: 1; }
+}
+
+/* ---------- Photo (top of card) ---------- */
+
+.venue-photo {
+  position: relative;
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--bg-grain);
+}
+.venue-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 38%;        /* трохи вище центру — щоб фасад/архітектура були у фокусі */
+  display: block;
+  transition: transform 0.9s var(--easing), filter 0.6s var(--easing);
+  filter: saturate(0.92) contrast(0.98);
+}
+
+/* Дельтова inset-«рамка» поверх фото — 1px напівпрозорого золота
+   з підтоном. Робить фото схожим на дрібну ілюстрацію у альбомі. */
+.venue-photo-frame {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+  transition: inset 0.6s var(--easing), border-color 0.6s var(--easing);
+}
+[data-theme="dark"] .venue-photo-frame { border-color: rgba(212, 176, 106, 0.28); }
+
+@media (hover: hover) {
+  .venue-card:hover .venue-photo img { transform: scale(1.04); filter: saturate(1) contrast(1); }
+  .venue-card:hover .venue-photo-frame { inset: 6px; border-color: rgba(255, 255, 255, 0.42); }
+  [data-theme="dark"] .venue-card:hover .venue-photo-frame { border-color: rgba(212, 176, 106, 0.5); }
+}
+
+/* ---------- Body (text + map + link) ---------- */
+
+.venue-body {
+  padding: 24px 22px 22px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Mini-kicker: «ШЛЮБ · 15:00» — mono uppercase, тонка золота крапка
+   замість текстової «·» для більш чистого ритму. */
+.venue-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.4em;
   text-transform: uppercase;
   color: var(--accent);
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  line-height: 1;
 }
+.vs-name { font-weight: 500; }
+.vs-time {
+  color: var(--ink-soft);
+  font-variant-numeric: lining-nums tabular-nums;
+  letter-spacing: 0.25em;
+}
+.vs-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.7;
+  flex: 0 0 auto;
+}
+
 .venue-name {
   font-family: var(--font-display);
-  font-size: clamp(26px, 6vw, 34px);
+  font-size: clamp(22px, 4.4vw, 28px);
   color: var(--ink);
   margin: 0 0 10px;
   line-height: 1.2;
   font-weight: 400;
+  letter-spacing: -0.005em;
 }
+
 .venue-addr {
   font-family: var(--font-mono);
-  font-size: 12px;
-  letter-spacing: 0.12em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
   color: var(--ink-soft);
-  margin-bottom: 28px;
+  margin: 0 0 20px;
   text-transform: none;
-  line-height: 1.55;
+  line-height: 1.6;
   font-variant-numeric: lining-nums tabular-nums;
 }
 
-.map-wrap {
+/* ---------- Map (compact, per-card) ---------- */
+
+.venue-map-wrap {
   position: relative;
-  height: 360px;
-  border: 1px solid var(--line-strong);
+  width: 100%;
+  height: 180px;
+  border: 1px solid var(--line);
   border-radius: 2px;
   overflow: hidden;
-  margin: 0 auto;
   background: var(--bg-grain);
-  max-width: var(--content-w);
+  margin-bottom: 22px;
 }
-@media (max-width: 480px) {
-  .map-wrap { height: 300px; }
-}
-#map { width: 100%; height: 100%; }
+.venue-map { width: 100%; height: 100%; }
 
-/* Subtle per-theme tone — cream warms map slightly, dark just dims. */
-[data-theme="cream"] #map { filter: saturate(0.55) contrast(0.95) sepia(0.08); }
-[data-theme="dark"]  #map { filter: saturate(0.8)  brightness(0.95); }
+/* Theme-aware tile filter (same logic as раніше для одного map). */
+[data-theme="cream"] .venue-map { filter: saturate(0.55) contrast(0.95) sepia(0.08); }
+[data-theme="dark"]  .venue-map { filter: saturate(0.8)  brightness(0.95); }
 
-/* Frosted label floating over the map (decorative). */
-.map-pin {
-  position: absolute;
-  top: 14px;
-  left: 14px;
-  background: var(--bg-card);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  padding: 8px 14px;
-  border: 1px solid var(--line-strong);
-  border-radius: 2px;
+/* ---------- CTA link (replaces .route-btn) ---------- */
+
+.venue-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--ink);
-  pointer-events: none;
-  z-index: 5;
-}
-
-.route-btn {
-  display: inline-block;
-  margin-top: 26px;
-  font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--ink);
   text-decoration: none;
-  border: 1px solid var(--line-strong);
-  padding: 14px 28px;
-  border-radius: 2px;
-  transition: all 0.3s var(--easing);
-  background: transparent;
-  cursor: pointer;
+  padding: 12px 0 6px;
+  position: relative;
+  transition: color 0.4s var(--easing), gap 0.4s var(--easing);
+  margin-top: auto;
 }
-.route-btn:hover {
-  background: var(--ink);
-  color: var(--bg);
-  border-color: var(--ink);
+.venue-link svg {
+  width: 18px;
+  height: 10px;
+  transition: transform 0.4s var(--easing);
+  flex: 0 0 auto;
+}
+.venue-link::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 0;
+  height: 1px;
+  background: var(--accent);
+  transition: width 0.45s var(--easing);
+}
+@media (hover: hover) {
+  .venue-link:hover {
+    color: var(--accent);
+    gap: 16px;
+  }
+  .venue-link:hover svg { transform: translateX(3px); }
+  .venue-link:hover::after { width: 100%; }
+}
+.venue-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 2px;
 }
 
-/* Leaflet defaults — shrink + tint attribution, theme the bg under tiles. */
+/* ---------- Leaflet defaults ---------- */
+
 .leaflet-control-attribution { font-size: 9px !important; opacity: 0.55; }
 .leaflet-container { background: var(--bg-grain) !important; }
 
-/* Custom pulsing gold marker (divIcon HTML) */
+/* ---------- Custom pulsing gold marker (shared by both maps) ---------- */
+
 .custom-marker {
   position: relative;
-  width:  28px;
-  height: 28px;
+  width:  24px;
+  height: 24px;
 }
 .custom-marker::before {
   content: '';
@@ -122,9 +279,13 @@
 }
 @keyframes locMarkerPulse {
   0%, 100% { box-shadow: 0 0 0 1px var(--accent), 0 0 0 0   rgba(212, 176, 106, 0.5); }
-  50%      { box-shadow: 0 0 0 1px var(--accent), 0 0 0 18px rgba(212, 176, 106, 0); }
+  50%      { box-shadow: 0 0 0 1px var(--accent), 0 0 0 14px rgba(212, 176, 106, 0); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .custom-marker::before { animation: none; }
+  .venue-card { transition: none; }
+  .venue-card:hover { transform: none; }
+  .venue-photo img { transition: none; }
+  .venue-photo-frame { transition: none; }
 }
