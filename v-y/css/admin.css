@@ -516,9 +516,18 @@
 /* ---- Recent replies ---- */
 .admin-recent-row {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 12px;
+}
+/* Name grows to fill the available space → badge + delete button sit
+   flush against the right edge of the row. Without flex:1 the previous
+   justify-content:space-between distributed the gaps evenly which made
+   the badge x-position depend on name length (short «Олег» → badge in
+   middle, long «Ірина, Володимир та Андрій» → badge near trash). Now
+   all badges line up vertically across rows. */
+.admin-recent-row > .admin-list-name {
+  flex: 1;
+  min-width: 0;
 }
 .admin-attend-badge {
   display: inline-block;
