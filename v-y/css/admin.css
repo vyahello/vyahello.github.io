@@ -502,6 +502,23 @@
   color: var(--ink-soft);
   line-height: 1.5;
 }
+/* «Ні» replies fall back to expected_guests — dimmer + small prefix
+   so organizer reads them as «who could have come» rather than
+   confirmed attendees. */
+.admin-resp-names-expected {
+  color: var(--ink-mute);
+  opacity: 0.85;
+}
+.admin-resp-names-expected::before {
+  content: 'очікувались: ';
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-mute);
+  margin-right: 4px;
+}
 .admin-resp-persons {
   font-family: var(--font-mono);
   font-size: 12px;

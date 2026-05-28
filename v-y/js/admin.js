@@ -195,10 +195,19 @@ function renderStats(stats) {
         main.appendChild(name);
 
         const names = Array.isArray(r.guest_names) ? r.guest_names.filter(Boolean) : [];
-        if (names.length) {
+        const expected = Array.isArray(r.expected_guests) ? r.expected_guests.filter(Boolean) : [];
+        // For «Ні» replies guest_names is empty by design — show who was
+        // expected instead, so organizer sees the full picture of the
+        // family's potential attendance. Visual hint via dimmed italic
+        // class on the names line.
+        const displayNames = names.length ? names : expected;
+        if (displayNames.length) {
           const namesEl = document.createElement('div');
           namesEl.className = 'admin-resp-names';
-          namesEl.textContent = names.join(', ');
+          if (r.attending === 'ні' && !names.length && expected.length) {
+            namesEl.classList.add('admin-resp-names-expected');
+          }
+          namesEl.textContent = displayNames.join(', ');
           main.appendChild(namesEl);
         }
 
