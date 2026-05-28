@@ -604,7 +604,7 @@ export function initRSVP() {
       if (!Number.isFinite(n) || n < 1) {
         flagInvalidOvernightCount(
           ovCountInput,
-          'Будь ласка, вкажіть кількість осіб (1–9).'
+          'Будь ласка, вкажіть кількість осіб.'
         );
         return;
       }
