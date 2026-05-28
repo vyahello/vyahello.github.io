@@ -63,6 +63,10 @@ const osibText     = (n) => pluralUa(n, 'особа', 'особи', 'осіб');
 // Word-only variants (no leading number) — useful when the number is
 // already rendered in a separate, differently-styled element (e.g. hero).
 const familiesWord = (n) => familiesText(n).replace(/^\d+\s+/, '');
+// Genitive form after «від»: 1 → родини (gen. sing.), 2+ → родин (gen. pl.).
+// «від 1 родини», «від 2 родин», «від 5 родин» — unlike the nominative
+// paucal «2 родини», the preposition «від» pulls the noun into genitive.
+const familiesGenWord = (n) => (n % 10 === 1 && n % 100 !== 11) ? 'родини' : 'родин';
 const peopleWord   = (n) => peopleText(n).replace(/^\d+\s+/, '');
 const osibWord     = (n) => osibText(n).replace(/^\d+\s+/, '');
 
@@ -356,7 +360,7 @@ function renderOvernight(overnight) {
   $('overnightPeople').textContent  = totalPeople;
   $('overnightUnit').textContent    = osibWord(totalPeople);
   $('overnightFamCount').textContent = families.length;
-  $('overnightFamUnit').textContent  = familiesWord(families.length);
+  $('overnightFamUnit').textContent  = familiesGenWord(families.length);
 
   const list = $('overnightList');
   list.innerHTML = '';

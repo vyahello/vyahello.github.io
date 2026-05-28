@@ -300,6 +300,10 @@
   padding: 40px 24px 36px;
 }
 .admin-hero-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   margin: 0 0 16px;
   font-family: var(--font-mono);
   font-size: 11px;
@@ -593,12 +597,13 @@
    OVERNIGHT CARD — total people headline + per-family list
    ============================================================ */
 
-.admin-overnight .admin-card-title {
-  display: inline-flex;
+/* All card titles carry a leading emoji icon — center the icon + label
+   together as one flex row (was overnight-only before icons went global). */
+.admin-card-title {
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  width: 100%;
 }
 .admin-card-icon {
   font-size: 18px;
@@ -636,8 +641,19 @@
   text-transform: lowercase;
 }
 
+/* Name + count on one line. The base .admin-list-item is column-stacked;
+   here the count badge should sit flush-right on the same row as the name.
+   flex:1 on the name lines every count badge up vertically across rows. */
 .admin-list-overnight .admin-list-item {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
   padding: 12px 14px;
+}
+.admin-list-overnight .admin-list-name {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
 }
 
 /* ============================================================
