@@ -125,3 +125,59 @@
   .swatches.shimmering .swatch              { animation: none !important; opacity: 1; transform: none; filter: none; }
   .swatches.shimmering .swatch-shine::before { animation: none !important; }
 }
+
+/* ============================================================
+   §7 ETIQUETTE NOTE — «білий лишаємо нареченій»
+     · centered nota під палітрою, max-width 480px
+     · біла «перлина» зверху з 1px золотим обідком + soft halo —
+       візуальна метафора самого месиджу
+     · italic Cormorant для тіла, Italiana accent на «білий»
+   ============================================================ */
+
+.dresscode-note {
+  margin: 44px auto 0;
+  max-width: 480px;
+  text-align: center;
+  padding: 0 var(--s-4);
+}
+
+/* The bead: 10px white pearl with gold outline + soft outer halo.
+   Двошарова тінь: внутрішня — чітке золоте кільце (1px), потім
+   зазор кольору тла (5px transparent ring через колір тла), потім
+   зовнішнє м'яке золоте свічення. */
+.dresscode-note .dn-bead {
+  display: block;
+  width: 10px;
+  height: 10px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  position: relative;
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 0 6px rgba(160, 123, 72, 0.10);
+}
+[data-theme="dark"] .dresscode-note .dn-bead {
+  background: #fbf7ec;
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 0 6px rgba(212, 176, 106, 0.14);
+}
+
+.dresscode-note p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(14px, 2.6vw, 16px);
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+.dresscode-note em {
+  font-family: var(--font-italic);
+  font-style: normal;
+  color: var(--accent);
+  font-size: 1.08em;
+  letter-spacing: 0.01em;
+}
