@@ -52,12 +52,13 @@
     box-shadow 0.5s var(--easing);
 }
 
-/* Кутові «золоті» засічки — 4 симетричні L-штрихи в усіх кутах,
-   як рамка фото в весільному альбомі. Малюємо одним псевдо-елементом
-   через 8 background-image gradients (по 2 на кут: горизонтальна +
-   вертикальна риска). Inset 8px від країв картки — однаковий gap
-   звідусіль. Колір — var(--accent), opacity 0.6 за замовчуванням,
-   1.0 на hover. */
+/* Кутові «золоті» засічки — ТІЛЬКИ TL + TR (верхні два кути).
+   Малюємо одним псевдо-елементом через 4 background-image gradients
+   (по 2 на кут: горизонтальна + вертикальна риска). Inset 8px від
+   верху/боків картки. Нижні два кути не малюємо — на скрінах гостей
+   вони читались як «недоробка» (тонка вертикальна риска без видимої
+   горизонталі), а top-only варіант дає делікатний photo-frame look,
+   як підвішена фотографія в альбомі. */
 .venue-card::before {
   content: '';
   position: absolute;
@@ -70,21 +71,13 @@
     /* TL h */ linear-gradient(to right,  var(--accent), var(--accent)),
     /* TL v */ linear-gradient(to bottom, var(--accent), var(--accent)),
     /* TR h */ linear-gradient(to right,  var(--accent), var(--accent)),
-    /* TR v */ linear-gradient(to bottom, var(--accent), var(--accent)),
-    /* BL h */ linear-gradient(to right,  var(--accent), var(--accent)),
-    /* BL v */ linear-gradient(to bottom, var(--accent), var(--accent)),
-    /* BR h */ linear-gradient(to right,  var(--accent), var(--accent)),
-    /* BR v */ linear-gradient(to bottom, var(--accent), var(--accent));
+    /* TR v */ linear-gradient(to bottom, var(--accent), var(--accent));
   background-size:
-    14px 1px, 1px 14px,
-    14px 1px, 1px 14px,
     14px 1px, 1px 14px,
     14px 1px, 1px 14px;
   background-position:
-    /* TL */ 0 0,                                  0 0,
-    /* TR */ 100% 0,                               calc(100% - 1px) 0,
-    /* BL */ 0 100%,                               0 calc(100% - 14px),
-    /* BR */ 100% 100%,                            calc(100% - 1px) calc(100% - 14px);
+    /* TL */ 0 0,                  0 0,
+    /* TR */ 100% 0,               calc(100% - 1px) 0;
   background-repeat: no-repeat;
 }
 
