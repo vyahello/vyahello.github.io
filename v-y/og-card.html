@@ -128,13 +128,17 @@
       white-space: nowrap;
       transform: translateX(-42px);
     }
+    /* Ampersand matches the site monogram (--font-ampersand): classic
+       looped Times New Roman italic «&», not the Italiana glyph (which
+       reads like a reversed «е»). Liberation Serif is the metric-compatible
+       fallback on the render box. */
     .names .amp {
-      font-family: 'Italiana', 'Times New Roman', serif;
-      font-style: normal;
+      font-family: 'Times New Roman', Times, serif;
+      font-style: italic;
       color: #a07b48;
-      font-size: 1.18em;
-      padding: 0 0.08em;
-      vertical-align: -0.04em;
+      font-size: 1.02em;
+      padding: 0 0.06em;
+      vertical-align: -0.02em;
     }
 
     /* —— Date pill ——————————————————————————— */
