@@ -67,6 +67,8 @@ const familiesWord = (n) => familiesText(n).replace(/^\d+\s+/, '');
 // «від 1 родини», «від 2 родин», «від 5 родин» — unlike the nominative
 // paucal «2 родини», the preposition «від» pulls the noun into genitive.
 const familiesGenWord = (n) => (n % 10 === 1 && n % 100 !== 11) ? 'родини' : 'родин';
+// Accusative-animate of «гість» after «Очікуємо N …»: 1 → гостя, 2+ → гостей.
+const guestsAccWord = (n) => (n % 10 === 1 && n % 100 !== 11) ? 'гостя' : 'гостей';
 const peopleWord   = (n) => peopleText(n).replace(/^\d+\s+/, '');
 const osibWord     = (n) => osibText(n).replace(/^\d+\s+/, '');
 
@@ -146,6 +148,7 @@ function renderStats(stats) {
   const yesFam       = a.yes ?? 0;
   const noFam        = a.no  ?? 0;
   const yesPeople    = h.confirmed ?? 0;
+  const expectedTotal = s.expected_total ?? 0;
 
   // HERO — the headline number organizer cares about most.
   // Hero verb conjugates with people count: «Прийде 1 людина» (singular)
@@ -173,6 +176,13 @@ function renderStats(stats) {
   $('progressText').textContent = totalInvited > 0
     ? `Відгукнулися ${responded} з ${totalInvited} родин · ${pct}%`
     : 'Ще немає гостей у списку';
+
+  // People-level coverage — complements the family-level progress bar above.
+  // expected_total counts every name we listed in Гості; yesPeople is how
+  // many of those have confirmed so far.
+  $('expectedGuests').textContent     = expectedTotal;
+  $('expectedGuestsUnit').textContent = guestsAccWord(expectedTotal);
+  $('confirmedGuests').textContent    = yesPeople;
 
   // Who responded — grouped by attending, with persons count per row
   const respondersList = $('respondersList');

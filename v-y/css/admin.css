@@ -416,6 +416,16 @@
   color: var(--ink-mute);
   letter-spacing: 0.04em;
 }
+/* Second line under the bar — sits tight to the first, slightly dimmer. */
+.admin-expected-text {
+  margin-top: 4px;
+  color: var(--ink-soft);
+}
+.admin-expected-text #expectedGuests,
+.admin-expected-text #confirmedGuests {
+  color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+}
 
 /* ---- Lists ---- */
 .admin-list {
