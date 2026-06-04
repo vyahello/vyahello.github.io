@@ -144,6 +144,9 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
 @media(max-width:560px){
   .feat-grid{grid-template-columns:1fr}
   .nav-r .btn{display:none}
+  .finishes{padding:40px 20px}
+  .finishes .pair{gap:16px}
+  .finishes .pair .phone{width:clamp(116px,36vw,180px)}
 }
 </style>
 </head>
@@ -227,7 +230,7 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
     <img class="em-mark" src="assets/perlyna-medallion.png" alt="" />
     <div class="eyebrow" data-i="priv.eyebrow">Private by design</div>
     <h2><span data-i="priv.title">Calm, and </span><em data-i="priv.title2">completely yours.</em></h2>
-    <p data-i="priv.sub">Perlyna collects nothing. Every detail lives on your iPhone, backed up privately to your own iCloud — no servers, no account, nothing for me to see. Plan in peace.</p>
+    <p data-i="priv.sub">Perlyna collects nothing. Every detail lives on your iPhone, backed up privately to your own iCloud — no servers, no account, seen by no one but you. Plan in peace.</p>
   </div>
 </section>
 
@@ -248,8 +251,8 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
     <div class="foot-in">
       <div class="foot-l"><img src="assets/perlyna-medallion.png" alt="" /><span class="nm">Perlyna</span></div>
       <div class="foot-links">
-        <a href="privacy.html" data-i="foot.privacy">Privacy</a>
-        <a href="support.html" data-i="foot.support">Support</a>
+        <a href="privacy/" data-i="foot.privacy">Privacy</a>
+        <a href="support/" data-i="foot.support">Support</a>
         <a href="mailto:vyahello@gmail.com">vyahello@gmail.com</a>
       </div>
     </div>
@@ -279,7 +282,7 @@ const T={
     "fin.eyebrow":"Pearl & Titanium","fin.title":"Light or dark, ","fin.title2":"always elegant.",
     "fin.sub":"Perlyna follows your iPhone's appearance — a soft pearl finish by light, a deep titanium by dark. Beautiful, either way.",
     "priv.eyebrow":"Private by design","priv.title":"Calm, and ","priv.title2":"completely yours.",
-    "priv.sub":"Perlyna collects nothing. Every detail lives on your iPhone, backed up privately to your own iCloud — no servers, no account, nothing for me to see. Plan in peace.",
+    "priv.sub":"Perlyna collects nothing. Every detail lives on your iPhone, backed up privately to your own iCloud — no servers, no account, seen by no one but you. Plan in peace.",
     "cta.eyebrow":"Est. Forever","cta.title":"Begin your ","cta.title2":"countdown.",
     "cta.sub":"Free on the App Store. No account, no clutter — just your day.",
     "foot.privacy":"Privacy","foot.support":"Support","foot.copy":"© 2026 Perlyna · Every detail. Every moment. One unforgettable day.",
@@ -288,7 +291,7 @@ const T={
       ["plan","The plan","A curated checklist across every phase — venue to vows."],
       ["budget","The budget","Clarity, not accounting. See exactly where every figure goes."],
       ["users","The guests","Track RSVPs and party sizes at a glance."],
-      ["leaf","Fully offline","Everything works without a connection. Always."],
+      ["leaf","Fully offline","Everything works without internet. Always."],
       ["lock","Private by design","Your plan stays on your iPhone and your iCloud."]
     ],
     show:[["home","THE COUNTDOWN","Every day, counted."],["plan","THE PLAN","Every task in place."],["budget","THE BUDGET","Clarity, not accounting."],["guests","THE GUESTS","Everyone who matters."]]
@@ -304,8 +307,8 @@ const T={
     "show.eyebrow":"Зблизька","show.title":"Створено, щоб відчуватися ","show.title2":"як сам день.",
     "fin.eyebrow":"Pearl і Titanium","fin.title":"Світла чи темна, ","fin.title2":"завжди елегантна.",
     "fin.sub":"Perlyna слідує за виглядом вашого iPhone — м'яка перлина у світлій темі, глибокий титан у темній. Гарна в обох.",
-    "priv.eyebrow":"Приватність за задумом","priv.title":"Спокійно, і ","priv.title2":"повністю ваше.",
-    "priv.sub":"Perlyna не збирає нічого. Кожна деталь живе на вашому iPhone і приватно копіюється у ваш iCloud — без серверів, без акаунтів, і я нічого не бачу. Плануйте спокійно.",
+    "priv.eyebrow":"Приватність за задумом","priv.title":"Спокій. ","priv.title2":"Тільки ваше.",
+    "priv.sub":"Perlyna не збирає нічого. Кожна деталь живе на вашому iPhone і приватно копіюється у ваш iCloud — без серверів, без акаунтів, і це бачите тільки ви. Плануйте спокійно.",
     "cta.eyebrow":"Est. Forever","cta.title":"Почніть свій ","cta.title2":"відлік.",
     "cta.sub":"Безкоштовно в App Store. Без акаунтів, без зайвого — лише ваш день.",
     "foot.privacy":"Приватність","foot.support":"Підтримка","foot.copy":"© 2026 Perlyna · Кожна деталь. Кожна мить. Один незабутній день.",
@@ -314,7 +317,7 @@ const T={
       ["plan","План","Дбайливий чеклист на кожному етапі — від локації до клятв."],
       ["budget","Бюджет","Ясність, не бухгалтерія. Видно, куди йде кожна цифра."],
       ["users","Гості","Стежте за відповідями й кількістю осіб одним поглядом."],
-      ["leaf","Повністю офлайн","Усе працює без з'єднання. Завжди."],
+      ["leaf","Повністю офлайн","Усе працює без інтернету. Завжди."],
       ["lock","Приватно за задумом","Ваш план лишається на iPhone і у вашому iCloud."]
     ],
     show:[["home","ВІДЛІК","З кожним днем — ближче."],["plan","ПЛАН","Кожне завдання на місці."],["budget","БЮДЖЕТ","Ясність, не бухгалтерія."],["guests","ГОСТІ","Усі, хто вам дорогий."]]
