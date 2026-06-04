@@ -71,9 +71,10 @@ footer{border-top:1px solid var(--hair);padding:24px 0 50px;color:var(--ink3);fo
   <footer>© 2026 Perlyna</footer>
 </div>
 <script>
-let l=(navigator.language||"").toLowerCase().startsWith("uk")?"uk":"en";
+const saved=(()=>{try{return localStorage.getItem("perlyna.lang")}catch(e){return null}})();
+let l=(saved==="uk"||saved==="en")?saved:((navigator.language||"").toLowerCase().startsWith("uk")?"uk":"en");
 function set(){document.querySelectorAll("[data-sec]").forEach(s=>s.classList.toggle("on",s.getAttribute("data-sec")===l));document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.getAttribute("data-l")===l));document.documentElement.lang=l;}
-document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{l=b.getAttribute("data-l");set();});set();
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>{l=b.getAttribute("data-l");try{localStorage.setItem("perlyna.lang",l)}catch(e){}set();});set();
 </script>
 </body>
 </html>

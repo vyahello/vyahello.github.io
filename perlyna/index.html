@@ -336,8 +336,10 @@ function render(){
   document.querySelectorAll("img.shot").forEach(img=>{img.src=`assets/shots/${lang}-${img.getAttribute("data-shot")}.png`;});
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.getAttribute("data-lang")===lang));
 }
-document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.getAttribute("data-lang");render();}));
-if((navigator.language||"").toLowerCase().startsWith("uk"))lang="uk";
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.getAttribute("data-lang");try{localStorage.setItem("perlyna.lang",lang)}catch(e){}render();}));
+const saved=(()=>{try{return localStorage.getItem("perlyna.lang")}catch(e){return null}})();
+if(saved==="uk"||saved==="en")lang=saved;
+else if((navigator.language||"").toLowerCase().startsWith("uk"))lang="uk";
 render();
 // subtle scroll-reveal (first load only; toggles don't re-hide)
 function setupReveals(){
