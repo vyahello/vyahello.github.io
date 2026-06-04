@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Perlyna — Everything for your wedding. Calm, private, offline.</title>
+<meta name="description" content="Perlyna is a calm, private wedding companion for iPhone. Count down to the day, plan every task, track the budget and guest list — beautifully, and fully offline." />
+<link rel="icon" href="assets/perlyna-icon.png" />
+<meta property="og:title" content="Perlyna — wedding countdown & planner" />
+<meta property="og:description" content="Count down to the day, plan every task, track the budget and guests — calm, private and fully offline." />
+<meta property="og:image" content="assets/shots/en-home.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --bg:#f3ede2; --bg2:#ece3d4; --surface:#fffdf9; --surface2:#faf6ee;
+  --ink:#2b2722; --ink2:#5c554c; --ink3:#8c8479; --faint:#b6ad9f;
+  --gold:#a9854f; --gold2:#c2a063; --goldsoft:rgba(169,133,79,.12); --goldline:rgba(169,133,79,.28);
+  --rose:#cf9a98; --hair:rgba(43,39,34,.09); --hair2:rgba(43,39,34,.06);
+  --serif:"Cormorant Garamond",Georgia,serif; --sans:"Outfit",-apple-system,sans-serif;
+  --shadow:0 30px 80px rgba(43,39,34,.13),0 8px 24px rgba(43,39,34,.07);
+  --maxw:1180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;line-height:1.6;overflow-x:hidden}
+.app-bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+  radial-gradient(120% 70% at 10% -10%,#faf7f1,transparent 55%),
+  radial-gradient(120% 80% at 100% 0%,var(--goldsoft),transparent 50%),
+  radial-gradient(120% 90% at 50% 120%,var(--bg2),transparent 55%),var(--bg);}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 clamp(20px,5vw,40px);position:relative;z-index:1}
+.serif{font-family:var(--serif)}
+.eyebrow{font-family:var(--sans);text-transform:uppercase;letter-spacing:.3em;font-size:12px;font-weight:600;color:var(--gold)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;font-style:italic;letter-spacing:.005em;line-height:1.08}
+a{color:inherit;text-decoration:none}
+.pearl{position:absolute;border-radius:50%;background:radial-gradient(circle at 38% 32%,rgba(255,255,255,.9),rgba(255,249,240,.5) 40%,rgba(196,160,99,.18) 72%,transparent 74%);filter:blur(2px);pointer-events:none;z-index:0;animation:drift 22s ease-in-out infinite}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(12px,-16px)}}
+@media(prefers-reduced-motion:reduce){.pearl{animation:none}}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .9s cubic-bezier(.22,1,.36,1),transform .9s cubic-bezier(.22,1,.36,1)}
+.reveal.in{opacity:1;transform:none}
+@keyframes floatTilt{0%,100%{transform:rotate(2deg) translateY(0)}50%{transform:rotate(2deg) translateY(-14px)}}
+.hero .phone{animation:floatTilt 7.5s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important}.hero .phone{animation:none!important}}
+
+/* nav */
+nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(16px);background:linear-gradient(var(--bg),rgba(243,237,226,.7))}
+.nav-in{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(43,39,34,.14))}
+.brand .nm{font-family:var(--serif);font-style:italic;font-weight:600;font-size:23px}
+.nav-r{display:flex;align-items:center;gap:14px}
+.lang{display:inline-flex;background:var(--surface);border:1px solid var(--hair);border-radius:11px;padding:3px}
+.lang button{border:none;background:none;font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:.04em;padding:7px 12px;border-radius:8px;color:var(--ink3);cursor:pointer;transition:.3s}
+.lang button.on{background:var(--goldsoft);color:var(--gold)}
+.btn{display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:var(--bg);border-radius:999px;padding:11px 22px;font-size:14px;font-weight:500;transition:.4s;border:1px solid var(--ink)}
+.btn:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--hair)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:clamp(50px,8vw,110px) 0 clamp(40px,6vw,80px)}
+.hero h1{font-size:clamp(40px,6vw,74px);margin:20px 0 0}
+.hero h1 em{color:var(--gold);font-style:italic}
+.hero p.sub{font-size:clamp(16px,2vw,19px);color:var(--ink2);max-width:480px;margin:24px 0 0;font-weight:350}
+.hero-cta{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:34px}
+.note{font-size:13px;color:var(--ink3);display:flex;align-items:center;gap:8px;margin-top:20px}
+.note .dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.badge{display:inline-flex;align-items:center;gap:12px;background:#0d0c0b;color:#fff;border-radius:14px;padding:10px 18px;transition:.4s}
+.badge:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.badge svg{width:26px;height:26px}
+.badge .b1{font-size:10px;letter-spacing:.02em;opacity:.85;line-height:1}
+.badge .b2{font-size:19px;font-weight:500;font-family:var(--serif);line-height:1.1;margin-top:2px}
+
+/* phone */
+.phone{position:relative;justify-self:center;width:clamp(260px,32vw,340px);aspect-ratio:1320/2868;border-radius:14% / 6.5%;background:#fffdfa;padding:9px;box-shadow:var(--shadow);border:1px solid var(--hair)}
+.phone img{width:100%;height:100%;object-fit:cover;border-radius:11.5% / 5.4%;display:block}
+.phone.tilt{transform:rotate(2deg)}
+
+/* section */
+section{padding:clamp(50px,7vw,96px) 0;position:relative}
+.sec-head{text-align:center;max-width:680px;margin:0 auto 56px}
+.sec-head h2{font-size:clamp(30px,4.4vw,50px);margin:14px 0 0}
+.sec-head h2 em{color:var(--gold)}
+.sec-head p{color:var(--ink3);font-size:16.5px;margin-top:14px}
+
+/* features */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.feat{background:var(--surface);border:1px solid var(--hair);border-radius:24px;padding:30px 28px;transition:.5s}
+.feat:hover{transform:translateY(-5px);box-shadow:var(--shadow)}
+.feat .ic{width:50px;height:50px;border-radius:14px;background:var(--goldsoft);border:1px solid var(--goldline);display:grid;place-items:center;color:var(--gold);margin-bottom:20px}
+.feat h3{font-size:25px;color:var(--ink)}
+.feat p{color:var(--ink3);font-size:14.5px;margin-top:9px}
+
+/* showcase */
+.show{display:flex;gap:30px;overflow-x:auto;padding:6px 4px 24px;scroll-snap-type:x mandatory}
+.show .card{flex:0 0 auto;scroll-snap-align:center;text-align:center}
+.show .phone{width:clamp(230px,26vw,290px)}
+.show .cap{margin-top:18px}
+.show .cap .e{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);font-weight:600}
+.show .cap .h{font-family:var(--serif);font-style:italic;font-size:23px;color:var(--ink);margin-top:6px}
+
+/* finishes */
+.finishes{background:linear-gradient(160deg,#17140f,#0d0c0b);color:#f3ece0;border-radius:36px;padding:clamp(40px,6vw,72px);position:relative;overflow:hidden}
+.finishes .inner{display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;position:relative;z-index:1}
+.finishes h2{color:#f3ece0;font-size:clamp(28px,4vw,46px)}
+.finishes h2 em{color:var(--gold2)}
+.finishes p{color:#c3b8a6;margin-top:16px;font-size:16px;max-width:380px}
+.finishes .pair{display:flex;gap:22px;justify-content:center}
+.finishes .pair .phone{width:clamp(150px,17vw,200px);background:#23211d;border-color:rgba(207,168,105,.18)}
+.finishes .glow{position:absolute;top:-20%;right:-5%;width:460px;height:460px;border-radius:50%;background:radial-gradient(circle,rgba(207,168,105,.16),transparent 70%);z-index:0}
+
+/* privacy band */
+.band{text-align:center;max-width:720px;margin:0 auto}
+.band .em-mark{width:80px;height:80px;margin:0 auto 24px;display:block;object-fit:contain;filter:drop-shadow(0 8px 20px rgba(43,39,34,.16))}
+.band h2{font-size:clamp(28px,4vw,46px)}
+.band h2 em{color:var(--gold)}
+.band p{color:var(--ink2);font-size:17px;margin-top:16px}
+
+/* cta */
+.cta{text-align:center}
+.cta h2{font-size:clamp(30px,4.6vw,52px);margin-bottom:8px}
+.cta h2 em{color:var(--gold)}
+.cta .sub{color:var(--ink3);margin-bottom:30px}
+
+/* footer */
+footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
+.foot-in{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+.foot-l{display:flex;align-items:center;gap:12px}
+.foot-l img{width:34px;height:34px;object-fit:contain}
+.foot-l .nm{font-family:var(--serif);font-style:italic;font-weight:600;font-size:19px}
+.foot-links{display:flex;gap:24px;font-size:14px;color:var(--ink2)}
+.foot-links a:hover{color:var(--gold)}
+.copy{font-size:12.5px;color:var(--faint);margin-top:20px;text-align:center}
+
+@media(max-width:880px){
+  .hero{grid-template-columns:1fr;gap:36px;text-align:center}
+  .hero .sub{margin-left:auto;margin-right:auto}
+  .hero-cta,.note{justify-content:center}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .finishes .inner{grid-template-columns:1fr;text-align:center}
+  .finishes p{margin-left:auto;margin-right:auto}
+}
+@media(max-width:560px){
+  .feat-grid{grid-template-columns:1fr}
+  .nav-r .btn{display:none}
+}
+</style>
+</head>
+<body>
+<div class="app-bg"></div>
+
+<nav>
+  <div class="wrap nav-in">
+    <div class="brand"><img src="assets/perlyna-medallion.png" alt="Perlyna" /><span class="nm">Perlyna</span></div>
+    <div class="nav-r">
+      <div class="lang">
+        <button data-lang="en" class="on">EN</button>
+        <button data-lang="uk">UA</button>
+      </div>
+      <a href="#get" class="btn" data-i="nav.get">Get the app</a>
+    </div>
+  </div>
+</nav>
+
+<header class="wrap hero">
+  <div>
+    <div class="eyebrow" data-i="hero.eyebrow">Your wedding, in one place</div>
+    <h1><span data-i="hero.title">Everything for your wedding. </span><em data-i="hero.title2">Calm, private, offline.</em></h1>
+    <p class="sub" data-i="hero.sub">Count down to the day, plan every task, track the budget and guest list — beautifully, on your iPhone. No account. No internet required.</p>
+    <div class="hero-cta">
+      <a href="#get" class="badge" aria-label="Download on the App Store">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M17.05 12.6c-.03-2.6 2.13-3.85 2.22-3.91-1.21-1.77-3.1-2.01-3.77-2.04-1.6-.16-3.13.94-3.94.94-.81 0-2.07-.92-3.4-.9-1.75.03-3.36 1.02-4.26 2.59-1.82 3.15-.47 7.8 1.3 10.36.86 1.25 1.89 2.66 3.24 2.61 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.02 2.29-1.28 3.15-2.54.99-1.46 1.4-2.87 1.42-2.94-.03-.01-2.73-1.05-2.76-4.16zM14.6 4.97c.72-.87 1.2-2.08 1.07-3.28-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 2-1.08 3.18 1.15.09 2.32-.58 3.03-1.45z"/></svg>
+        <span><span class="b1" data-i="badge.1">Coming soon to the</span><span class="b2">App Store</span></span>
+      </a>
+      <div class="note"><span class="dot"></span><span data-i="hero.note">Works offline · Private to your iPhone · Free</span></div>
+    </div>
+  </div>
+  <div class="phone tilt" style="position:relative">
+    <span class="pearl" style="width:120px;height:120px;left:-50px;top:8%;opacity:.5"></span>
+    <span class="pearl" style="width:90px;height:90px;right:-40px;bottom:14%;opacity:.45;animation-delay:-7s"></span>
+    <img class="shot" data-shot="home" src="assets/shots/en-home.png" alt="Perlyna home screen" />
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i="feat.eyebrow">The companion</div>
+      <h2><span data-i="feat.title">Everything you need, </span><em data-i="feat.title2">nothing you don't.</em></h2>
+    </div>
+    <div class="feat-grid" id="feats"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow" data-i="show.eyebrow">A closer look</div>
+      <h2><span data-i="show.title">Designed to feel like </span><em data-i="show.title2">the day itself.</em></h2>
+    </div>
+  </div>
+  <div class="wrap"><div class="show" id="show"></div></div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="finishes">
+      <div class="glow"></div>
+      <div class="inner">
+        <div>
+          <div class="eyebrow" style="color:var(--gold2)" data-i="fin.eyebrow">Pearl & Titanium</div>
+          <h2><span data-i="fin.title">Light or dark, </span><em data-i="fin.title2">always elegant.</em></h2>
+          <p data-i="fin.sub">Perlyna follows your iPhone's appearance — a soft pearl finish by light, a deep titanium by dark. Beautiful, either way.</p>
+        </div>
+        <div class="pair">
+          <div class="phone"><img class="shot" data-shot="home" src="assets/shots/en-home.png" alt="" /></div>
+          <div class="phone"><img class="shot" data-shot="home-dark" src="assets/shots/en-home-dark.png" alt="" /></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap band">
+    <img class="em-mark" src="assets/perlyna-medallion.png" alt="" />
+    <div class="eyebrow" data-i="priv.eyebrow">Private by design</div>
+    <h2><span data-i="priv.title">Calm, and </span><em data-i="priv.title2">completely yours.</em></h2>
+    <p data-i="priv.sub">Perlyna collects nothing. Every detail lives on your iPhone, backed up privately to your own iCloud — never our servers. Plan in peace.</p>
+  </div>
+</section>
+
+<section id="get">
+  <div class="wrap cta">
+    <div class="eyebrow" data-i="cta.eyebrow">Est. Forever</div>
+    <h2><span data-i="cta.title">Begin your </span><em data-i="cta.title2">countdown.</em></h2>
+    <p class="sub" data-i="cta.sub">Free on the App Store. No account, no clutter — just your day.</p>
+    <a href="#" class="badge" aria-label="Download on the App Store">
+      <svg viewBox="0 0 24 24" fill="#fff"><path d="M17.05 12.6c-.03-2.6 2.13-3.85 2.22-3.91-1.21-1.77-3.1-2.01-3.77-2.04-1.6-.16-3.13.94-3.94.94-.81 0-2.07-.92-3.4-.9-1.75.03-3.36 1.02-4.26 2.59-1.82 3.15-.47 7.8 1.3 10.36.86 1.25 1.89 2.66 3.24 2.61 1.3-.05 1.79-.84 3.36-.84 1.57 0 2.01.84 3.39.81 1.4-.02 2.29-1.28 3.15-2.54.99-1.46 1.4-2.87 1.42-2.94-.03-.01-2.73-1.05-2.76-4.16zM14.6 4.97c.72-.87 1.2-2.08 1.07-3.28-1.03.04-2.28.69-3.02 1.55-.66.77-1.24 2-1.08 3.18 1.15.09 2.32-.58 3.03-1.45z"/></svg>
+      <span><span class="b1" data-i="badge.1">Coming soon to the</span><span class="b2">App Store</span></span>
+    </a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-in">
+      <div class="foot-l"><img src="assets/perlyna-medallion.png" alt="" /><span class="nm">Perlyna</span></div>
+      <div class="foot-links">
+        <a href="privacy.html" data-i="foot.privacy">Privacy</a>
+        <a href="support.html" data-i="foot.support">Support</a>
+        <a href="mailto:vyahello@gmail.com">vyahello@gmail.com</a>
+      </div>
+    </div>
+    <div class="copy" data-i="foot.copy">© 2026 Perlyna · Every detail. Every moment. One unforgettable day.</div>
+  </div>
+</footer>
+
+<script>
+const ICONS={
+  clock:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/></svg>',
+  plan:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4v10"/><circle cx="7" cy="17.5" r="2.2"/><path d="M17 20V10"/><circle cx="17" cy="6.5" r="2.2"/></svg>',
+  budget:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c4.5 0 8 3.2 8 7.2 0 2-1 3.6-2.4 4.8M12 4C7.5 4 4 7.2 4 11.2c0 3.7 3 6.8 7 7.6"/><path d="M12 8v8.5"/></svg>',
+  users:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3"/><path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5"/><path d="M16 6.5a3 3 0 0 1 0 5.5"/></svg>',
+  leaf:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 6-13 14-14 1 8-4 14-14 14Z"/><path d="M5 19c4-4 7-6 10-7"/></svg>',
+  lock:'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="9.5" rx="2.4"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5"/></svg>'
+};
+const T={
+  en:{
+    "nav.get":"Get the app",
+    "hero.eyebrow":"Your wedding, in one place",
+    "hero.title":"Everything for your wedding. ","hero.title2":"Calm, private, offline.",
+    "hero.sub":"Count down to the day, plan every task, track the budget and guest list — beautifully, on your iPhone. No account. No internet required.",
+    "hero.note":"Works offline · Private to your iPhone · Free",
+    "badge.1":"Coming soon to the",
+    "feat.eyebrow":"The companion","feat.title":"Everything you need, ","feat.title2":"nothing you don't.",
+    "show.eyebrow":"A closer look","show.title":"Designed to feel like ","show.title2":"the day itself.",
+    "fin.eyebrow":"Pearl & Titanium","fin.title":"Light or dark, ","fin.title2":"always elegant.",
+    "fin.sub":"Perlyna follows your iPhone's appearance — a soft pearl finish by light, a deep titanium by dark. Beautiful, either way.",
+    "priv.eyebrow":"Private by design","priv.title":"Calm, and ","priv.title2":"completely yours.",
+    "priv.sub":"Perlyna collects nothing. Every detail lives on your iPhone, backed up privately to your own iCloud — never our servers. Plan in peace.",
+    "cta.eyebrow":"Est. Forever","cta.title":"Begin your ","cta.title2":"countdown.",
+    "cta.sub":"Free on the App Store. No account, no clutter — just your day.",
+    "foot.privacy":"Privacy","foot.support":"Support","foot.copy":"© 2026 Perlyna · Every detail. Every moment. One unforgettable day.",
+    feats:[
+      ["clock","Live countdown","Watch the days, hours and minutes melt toward your day."],
+      ["plan","The plan","A curated checklist across every phase — venue to vows."],
+      ["budget","The budget","Clarity, not accounting. See exactly where every figure goes."],
+      ["users","The guests","Track RSVPs and party sizes at a glance."],
+      ["leaf","Fully offline","Everything works without a connection. Always."],
+      ["lock","Private by design","Your plan stays on your iPhone and your iCloud."]
+    ],
+    show:[["home","THE COUNTDOWN","Every day, counted."],["plan","THE PLAN","Every task in place."],["budget","THE BUDGET","Clarity, not accounting."],["guests","THE GUESTS","Everyone who matters."]]
+  },
+  uk:{
+    "nav.get":"Завантажити",
+    "hero.eyebrow":"Ваше весілля — в одному місці",
+    "hero.title":"Усе для вашого весілля. ","hero.title2":"Спокійно, приватно, офлайн.",
+    "hero.sub":"Відлік до дня, кожне завдання, бюджет і список гостей — гарно, на вашому iPhone. Без акаунтів. Без інтернету.",
+    "hero.note":"Працює офлайн · Приватно на вашому iPhone · Безкоштовно",
+    "badge.1":"Незабаром у",
+    "feat.eyebrow":"Помічник","feat.title":"Усе потрібне, ","feat.title2":"і нічого зайвого.",
+    "show.eyebrow":"Ближче","show.title":"Створено, щоб відчуватись ","show.title2":"як сам день.",
+    "fin.eyebrow":"Pearl і Titanium","fin.title":"Світла чи темна, ","fin.title2":"завжди елегантна.",
+    "fin.sub":"Perlyna слідує за виглядом вашого iPhone — м'яка перлина у світлій темі, глибокий титан у темній. Гарно в обох.",
+    "priv.eyebrow":"Приватність у дизайні","priv.title":"Спокійно, і ","priv.title2":"повністю ваше.",
+    "priv.sub":"Perlyna не збирає нічого. Кожна деталь живе на вашому iPhone і приватно копіюється у ваш iCloud — ніколи на наші сервери. Плануйте спокійно.",
+    "cta.eyebrow":"Est. Forever","cta.title":"Почніть свій ","cta.title2":"відлік.",
+    "cta.sub":"Безкоштовно в App Store. Без акаунтів, без зайвого — лише ваш день.",
+    "foot.privacy":"Приватність","foot.support":"Підтримка","foot.copy":"© 2026 Perlyna · Кожна деталь. Кожна мить. Один незабутній день.",
+    feats:[
+      ["clock","Живий відлік","Дивіться, як дні, години й хвилини наближають ваш день."],
+      ["plan","План","Дбайливий чеклист на кожному етапі — від локації до клятв."],
+      ["budget","Бюджет","Ясність, не бухгалтерія. Бачте, куди йде кожна цифра."],
+      ["users","Гості","Стежте за відповідями й кількістю осіб одним поглядом."],
+      ["leaf","Повністю офлайн","Усе працює без з'єднання. Завжди."],
+      ["lock","Приватно за задумом","Ваш план лишається на iPhone і у вашому iCloud."]
+    ],
+    show:[["home","ВІДЛІК","З кожним днем — ближче."],["plan","ПЛАН","Кожне завдання на місці."],["budget","БЮДЖЕТ","Ясність, не бухгалтерія."],["guests","ГОСТІ","Усі, хто важливі."]]
+  }
+};
+let lang="en";
+function render(){
+  const t=T[lang];
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i]").forEach(el=>{const k=el.getAttribute("data-i");if(t[k]!=null)el.textContent=t[k];});
+  // feats
+  document.getElementById("feats").innerHTML=t.feats.map(f=>`<div class="feat"><div class="ic">${ICONS[f[0]]}</div><h3>${f[1]}</h3><p>${f[2]}</p></div>`).join("");
+  // showcase
+  document.getElementById("show").innerHTML=t.show.map(s=>`<div class="card"><div class="phone"><img src="assets/shots/${lang}-${s[0]}.png" alt=""/></div><div class="cap"><div class="e">${s[1]}</div><div class="h">${s[2]}</div></div></div>`).join("");
+  // swap hero + finishes shots
+  document.querySelectorAll("img.shot").forEach(img=>{img.src=`assets/shots/${lang}-${img.getAttribute("data-shot")}.png`;});
+  document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.getAttribute("data-lang")===lang));
+}
+document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.getAttribute("data-lang");render();}));
+if((navigator.language||"").toLowerCase().startsWith("uk"))lang="uk";
+render();
+// subtle scroll-reveal (first load only; toggles don't re-hide)
+function setupReveals(){
+  const els=[...document.querySelectorAll(".sec-head,.feat,.show .card,.finishes,.band,.cta")];
+  if(!("IntersectionObserver" in window)){els.forEach(e=>e.classList.add("in"));return;}
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.12,rootMargin:"0px 0px -6% 0px"});
+  els.forEach((el,i)=>{el.classList.add("reveal");el.style.transitionDelay=((i%3)*0.07)+"s";io.observe(el);});
+  setTimeout(()=>els.forEach(e=>e.classList.add("in")),1600);
+}
+setupReveals();
+</script>
+</body>
+</html>
