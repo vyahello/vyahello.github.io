@@ -5,13 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Perlyna — Everything for your wedding. Calm, private, offline.</title>
 <meta name="description" content="Perlyna is a calm, private wedding companion for iPhone. Count down to the day, plan every task, track the budget and guest list — beautifully, and fully offline." />
-<link rel="icon" href="assets/perlyna-icon.png" />
+<link rel="icon" href="assets/favicon.png" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<meta name="theme-color" content="#f3ede2" />
+<meta name="apple-itunes-app" content="app-id=6777223455" />
 <meta property="og:title" content="Perlyna — wedding countdown & planner" />
 <meta property="og:description" content="Count down to the day, plan every task, track the budget and guests — calm, private and fully offline." />
-<meta property="og:image" content="assets/shots/en-home.png" />
+<meta property="og:image" content="https://vyahello.pro/perlyna/assets/og.jpg" />
+<meta property="og:url" content="https://vyahello.pro/perlyna/" />
+<meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,500;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Perlyna: Wedding Countdown","operatingSystem":"iOS","applicationCategory":"LifestyleApplication","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"url":"https://apps.apple.com/app/id6777223455"}
+</script>
+<script>
+// Resolve language ASAP and preload the right hero shot before the parser reaches it.
+(function(){var l="en";try{var s=localStorage.getItem("perlyna.lang");if(s==="uk"||s==="en")l=s;else if((navigator.language||"").toLowerCase().indexOf("uk")===0)l="uk";}catch(e){}
+window.__lang=l;
+var p=document.createElement("link");p.rel="preload";p.as="image";p.href="assets/shots/"+l+"-home.webp";p.fetchPriority="high";document.head.appendChild(p);})();
+</script>
 <style>
 :root{
   --bg:#f3ede2; --bg2:#ece3d4; --surface:#fffdf9; --surface2:#faf6ee;
@@ -44,7 +58,7 @@ a{color:inherit;text-decoration:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1!important;transform:none!important}.hero .phone{animation:none!important}}
 
 /* nav */
-nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(16px);background:linear-gradient(var(--bg),rgba(243,237,226,.7))}
+nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);background:linear-gradient(var(--bg),rgba(243,237,226,.7));border-bottom:1px solid var(--hair2)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;padding:16px 0}
 .brand{display:flex;align-items:center;gap:12px}
 .brand img{width:42px;height:42px;object-fit:contain;filter:drop-shadow(0 4px 10px rgba(43,39,34,.14))}
@@ -74,7 +88,7 @@ nav{position:sticky;top:0;z-index:40;backdrop-filter:blur(16px);background:linea
 
 /* phone */
 .phone{position:relative;justify-self:center;width:clamp(260px,32vw,340px);border-radius:14% / 6.5%;background:#fffdfa;padding:9px;box-shadow:var(--shadow);border:1px solid var(--hair)}
-.phone img{width:100%;height:auto;display:block;border-radius:11.5% / 5.4%}
+.phone img{width:100%;height:auto;display:block;border-radius:11.5% / 5.4%;background:var(--surface2)}
 .phone.tilt{transform:rotate(2deg)}
 
 /* section */
@@ -93,7 +107,8 @@ section{padding:clamp(50px,7vw,96px) 0;position:relative}
 .feat p{color:var(--ink3);font-size:14.5px;margin-top:9px}
 
 /* showcase */
-.show{display:flex;gap:30px;overflow-x:auto;padding:6px 4px 24px;scroll-snap-type:x mandatory}
+.show{display:flex;gap:30px;overflow-x:auto;padding:6px 4px 24px;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.show::-webkit-scrollbar{display:none}
 .show .card{flex:0 0 auto;scroll-snap-align:center;text-align:center}
 .show .phone{width:clamp(230px,26vw,290px)}
 .show .cap{margin-top:18px}
@@ -147,6 +162,9 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
   .finishes{padding:40px 20px}
   .finishes .pair{gap:16px}
   .finishes .pair .phone{width:clamp(116px,36vw,180px)}
+  /* showcase: card sized so the next one peeks — an unmistakable "swipe me" */
+  .show{gap:18px;padding-left:8px;padding-right:8px}
+  .show .phone{width:62vw}
 }
 </style>
 </head>
@@ -155,7 +173,7 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
 
 <nav>
   <div class="wrap nav-in">
-    <div class="brand"><img src="assets/perlyna-medallion.png" alt="Perlyna" /><span class="nm">Perlyna</span></div>
+    <div class="brand"><img src="assets/perlyna-medallion.webp" width="42" height="42" alt="Perlyna" /><span class="nm">Perlyna</span></div>
     <div class="nav-r">
       <div class="lang">
         <button data-lang="en" class="on">EN</button>
@@ -182,7 +200,7 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
   <div class="phone tilt" style="position:relative">
     <span class="pearl" style="width:120px;height:120px;left:-50px;top:8%;opacity:.5"></span>
     <span class="pearl" style="width:90px;height:90px;right:-40px;bottom:14%;opacity:.45;animation-delay:-7s"></span>
-    <img class="shot" data-shot="home" src="assets/shots/en-home.png" alt="Perlyna home screen" />
+    <img class="shot" data-shot="home" src="assets/shots/en-home.webp" width="900" height="1956" fetchpriority="high" decoding="async" alt="Perlyna home screen" />
   </div>
 </header>
 
@@ -217,8 +235,8 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
           <p data-i="fin.sub">Perlyna follows your iPhone's appearance — a soft pearl finish by light, a deep titanium by dark. Beautiful, either way.</p>
         </div>
         <div class="pair">
-          <div class="phone"><img class="shot" data-shot="home" src="assets/shots/en-home.png" alt="" /></div>
-          <div class="phone"><img class="shot" data-shot="home-dark" src="assets/shots/en-home-dark.png" alt="" /></div>
+          <div class="phone"><img class="shot" data-shot="home" src="assets/shots/en-home.webp" width="900" height="1956" loading="lazy" decoding="async" alt="" /></div>
+          <div class="phone"><img class="shot" data-shot="home-dark" src="assets/shots/en-home-dark.webp" width="900" height="1956" loading="lazy" decoding="async" alt="" /></div>
         </div>
       </div>
     </div>
@@ -227,7 +245,7 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
 
 <section>
   <div class="wrap band">
-    <img class="em-mark" src="assets/perlyna-medallion.png" alt="" />
+    <img class="em-mark" src="assets/perlyna-medallion.webp" width="80" height="80" loading="lazy" decoding="async" alt="" />
     <div class="eyebrow" data-i="priv.eyebrow">Private by design</div>
     <h2><span data-i="priv.title">Calm, and </span><em data-i="priv.title2">completely yours.</em></h2>
     <p data-i="priv.sub">Perlyna collects nothing. Every detail lives on your iPhone, backed up privately to your own iCloud — no servers, no account, seen by no one but you. Plan in peace.</p>
@@ -249,7 +267,7 @@ footer{border-top:1px solid var(--hair);padding:40px 0 60px;margin-top:40px}
 <footer>
   <div class="wrap">
     <div class="foot-in">
-      <div class="foot-l"><img src="assets/perlyna-medallion.png" alt="" /><span class="nm">Perlyna</span></div>
+      <div class="foot-l"><img src="assets/perlyna-medallion.webp" width="34" height="34" loading="lazy" decoding="async" alt="" /><span class="nm">Perlyna</span></div>
       <div class="foot-links">
         <a href="privacy/" data-i="foot.privacy">Privacy</a>
         <a href="support/" data-i="foot.support">Support</a>
@@ -323,7 +341,7 @@ const T={
     show:[["home","ВІДЛІК","З кожним днем — ближче."],["plan","ПЛАН","Кожне завдання на місці."],["budget","БЮДЖЕТ","Ясність, не бухгалтерія."],["guests","ГОСТІ","Усі, хто вам дорогий."]]
   }
 };
-let lang="en";
+let lang=window.__lang||"en";
 function render(){
   const t=T[lang];
   document.documentElement.lang=lang;
@@ -331,15 +349,12 @@ function render(){
   // feats
   document.getElementById("feats").innerHTML=t.feats.map(f=>`<div class="feat"><div class="ic">${ICONS[f[0]]}</div><h3>${f[1]}</h3><p>${f[2]}</p></div>`).join("");
   // showcase
-  document.getElementById("show").innerHTML=t.show.map(s=>`<div class="card"><div class="phone"><img src="assets/shots/${lang}-${s[0]}.png" alt=""/></div><div class="cap"><div class="e">${s[1]}</div><div class="h">${s[2]}</div></div></div>`).join("");
+  document.getElementById("show").innerHTML=t.show.map(s=>`<div class="card"><div class="phone"><img src="assets/shots/${lang}-${s[0]}.webp" width="900" height="1956" loading="lazy" decoding="async" alt=""/></div><div class="cap"><div class="e">${s[1]}</div><div class="h">${s[2]}</div></div></div>`).join("");
   // swap hero + finishes shots
-  document.querySelectorAll("img.shot").forEach(img=>{img.src=`assets/shots/${lang}-${img.getAttribute("data-shot")}.png`;});
+  document.querySelectorAll("img.shot").forEach(img=>{img.src=`assets/shots/${lang}-${img.getAttribute("data-shot")}.webp`;});
   document.querySelectorAll(".lang button").forEach(b=>b.classList.toggle("on",b.getAttribute("data-lang")===lang));
 }
 document.querySelectorAll(".lang button").forEach(b=>b.addEventListener("click",()=>{lang=b.getAttribute("data-lang");try{localStorage.setItem("perlyna.lang",lang)}catch(e){}render();}));
-const saved=(()=>{try{return localStorage.getItem("perlyna.lang")}catch(e){return null}})();
-if(saved==="uk"||saved==="en")lang=saved;
-else if((navigator.language||"").toLowerCase().startsWith("uk"))lang="uk";
 render();
 // subtle scroll-reveal (first load only; toggles don't re-hide)
 function setupReveals(){
