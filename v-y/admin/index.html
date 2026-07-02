@@ -18,12 +18,21 @@
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Italiana&family=Inter:wght@300;400;500&display=swap">
 
-  <link rel="stylesheet" href="../css/theme.css">
-  <link rel="stylesheet" href="../css/base.css">
-  <link rel="stylesheet" href="../css/ui.css">
-  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/theme.css?v=20260702">
+  <link rel="stylesheet" href="../css/base.css?v=20260702">
+  <link rel="stylesheet" href="../css/ui.css?v=20260702">
+  <link rel="stylesheet" href="../css/admin.css?v=20260702">
 </head>
 <body data-theme="cream">
+
+  <!-- Pre-paint theme restore — same as the invitation page. -->
+  <script>
+    try {
+      var t = new URLSearchParams(location.search).get('theme')
+           || localStorage.getItem('v-y:theme');
+      if (t === 'dark') document.body.setAttribute('data-theme', 'dark');
+    } catch (e) { /* private mode — default theme stands */ }
+  </script>
 
   <!-- top-right dock: back-link + theme switcher -->
   <div class="float-controls">
@@ -33,9 +42,9 @@
       </svg>
       <span>Запрошення</span>
     </a>
-    <div class="theme-dots" role="tablist" aria-label="Тема">
-      <button class="theme-dot is-active" data-theme-dot="cream"  aria-label="Cream"  aria-pressed="true"></button>
-      <button class="theme-dot"           data-theme-dot="dark"   aria-label="Dark"   aria-pressed="false"></button>
+    <div class="theme-dots" role="group" aria-label="Тема">
+      <button type="button" class="theme-dot" data-theme-dot="cream" aria-label="Світла тема (cream)" aria-pressed="true"></button>
+      <button type="button" class="theme-dot" data-theme-dot="dark"  aria-label="Темна тема (dark)"   aria-pressed="false"></button>
     </div>
   </div>
 
@@ -68,6 +77,7 @@
             name="token"
             type="text"
             inputmode="text"
+            enterkeyhint="go"
             spellcheck="false"
             autocapitalize="off"
             autocorrect="off"
@@ -89,7 +99,11 @@
              clause — reads cleaner and dodges UA case-after-«від» rules. -->
         <article class="admin-card admin-hero-card">
           <p class="admin-hero-label">
-            <span class="admin-card-icon" aria-hidden="true">💍</span>
+            <!-- Inline SVG icons (not emoji): identical rendering on every
+                 platform and they follow the gold accent token. -->
+            <span class="admin-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9.5" cy="13.5" r="5.5"/><circle cx="14.5" cy="13.5" r="5.5"/></svg>
+            </span>
             <span id="heroVerb">Прийдуть</span> на весілля
           </p>
           <p class="admin-hero-num">
@@ -104,7 +118,9 @@
         <!-- BREAKDOWN: by-status counts with progress bar. -->
         <article class="admin-card admin-breakdown-card">
           <h2 class="admin-card-title">
-            <span class="admin-card-icon" aria-hidden="true">📊</span>
+            <span class="admin-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M5 20v-6"/><path d="M12 20V5"/><path d="M19 20v-9"/></svg>
+            </span>
             Як відповідають
           </h2>
           <p class="admin-card-hint">Кожна родина — одне запрошення. Цифри показують скільки родин і скільки людей від них.</p>
@@ -128,7 +144,7 @@
           </ul>
 
           <div class="admin-progress-wrap">
-            <div class="admin-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBarWrap">
+            <div class="admin-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-labelledby="progressText" id="progressBarWrap">
               <div class="admin-progress-bar" id="progressBar" style="width: 0%"></div>
             </div>
             <p class="admin-progress-text" id="progressText">— з — родин відгукнулися</p>
@@ -142,7 +158,9 @@
         <!-- Confirmed guests, grouped + with names. -->
         <article class="admin-card admin-responders">
           <h2 class="admin-card-title">
-            <span class="admin-card-icon" aria-hidden="true">✅</span>
+            <span class="admin-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8.2 12.4l2.6 2.6 5-5.4"/></svg>
+            </span>
             Підтверджені гості
           </h2>
           <p class="admin-card-hint">Хто точно буде на весіллі — згруповано по родинах та кількість людей від кожної.</p>
@@ -154,7 +172,9 @@
         <!-- Overnight stays at Soprano Inn. Total people + per-family list. -->
         <article class="admin-card admin-overnight">
           <h2 class="admin-card-title">
-            <span class="admin-card-icon" aria-hidden="true">🛏️</span>
+            <span class="admin-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 5v15"/><path d="M2 9h18a2 2 0 0 1 2 2v9"/><path d="M2 17h20"/><path d="M6 9v8"/></svg>
+            </span>
             Залишаються на ніч
           </h2>
           <p class="admin-card-hint">Гості, які попросили забронювати місце у готелі Soprano Inn. Оплата при заселенні.</p>
@@ -171,7 +191,9 @@
         <!-- Pending — needs follow-up. -->
         <article class="admin-card admin-pending">
           <h2 class="admin-card-title">
-            <span class="admin-card-icon" aria-hidden="true">🔔</span>
+            <span class="admin-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5a6 6 0 0 1 12 0c0 4.6 1.8 5.7 1.8 5.7H4.2S6 14.1 6 9.5"/><path d="M10.4 19a2 2 0 0 0 3.2 0"/></svg>
+            </span>
             Ще не відповіли — варто нагадати
           </h2>
           <p class="admin-card-hint">Ці родини ще не сказали «Так» чи «Ні». Можливо запрошення загубилось серед інших повідомлень — варто нагадати.</p>
@@ -183,7 +205,9 @@
         <!-- Recent activity. Full chronology — every reply, newest first. -->
         <article class="admin-card admin-recent">
           <h2 class="admin-card-title">
-            <span class="admin-card-icon" aria-hidden="true">💬</span>
+            <span class="admin-card-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>
+            </span>
             Усі відповіді
           </h2>
           <p class="admin-card-hint">Повна хронологія — найсвіжіші зверху. Бачите кожну відповідь з усіма деталями: статус, кількість осіб, побажання, ночівля.</p>
@@ -229,6 +253,6 @@
   <!-- Inline toast — short success/info messages, auto-dismiss after 2.5s. -->
   <div class="admin-toast" id="adminToast" hidden role="status" aria-live="polite"></div>
 
-  <script type="module" src="../js/admin.js"></script>
+  <script type="module" src="../js/admin.js?v=20260702"></script>
 </body>
 </html>

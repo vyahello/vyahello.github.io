@@ -6,8 +6,16 @@
 *, *::before, *::after { box-sizing: border-box; }
 
 html {
-  scroll-behavior: smooth;
   scroll-snap-type: y proximity;
+  /* iOS/Android landscape auto-inflates text without this — keeps the
+     composed type scale intact in both orientations. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Smooth anchor scrolling is motion — honour the OS setting. */
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
 }
 
 html, body {
@@ -21,6 +29,28 @@ html, body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   transition: background var(--med), color var(--med);
+}
+
+/* Touch feedback is provided by :active states on the controls —
+   suppress the grey WebKit tap flash that fights the luxe palette. */
+body { -webkit-tap-highlight-color: transparent; }
+
+/* Theme-aware selection — default blue breaks both palettes. Inverted
+   ink/bg pair clears 12:1 in both themes (gold-on-cream failed 4.5:1). */
+::selection {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+/* Desktop scrollbar in theme tones (literal hexes: the palette tokens
+   live on body[data-theme] and custom properties never inherit UP to
+   html, so var() would silently fall back to the UA default here). */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #c4a274 transparent;
+}
+html:has(body[data-theme="dark"]) {
+  scrollbar-color: #8a7142 transparent;
 }
 
 body {

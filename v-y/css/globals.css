@@ -102,8 +102,14 @@
   transform: translateY(0);
   pointer-events: auto;
 }
-.floating-mono:hover {
+@media (hover: hover) {
+  .floating-mono:hover {
+    border-color: var(--accent);
+  }
+}
+.floating-mono:active {
   border-color: var(--accent);
+  transform: scale(0.97);
 }
 
 /* ---- Scroll indicator ----

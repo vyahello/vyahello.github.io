@@ -121,15 +121,30 @@ function ensureAudioContextResumed() {
   }
 }
 
+let lastPulse = '';
+
 function audioRAFTick() {
   if (!audioAnalyser || !audioFreq) { audioRAFActive = false; return; }
+  // Idle the loop while nothing plays — it used to spin at 60fps for the
+  // rest of the session after one music toggle (battery drain on Android
+  // and desktop). The 'play' listener above restarts it.
+  if (!musicEl || musicEl.paused) {
+    document.documentElement.style.setProperty('--audio-pulse', '0');
+    lastPulse = '0';
+    audioRAFActive = false;
+    return;
+  }
   audioAnalyser.getByteFrequencyData(audioFreq);
   // Average the first 6 bins (the bass) — that's where rhythm lives.
   let sum = 0;
   for (let i = 0; i < 6; i++) sum += audioFreq[i];
   const avg   = sum / 6;
-  const pulse = Math.min(1, Math.max(0, avg / 180));
-  document.documentElement.style.setProperty('--audio-pulse', pulse.toFixed(3));
+  const pulse = Math.min(1, Math.max(0, avg / 180)).toFixed(3);
+  // Skip redundant root-level style writes during quiet passages.
+  if (pulse !== lastPulse) {
+    document.documentElement.style.setProperty('--audio-pulse', pulse);
+    lastPulse = pulse;
+  }
   requestAnimationFrame(audioRAFTick);
 }
 
@@ -348,17 +363,19 @@ function buildSharePopover(btn) {
     ...(native ? [{ id: 'system', label: 'Інші способи…', kind: 'action', action: 'system', icon: ICON.system }] : []),
   ];
 
+  // role=group, not menu: menu promises arrow-key navigation we don't
+  // implement — native link/button semantics are the honest contract.
   const pop = document.createElement('div');
   pop.className = 'share-popover';
-  pop.setAttribute('role', 'menu');
+  pop.setAttribute('role', 'group');
   pop.setAttribute('aria-label', 'Поділитися запрошенням');
   pop.innerHTML = opts.map((o) => {
     const inner = `<span class="ic" aria-hidden="true">${o.icon}</span><span class="lbl">${o.label}</span>`;
     if (o.kind === 'link') {
       const target = o.href.startsWith('mailto:') || o.href.startsWith('viber:') ? '' : 'target="_blank" rel="noopener noreferrer"';
-      return `<a class="opt" role="menuitem" href="${o.href}" ${target} data-share-id="${o.id}">${inner}</a>`;
+      return `<a class="opt" href="${o.href}" ${target} data-share-id="${o.id}">${inner}</a>`;
     }
-    return `<button type="button" class="opt" role="menuitem" data-share-action="${o.action}">${inner}</button>`;
+    return `<button type="button" class="opt" data-share-action="${o.action}">${inner}</button>`;
   }).join('');
 
   // Action wiring — clipboard copy + system share both run in JS.
@@ -414,8 +431,13 @@ function openPopover(btn) {
   openPopoverEl = buildSharePopover(btn);
   document.body.appendChild(openPopoverEl);
 
-  // Open animation on next frame so transition runs.
-  requestAnimationFrame(() => openPopoverEl.classList.add('open'));
+  // Open animation on next frame so transition runs. Focus moves to the
+  // first option: the popover is appended to the END of <body>, so without
+  // this a keyboard user would have to tab through the whole page.
+  requestAnimationFrame(() => {
+    openPopoverEl.classList.add('open');
+    openPopoverEl.querySelector('.opt')?.focus({ preventScroll: true });
+  });
   btn.setAttribute('aria-expanded', 'true');
 
   outsideHandler = (e) => {
@@ -434,6 +456,9 @@ function openPopover(btn) {
 
 function closePopover(btn) {
   if (!openPopoverEl) return;
+  // Return focus to the toggle when it was inside the popover (Esc /
+  // option activation) — but never steal it on outside-click close.
+  const hadFocus = openPopoverEl.contains(document.activeElement);
   openPopoverEl.classList.remove('open');
   btn.setAttribute('aria-expanded', 'false');
   document.removeEventListener('click',   outsideHandler);
@@ -442,12 +467,14 @@ function closePopover(btn) {
   openPopoverEl = null;
   outsideHandler = null;
   escHandler = null;
+  if (hadFocus) btn.focus({ preventScroll: true });
   setTimeout(() => stale.remove(), 280);   // matches CSS transition
 }
 
 function attachShareButton(btn) {
   if (!btn) return;
-  btn.setAttribute('aria-haspopup', 'menu');
+  // No aria-haspopup: 'true' is an ARIA synonym for 'menu', and the
+  // popover is a plain role=group — aria-expanded alone tells the truth.
   btn.setAttribute('aria-expanded', 'false');
   btn.addEventListener('click', (e) => {
     e.stopPropagation();

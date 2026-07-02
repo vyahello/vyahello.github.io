@@ -113,6 +113,11 @@ function renumberGuestRows(list, addBtn) {
     row.querySelector('.guest-num').textContent = padNum(i);
     const input = row.querySelector('.guest-name');
     if (!input.value) input.placeholder = SAMPLE_NAMES[i] || 'Імʼя та прізвище';
+    // Distinct accessible names per row — placeholder alone reads as a
+    // prefilled value in SR, and five identical «Прибрати цього гостя»
+    // buttons are indistinguishable when cycling by control.
+    input.setAttribute('aria-label', `Гість ${padNum(i)} — повне ім'я та прізвище`);
+    row.querySelector('.guest-remove')?.setAttribute('aria-label', `Прибрати гостя ${padNum(i)}`);
   });
   if (addBtn) addBtn.disabled = rows.length >= MAX_GUESTS;
   // Keep count-dependent UI in sync — renumber is the single chokepoint
@@ -140,6 +145,12 @@ function updateRsvpTitle(list) {
   if (!verbEl || !list) return;
   const count = readGuestNames(list).length;
   verbEl.textContent = count === 1 ? 'Буду' : 'Будемо';
+  // reveal.js pins the split title's accessible name via aria-label at
+  // boot — refresh it so «Будемо» ↔ «Буду» swaps don't go stale for SR.
+  const title = verbEl.closest('.section__title');
+  if (title && title.hasAttribute('aria-label')) {
+    title.setAttribute('aria-label', title.textContent.trim());
+  }
 }
 
 /** Sync overnight count panel visibility + value based on household size.
@@ -158,6 +169,7 @@ function syncOvernightCountPanel(list) {
     wrap.dataset.revealed = 'false';
     input.value = '1';
     input.classList.remove('is-invalid');
+    input.removeAttribute('aria-invalid');
     wrap.querySelector('.overnight-error')?.remove();
     return;
   }
@@ -167,6 +179,7 @@ function syncOvernightCountPanel(list) {
   }
   if (!checked) {
     input.classList.remove('is-invalid');
+    input.removeAttribute('aria-invalid');
     wrap.querySelector('.overnight-error')?.remove();
   }
 }
@@ -190,7 +203,10 @@ function addGuestRow(list, addBtn, { focus = true, value = '' } = {}) {
   list.appendChild(row);
   if (value) row.querySelector('.guest-name').value = value;
   renumberGuestRows(list, addBtn);
-  if (focus) setTimeout(() => row.querySelector('.guest-name').focus(), 50);
+  // Synchronous focus: iOS Safari opens the keyboard only when focus()
+  // runs inside the tap's user-activation stack — a setTimeout broke the
+  // chain, so the row appeared focused but the keyboard stayed closed.
+  if (focus) row.querySelector('.guest-name').focus();
   setTimeout(() => row.classList.remove('entering'), 500);
   return row;
 }
@@ -239,6 +255,8 @@ function flagMissingAttendance(root) {
   if (!hint) {
     hint = document.createElement('p');
     hint.className = 'choice-error';
+    // role=alert: SR users otherwise hear nothing when submit bounces.
+    hint.setAttribute('role', 'alert');
     choiceRow.parentElement.insertBefore(hint, choiceRow.nextSibling);
   }
   hint.textContent = 'Будь ласка, спочатку оберіть відповідь.';
@@ -247,7 +265,8 @@ function flagMissingAttendance(root) {
   setTimeout(() => choiceRow.classList.remove('shake'), 500);
 
   // If pills are off-screen (user scrolled to seal), bring them into view.
-  choiceRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  choiceRow.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
 
   clearTimeout(flagMissingAttendance._t);
   flagMissingAttendance._t = setTimeout(() => hint.remove(), 4000);
@@ -271,6 +290,7 @@ function flagInvalidOvernightCount(input, message) {
   input.classList.remove('is-invalid');
   void input.offsetWidth;
   input.classList.add('is-invalid');
+  input.setAttribute('aria-invalid', 'true');
   input.focus();
   // Find/create inline hint inside the .overnight-count wrap.
   const wrap = input.closest('.overnight-count');
@@ -279,6 +299,7 @@ function flagInvalidOvernightCount(input, message) {
   if (!hint) {
     hint = document.createElement('p');
     hint.className = 'overnight-error';
+    hint.setAttribute('role', 'alert');
     // Place AFTER the count row but BEFORE the soft .ov-hint so error
     // visually wins focus over the payment-disclaimer text.
     const countRow = wrap.querySelector('.ov-count-row');
@@ -299,17 +320,24 @@ function flagInvalidGuestInputs(inputs, message, list) {
   if (!inputs?.length || !list) return;
   // Drop prior is-invalid across the whole list so stale red doesn't
   // linger on rows that the new validation pass considers fine.
-  list.querySelectorAll('.guest-name.is-invalid').forEach((i) => i.classList.remove('is-invalid'));
+  list.querySelectorAll('.guest-name.is-invalid').forEach((i) => {
+    i.classList.remove('is-invalid');
+    i.removeAttribute('aria-invalid');
+  });
   // Force reflow so re-adding the class on the same input retriggers
   // the shake CSS animation (otherwise it only plays on first add).
   void list.offsetWidth;
-  inputs.forEach((i) => i.classList.add('is-invalid'));
+  inputs.forEach((i) => {
+    i.classList.add('is-invalid');
+    i.setAttribute('aria-invalid', 'true');
+  });
   inputs[0].focus();
 
   let hint = list.parentElement.querySelector('.guest-list-error');
   if (!hint) {
     hint = document.createElement('p');
     hint.className = 'guest-list-error';
+    hint.setAttribute('role', 'alert');
     list.parentElement.insertBefore(hint, list.nextSibling);
   }
   hint.textContent = message;
@@ -470,8 +498,12 @@ export function initRSVP() {
   // Mutable per-instance state that the submit handler reads. Slug + name
   // come from `guest:loaded`; `submittedAt` is preserved across edits so
   // we don't lose the original submission timestamp.
+  // slug seeds from the URL immediately: if the guest GET fails (flaky
+  // mobile network / WebView hiccup) `guest:loaded` never fires, and a
+  // null slug made every submit unrecoverable until a full reload.
+  // The event handler below overwrites it on the happy path.
   const state = {
-    slug:        null,
+    slug:        getGuestSlug(),
     displayName: null,
     submittedAt: null,
   };
@@ -524,7 +556,10 @@ export function initRSVP() {
     if (!input) return;
     if (input.classList.contains('is-invalid')) {
       const v = input.value.trim();
-      if (!v || hasFullName(v)) input.classList.remove('is-invalid');
+      if (!v || hasFullName(v)) {
+        input.classList.remove('is-invalid');
+        input.removeAttribute('aria-invalid');
+      }
     }
     updateOvernightVerb(list);
     updateRsvpTitle(list);
@@ -568,14 +603,25 @@ export function initRSVP() {
       const n = parseInt(ovCountInput.value, 10);
       if (Number.isFinite(n) && n >= 1) {
         ovCountInput.classList.remove('is-invalid');
+        ovCountInput.removeAttribute('aria-invalid');
         ovCountWrap?.querySelector('.overnight-error')?.remove();
       }
     });
   }
 
-  // Edit link cycles back to the form.
+  // Edit link cycles back to the form. It is an href-less anchor with
+  // role=button, so Enter/Space must be wired manually — browsers only
+  // synthesize click for real links and buttons.
   const editLink = confirm.querySelector('#editLink');
-  if (editLink) editLink.addEventListener('click', () => hideConfirmation(form, confirm));
+  if (editLink) {
+    editLink.addEventListener('click', () => hideConfirmation(form, confirm));
+    editLink.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        hideConfirmation(form, confirm);
+      }
+    });
+  }
 
   // Listen for backend data — patches state + UI.
   document.addEventListener('guest:loaded', (e) => {
@@ -672,10 +718,6 @@ export function initRSVP() {
       submittedAt:    state.submittedAt,
     });
 
-    // Heart burst originating at the seal's center.
-    const sealRect = seal.getBoundingClientRect();
-    burstHearts(sealRect.left + sealRect.width / 2, sealRect.top + sealRect.height / 2);
-
     // Disable seal during request; restore label on completion.
     const sealLabel = seal.querySelector('span');
     const originalLabel = sealLabel?.innerHTML;
@@ -688,6 +730,10 @@ export function initRSVP() {
     if (sealLabel && originalLabel) sealLabel.innerHTML = originalLabel;
 
     if (result?.ok) {
+      // Celebrate only a CONFIRMED save — a heart burst followed by an
+      // error message read as "it worked" and guests closed the page.
+      const sealRect = seal.getBoundingClientRect();
+      burstHearts(sealRect.left + sealRect.width / 2, sealRect.top + sealRect.height / 2);
       // Preserve the original submission timestamp for subsequent edits.
       if (!state.submittedAt) state.submittedAt = payload.submitted_at;
       showConfirmation(form, confirm, payload.attending);
@@ -697,10 +743,14 @@ export function initRSVP() {
       if (!err) {
         err = document.createElement('p');
         err.className = 'rsvp-error';
+        err.setAttribute('role', 'alert');
         seal.parentElement.appendChild(err);
       }
       err.textContent = 'Не вдалось зберегти. Перевірте з\'єднання і спробуйте ще раз.';
-      setTimeout(() => { err.remove(); }, 6000);
+      // Clear the previous removal timer — a stale one from an earlier
+      // failure would yank the fresh message away almost immediately.
+      clearTimeout(initRSVP._errT);
+      initRSVP._errT = setTimeout(() => { err.remove(); }, 6000);
     }
   });
 }

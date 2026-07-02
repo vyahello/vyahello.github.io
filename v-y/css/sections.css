@@ -8,11 +8,14 @@
    ============================================================ */
 
 /* Reveal-on-scroll: starts invisible, slides up when JS adds .is-visible */
+/* No will-change here: it would keep every section promoted to its own
+   compositor layer for the whole session (10+ layers on a long page —
+   real memory cost on older iPhones). The one-shot reveal transition
+   gets a temporary layer from the browser automatically. */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
   transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0.7, 0.2, 1);
-  will-change: opacity, transform;
 }
 .reveal.is-visible {
   opacity: 1;
@@ -66,6 +69,9 @@
   vertical-align: middle;
   margin: 0 16px;
 }
+/* Absorb the trailing letter-space (0.45em) — otherwise the right rule
+   sits ~4.5px farther from the text than the left one on every section. */
+.section__eyebrow::after { margin-left: calc(16px - 0.45em); }
 
 .section__title {
   font-family: var(--font-display);
@@ -103,7 +109,8 @@
     opacity   0.55s var(--easing),
     transform 0.65s var(--easing);
   transition-delay: calc(var(--ci) * 28ms);
-  will-change: opacity, transform;
+  /* will-change removed — it promoted EVERY glyph of EVERY title to its
+     own layer permanently (100+ layers). One-shot stagger doesn't need it. */
 }
 .reveal.is-visible .section__title .title-char,
 .is-visible.section__title .title-char {
@@ -119,4 +126,15 @@
   max-width: var(--content-w);
   margin: 0 auto 36px;
 }
+
+/* Shared gold keyboard-focus ring for interactive elements that had no
+   :focus-visible treatment and fell back to the UA default blue. */
+.cal-day.key:focus-visible,
+.faq-summary:focus-visible,
+.floating-mono:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.cal-day.key:focus-visible { border-radius: 50%; }
 

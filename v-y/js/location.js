@@ -92,12 +92,20 @@ function createVenueMap(venue) {
     return null;
   }
 
+  // Touch-primary devices get a static map: with dragging on, a vertical
+  // swipe that starts on either full-width map pans the map instead of
+  // scrolling the page — guests got 'stuck' twice inside §location.
+  // Desktop keeps drag (scroll wheel zoom is already off — same parity).
+  const touchPrimary = window.matchMedia('(hover: none)').matches;
+
   const map = L.map(el, {
     center: [venue.lat, venue.lng],
     zoom:   venue.zoom,
     zoomControl:        false,
     scrollWheelZoom:    false,
-    dragging:           true,
+    dragging:           !touchPrimary,
+    touchZoom:          false,
+    tap:                false,
     doubleClickZoom:    false,
     attributionControl: true,
     keyboard:           false,

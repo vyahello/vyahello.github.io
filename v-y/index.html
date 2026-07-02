@@ -42,33 +42,72 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://unpkg.com" crossorigin>
   <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Italiana&family=Inter:wght@300;400;500&display=swap">
 
-  <!-- Leaflet 1.9.4 for §5 Location interactive map -->
+  <!-- Leaflet 1.9.4 for §5 Location interactive map.
+       CSS loads non-blocking (media=print → all on load): the maps are
+       lazy-initialized mid-page, so third-party CSS must never hold up
+       first paint of the invitation on slow networks. -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin>
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin
+        media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin>
+  </noscript>
   <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin></script>
 
-  <link rel="stylesheet" href="css/theme.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/curtain.css">
-  <link rel="stylesheet" href="css/hero.css">
-  <link rel="stylesheet" href="css/invitation.css">
-  <link rel="stylesheet" href="css/countdown.css">
-  <link rel="stylesheet" href="css/location.css?v=20260528-nocorners">
-  <link rel="stylesheet" href="css/dresscode.css">
-  <!-- ?v=20260528-ov bumps cache-bust whenever rsvp.css schema/visuals
-       change. Without it, returning guests see the old cached version
-       (e.g. broken overnight checkbox layout was reported 2026-05-28). -->
-  <link rel="stylesheet" href="css/rsvp.css?v=20260528-ov-validate">
-  <link rel="stylesheet" href="css/polish.css">
-  <link rel="stylesheet" href="css/sections.css">
-  <link rel="stylesheet" href="css/globals.css">
-  <link rel="stylesheet" href="css/ui.css">
+  <!-- One shared cache-bust stamp for every stylesheet + the JS entry.
+       Bump it on EVERY deploy that touches css/ or js/ — GH Pages serves
+       max-age=600, and mixed stale/fresh files already bit us once
+       (broken overnight checkbox layout, 2026-05-28). -->
+  <link rel="stylesheet" href="css/theme.css?v=20260702">
+  <link rel="stylesheet" href="css/base.css?v=20260702">
+  <link rel="stylesheet" href="css/curtain.css?v=20260702">
+  <link rel="stylesheet" href="css/hero.css?v=20260702">
+  <link rel="stylesheet" href="css/invitation.css?v=20260702">
+  <link rel="stylesheet" href="css/countdown.css?v=20260702">
+  <link rel="stylesheet" href="css/location.css?v=20260702">
+  <link rel="stylesheet" href="css/dresscode.css?v=20260702">
+  <link rel="stylesheet" href="css/rsvp.css?v=20260702">
+  <link rel="stylesheet" href="css/polish.css?v=20260702">
+  <link rel="stylesheet" href="css/sections.css?v=20260702">
+  <link rel="stylesheet" href="css/globals.css?v=20260702">
+  <link rel="stylesheet" href="css/ui.css?v=20260702">
+
+  <!-- The ES-module graph is discovered only after main.js downloads —
+       preload hints let all 12 imports fetch in parallel with the CSS
+       instead of one extra round trip later (faster boot on 3G). -->
+  <link rel="modulepreload" href="js/main.js?v=20260702">
+  <link rel="modulepreload" href="js/theme.js">
+  <link rel="modulepreload" href="js/curtain.js">
+  <link rel="modulepreload" href="js/hero.js">
+  <link rel="modulepreload" href="js/invitation.js">
+  <link rel="modulepreload" href="js/location.js">
+  <link rel="modulepreload" href="js/reveal.js">
+  <link rel="modulepreload" href="js/ui.js">
+  <link rel="modulepreload" href="js/globals.js">
+  <link rel="modulepreload" href="js/chrome.js">
+  <link rel="modulepreload" href="js/countdown.js">
+  <link rel="modulepreload" href="js/rsvp.js">
+  <link rel="modulepreload" href="js/guest.js">
 </head>
 <body data-theme="cream">
+
+  <!-- Pre-paint theme restore: modules run after first paint, so a
+       returning dark-theme guest would flash cream (incl. the curtain)
+       on every load without this. Mirrors theme.js resolution order
+       (URL param beats storage); theme.js stays the source of truth. -->
+  <script>
+    try {
+      var t = new URLSearchParams(location.search).get('theme')
+           || localStorage.getItem('v-y:theme');
+      if (t === 'dark') document.body.setAttribute('data-theme', 'dark');
+    } catch (e) { /* private mode — default theme stands */ }
+  </script>
 
   <!-- ============================================================
        GLOBAL CHROME — floating particles, cursor glow, floating
@@ -85,13 +124,15 @@
        user scrolls into the second section, reappears if scrolled back.
        Anchored low to viewport bottom to avoid overlap with add-cal button
        on shorter devices (iPhone SE/10/14). Wired in js/globals.js. -->
-  <div class="scroll-indicator" id="scrollIndicator" role="presentation" aria-label="Прокрутіть нижче"></div>
+  <div class="scroll-indicator" id="scrollIndicator" aria-hidden="true"></div>
 
   <!-- ============================================================
        CURTAIN INTRO (z-index 200, lifts on click or after 3s).
        JS: js/curtain.js. Skipped on subsequent loads in same session.
        ============================================================ -->
-  <div id="curtain" aria-hidden="false" role="dialog" aria-label="Вступ">
+  <!-- Splash screen, not a dialog: no role (it traps nothing and holds no
+       focusable content). curtain.js flips aria-hidden on lift. -->
+  <div id="curtain" aria-hidden="false">
     <div class="monogram brand-mono">В<span class="amp-char">&amp;</span>Ю</div>
     <div class="underline" aria-hidden="true">
       <span class="diamond left"  aria-hidden="true"></span>
@@ -173,14 +214,14 @@
       <button type="button" class="theme-dot" data-theme-dot="dark"  aria-label="Темна тема (dark)"   aria-pressed="false"></button>
     </div>
 
-    <button type="button" class="fc-btn music-btn" id="musicBtn" aria-label="Музика" title="Музика">
+    <button type="button" class="fc-btn music-btn" id="musicBtn" aria-label="Музика" aria-pressed="false">
       <span class="icon" aria-hidden="true">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
       </span>
       <span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>
     </button>
 
-    <button type="button" class="fc-btn" id="shareBtn" aria-label="Поділитися" title="Поділитися">
+    <button type="button" class="fc-btn" id="shareBtn" aria-label="Поділитися" aria-expanded="false">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
         <circle cx="18" cy="5"  r="3"/>
         <circle cx="6"  cy="12" r="3"/>
@@ -212,11 +253,14 @@
     </div>
 
     <div class="hero-center">
-      <div class="names" id="parallaxNames" aria-label="Володимир та Юстина">
-        <div class="n"   data-depth="20">Володимир</div>
-        <div class="amp" data-depth="14">та</div>
-        <div class="n"   data-depth="20">Юстина</div>
-      </div>
+      <!-- The page's h1: names are the document title. Inner spans get
+           aria-hidden because hero.js shreds them into per-letter spans —
+           the aria-label carries the accessible name intact. -->
+      <h1 class="names" id="parallaxNames" aria-label="Володимир та Юстина">
+        <span class="n"   data-depth="20" aria-hidden="true">Володимир</span>
+        <span class="amp" data-depth="14" aria-hidden="true">та</span>
+        <span class="n"   data-depth="20" aria-hidden="true">Юстина</span>
+      </h1>
 
       <div class="hero-rings" aria-hidden="true">
         <!-- Photoreal interlocking bands — see commentary on curtain rings. -->
@@ -372,7 +416,9 @@
             <p class="venue-addr">пл. Музейна, 1<br>Львів</p>
 
             <div class="venue-map-wrap">
-              <div class="venue-map" id="mapChurch" role="img"
+              <!-- role=group (not img): Leaflet injects focusable
+                   attribution links, prohibited inside role=img. -->
+              <div class="venue-map" id="mapChurch" role="group"
                    aria-label="Мапа: Домініканський собор, Львів"></div>
             </div>
 
@@ -406,7 +452,7 @@
             <p class="venue-addr">вул. Кільцева, 8<br>Пасіки-Зубрицькі, Львів</p>
 
             <div class="venue-map-wrap">
-              <div class="venue-map" id="mapBanquet" role="img"
+              <div class="venue-map" id="mapBanquet" role="group"
                    aria-label="Мапа: Soprano Inn, Львів"></div>
             </div>
 
@@ -583,12 +629,14 @@
         у своєму образі — оберіть будь-який відтінок з палітри нижче.
       </p>
 
-      <div class="swatches" id="swatches" aria-label="Палітра дрес-коду">
-        <div class="swatch" aria-label="Шампань"><div class="swatch-tile sw-champagne"></div><div class="swatch-shine"></div></div>
-        <div class="swatch" aria-label="Пудра"><div class="swatch-tile sw-pink"></div><div class="swatch-shine"></div></div>
-        <div class="swatch" aria-label="Шавлія"><div class="swatch-tile sw-sage"></div><div class="swatch-shine"></div></div>
-        <div class="swatch" aria-label="Шоколад"><div class="swatch-tile sw-chocolate"></div><div class="swatch-shine"></div></div>
-        <div class="swatch" aria-label="Чорний"><div class="swatch-tile sw-black"></div><div class="swatch-shine"></div></div>
+      <!-- role=group/img make the aria-labels valid — on generic divs
+           they are prohibited and most AT exposed five nameless nodes. -->
+      <div class="swatches" id="swatches" role="group" aria-label="Палітра дрес-коду">
+        <div class="swatch" role="img" aria-label="Шампань"><div class="swatch-tile sw-champagne"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" role="img" aria-label="Пудра"><div class="swatch-tile sw-pink"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" role="img" aria-label="Шавлія"><div class="swatch-tile sw-sage"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" role="img" aria-label="Шоколад"><div class="swatch-tile sw-chocolate"></div><div class="swatch-shine"></div></div>
+        <div class="swatch" role="img" aria-label="Чорний"><div class="swatch-tile sw-black"></div><div class="swatch-shine"></div></div>
       </div>
     </div>
   </section>
@@ -612,8 +660,10 @@
       </p>
 
       <form class="rsvp-form" id="rsvpForm" novalidate>
-        <div>
-          <label class="field-label">Ваша відповідь <span class="req">*</span></label>
+        <!-- fieldset/legend: gives the radio pair its question context in
+             AT («Так залюбки» alone means nothing without the legend). -->
+        <fieldset>
+          <legend class="field-label">Ваша відповідь <span class="req">*</span></legend>
           <div class="choice-row">
             <label class="choice">
               <input type="radio" name="attend" value="yes" required>
@@ -624,14 +674,15 @@
               <span class="pill">На жаль<span class="pill-sub">не зможу</span></span>
             </label>
           </div>
-        </div>
+        </fieldset>
 
         <div id="guestCountWrap">
-          <label class="field-label">Будь ласка, перевірте склад родини — приберіть тих, хто не зможе <span class="req">*</span></label>
-          <div class="guest-list" id="guestList">
+          <p class="field-label" id="guestListLabel">Будь ласка, перевірте склад родини — приберіть тих, хто не зможе <span class="req">*</span></p>
+          <div class="guest-list" id="guestList" role="group" aria-labelledby="guestListLabel">
             <div class="guest-row">
               <span class="guest-num">01</span>
-              <input type="text" class="guest-name" placeholder="Олена Шевченко" autocomplete="off">
+              <input type="text" class="guest-name" placeholder="Олена Шевченко" autocomplete="off"
+                     aria-label="Гість 01 — повне ім'я та прізвище">
               <button type="button" class="guest-remove" aria-label="Прибрати цього гостя">
                 <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M2 4 L12 4 M 5.5 4 L 5.5 2 L 8.5 2 L 8.5 4"/>
@@ -684,7 +735,7 @@
         </div>
 
         <div>
-          <label class="field-label">Побажання нам</label>
+          <label class="field-label" for="wishesField">Побажання нам</label>
           <textarea name="wishes" id="wishesField" placeholder="Кілька теплих слів — або просто залиште порожнім..."></textarea>
         </div>
 
@@ -831,6 +882,6 @@
 
   <div class="scroll-progress" aria-hidden="true"></div>
 
-  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/main.js?v=20260702"></script>
 </body>
 </html>

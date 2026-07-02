@@ -24,29 +24,43 @@ export function getGuestSlug(search = window.location.search) {
   return SLUG_RE.test(g) ? g.toLowerCase() : null;
 }
 
-let cachedConfig = null;
-async function loadConfig() {
-  if (cachedConfig) return cachedConfig;
-  try {
-    const res = await fetch('data/event.json');
-    cachedConfig = await res.json();
-  } catch (err) {
-    console.warn('event.json load failed', err);
-    cachedConfig = {};
+/* Promise-cached so parallel callers (countdown.js + initGuest at boot)
+   share ONE network request instead of racing two. Exported for reuse. */
+let configPromise = null;
+export function loadConfig() {
+  if (!configPromise) {
+    configPromise = fetch('data/event.json')
+      .then((res) => res.json())
+      .catch((err) => {
+        console.warn('event.json load failed', err);
+        return {};
+      });
   }
-  return cachedConfig;
+  return configPromise;
+}
+
+/* AbortController + setTimeout (NOT AbortSignal.timeout — that throws on
+   Safari < 15.4, i.e. iPhones stuck on iOS 15.3 and older). A hung Apps
+   Script response otherwise pins the UI in its pending state for minutes. */
+function timeoutSignal(ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return { signal: controller.signal, cancel: () => clearTimeout(timer) };
 }
 
 /** Fetch guest + any existing RSVP. Returns null on any failure. */
 async function fetchGuest(slug, appsScriptUrl) {
+  const t = timeoutSignal(15000);
   try {
     const url = `${appsScriptUrl}?slug=${encodeURIComponent(slug)}`;
-    const res = await fetch(url, { method: 'GET' });
+    const res = await fetch(url, { method: 'GET', signal: t.signal });
     const data = await res.json();
     return data?.ok ? data : null;
   } catch (err) {
     console.warn('Guest fetch failed', err);
     return null;
+  } finally {
+    t.cancel();
   }
 }
 
@@ -63,6 +77,7 @@ export async function submitRsvp(payload) {
     console.log('[rsvp] no appsScriptUrl — payload (offline):', payload);
     return { ok: true, offline: true };
   }
+  const t = timeoutSignal(20000);
   try {
     const res = await fetch(cfg.appsScriptUrl, {
       method:  'POST',
@@ -71,11 +86,14 @@ export async function submitRsvp(payload) {
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body:    JSON.stringify(payload),
       redirect: 'follow',
+      signal:   t.signal,
     });
     return await res.json();
   } catch (err) {
     console.warn('RSVP submit failed', err);
     return { ok: false, error: 'network' };
+  } finally {
+    t.cancel();
   }
 }
 

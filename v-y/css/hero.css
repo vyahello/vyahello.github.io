@@ -66,12 +66,16 @@
   align-items: center;
 }
 
+/* .names is the page's <h1> — reset UA heading styles; children set
+   their own type. will-change stays: parallax writes transform per frame. */
 .names {
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
   margin: 8px 0;
+  font-size: inherit;
+  font-weight: inherit;
   will-change: transform;
 }
 .names .n {
@@ -162,6 +166,8 @@
   text-transform: uppercase;
   color: var(--ink-soft);
   margin-top: 8px;
+  /* Compensate the trailing letter-space so the label centres optically. */
+  padding-left: 0.35em;
 }
 
 /* ---- "+ додати в календар" button ---- */
@@ -182,11 +188,24 @@
   cursor: pointer;
   background: transparent;
   transition: all 0.3s var(--easing);
+  /* Touch-target floor — the 10px-type button measured 38px tall. */
+  min-height: 44px;
 }
-.add-cal:hover {
+@media (hover: hover) {
+  .add-cal:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+    background: var(--bg-card);
+  }
+}
+.add-cal:active {
   color: var(--ink);
   border-color: var(--accent);
-  background: var(--bg-card);
+  transform: scale(0.98);
+}
+.add-cal:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 .add-cal svg { width: 12px; height: 12px; }
 

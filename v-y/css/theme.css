@@ -93,8 +93,14 @@
   --bg-deep:     #e3d8bf;
   --ink:         #2a221a;
   --ink-soft:    #5a4d3d;
-  --ink-mute:    #8a7c69;
+  /* 4.5:1+ on --bg — muted microcopy (eyebrows, hints, labels) must stay
+     readable at 9-11px. Same taupe hue as the original #8a7c69. */
+  --ink-mute:    #746753;
   --accent:      #a07b48;
+  /* Accent for SMALL text (10-13px times, numbers, links): the display
+     accent #a07b48 is 3.2:1 on cream — fine for 34px+ titles, too low
+     for microtype. Deeper gold, same family, 4.5:1. */
+  --accent-ink:  #84633a;
   --accent-soft: #c4a274;
   --accent-deep: #6b4f2a;
   --line:        rgba(42, 34, 26, 0.16);
@@ -127,8 +133,12 @@
   --bg-deep:     #0d0a06;
   --ink:         #eddfbf;
   --ink-soft:    #b3a07c;
-  --ink-mute:    #877450;
+  /* 4.6:1 on --bg (was #877450 at 4.16:1) — same warm-sand hue. */
+  --ink-mute:    #8f7c57;
   --accent:      #d4b06a;
+  /* Gold is already 9:1 on the dark bg — small accent text can use the
+     display accent unchanged. */
+  --accent-ink:  #d4b06a;
   --accent-soft: #8a7142;
   --accent-deep: #f5d68f;
   --line:        rgba(212, 176, 106, 0.2);

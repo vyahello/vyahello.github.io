@@ -7,6 +7,8 @@
         add-to-calendar button (download .ics).
    ============================================================ */
 
+import { loadConfig } from './guest.js';
+
 const ROLLUP_DURATION_MS = 1500;
 
 /** Pad a non-negative integer to 2 digits ("3" → "03"). */
@@ -64,6 +66,14 @@ function wireKeyDay() {
   const addBtn = document.getElementById('addCalBtn');
   if (!keyDay || !addBtn) return;
   keyDay.addEventListener('click', () => addBtn.click());
+  // role="button" on a div gets no synthetic click — wire the keys the
+  // aria contract promises.
+  keyDay.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      addBtn.click();
+    }
+  });
 }
 
 export async function initCountdown() {
@@ -75,11 +85,11 @@ export async function initCountdown() {
   };
   if (!cells.days) return;
 
-  // Load target date from event.json. Bail quietly on failure.
+  // Load target date via the shared config loader (one request per page —
+  // guest.js needs the same file at the same boot moment). Bail quietly.
   let targetMs;
   try {
-    const res = await fetch('data/event.json');
-    const json = await res.json();
+    const json = await loadConfig();
     targetMs = new Date(json.date).getTime();
     if (Number.isNaN(targetMs)) throw new Error('bad date');
   } catch (err) {
@@ -94,8 +104,16 @@ export async function initCountdown() {
     if (started) return;
     started = true;
     await rollup(cells, computeDelta(targetMs, Date.now()));
-    render(cells, computeDelta(targetMs, Date.now()));
-    setInterval(() => render(cells, computeDelta(targetMs, Date.now())), 1000);
+    // Self-scheduling timeout aligned to the wall-clock second — a fixed
+    // setInterval drifts across second boundaries and visibly skips a
+    // digit now and then. Stops once the big day arrives.
+    const loop = () => {
+      const delta = computeDelta(targetMs, Date.now());
+      render(cells, delta);
+      if (targetMs - Date.now() <= 0) return;
+      setTimeout(loop, 1000 - (Date.now() % 1000));
+    };
+    loop();
   };
 
   // Fire when the countdown row scrolls into view (≥30% visible).

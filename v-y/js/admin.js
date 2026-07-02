@@ -6,8 +6,18 @@
    ============================================================ */
 
 import { initTheme } from './theme.js';
+import { initUI } from './ui.js';
 
 const $ = (id) => document.getElementById(id);
+
+/* AbortController + setTimeout (Safari <15.4 lacks AbortSignal.timeout).
+   Without it a black-holed Apps Script response leaves «Завантаження…»
+   or the modal's «Видаляємо…» stuck indefinitely. */
+function timeoutSignal(ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return { signal: controller.signal, cancel: () => clearTimeout(timer) };
+}
 
 const ATTEND_LABEL = {
   'так': 'Так',
@@ -94,23 +104,34 @@ async function fetchEventConfig() {
 }
 
 async function fetchStats(appsScriptUrl, token) {
-  const url = `${appsScriptUrl}?stats=1&token=${encodeURIComponent(token)}`;
-  const res = await fetch(url, { method: 'GET', cache: 'no-store' });
-  if (!res.ok) throw new Error('http-' + res.status);
-  return res.json();
+  const t = timeoutSignal(20000);
+  try {
+    const url = `${appsScriptUrl}?stats=1&token=${encodeURIComponent(token)}`;
+    const res = await fetch(url, { method: 'GET', cache: 'no-store', signal: t.signal });
+    if (!res.ok) throw new Error('http-' + res.status);
+    return await res.json();
+  } finally {
+    t.cancel();
+  }
 }
 
 // POST a delete-reply request. Uses text/plain body so the Apps Script Web App
 // runtime treats it as a simple request without CORS-preflight overhead, matching
 // the existing RSVP-submit pattern (see guest.js).
 async function postDeleteReply(appsScriptUrl, token, slug) {
-  const res = await fetch(appsScriptUrl, {
-    method:  'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body:    JSON.stringify({ action: 'delete-reply', token, slug }),
-  });
-  if (!res.ok) throw new Error('http-' + res.status);
-  return res.json();
+  const t = timeoutSignal(20000);
+  try {
+    const res = await fetch(appsScriptUrl, {
+      method:  'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body:    JSON.stringify({ action: 'delete-reply', token, slug }),
+      signal:  t.signal,
+    });
+    if (!res.ok) throw new Error('http-' + res.status);
+    return await res.json();
+  } finally {
+    t.cancel();
+  }
 }
 
 function showOnly(id) {
@@ -129,6 +150,13 @@ function renderLocked(message) {
   $('adminLockedText').textContent = message || 'Введіть токен доступу.';
   showOnly('adminLocked');
   setSub('');
+  // Error path only (wrong token): put the organizer straight back into
+  // the field with the stale value selected — one keystroke to retype.
+  // First visit stays unfocused so the keyboard is not force-opened.
+  if (message) {
+    const input = $('adminTokenInput');
+    if (input) { input.select(); input.focus(); }
+  }
 }
 
 function renderError(message) {
@@ -168,10 +196,17 @@ function renderStats(stats) {
   $('brkPendingFam').textContent = familiesText(notResponded);
 
   // PROGRESS bar — % of families that have responded (any answer).
+  // Width is set through a double rAF: on first render the dashboard is
+  // still display:none until showOnly below, and transitions never run on
+  // undisplayed elements — the 0.6s fill animation silently skipped.
   const pct = totalInvited > 0 ? Math.round((responded / totalInvited) * 100) : 0;
   const bar = $('progressBar');
   const wrap = $('progressBarWrap');
-  if (bar)  bar.style.width = pct + '%';
+  if (bar) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      bar.style.width = pct + '%';
+    }));
+  }
   if (wrap) wrap.setAttribute('aria-valuenow', String(pct));
   $('progressText').textContent = totalInvited > 0
     ? `Відгукнулися ${responded} з ${totalInvited} родин · ${pct}%`
@@ -305,7 +340,9 @@ function renderStats(stats) {
       delBtn.className = 'admin-row-delete';
       delBtn.setAttribute('aria-label', 'Видалити цю відповідь');
       delBtn.dataset.slug    = r.slug || '';
-      delBtn.dataset.name    = r.display_name || r.slug || '';
+      // bestName, not display_name: the confirm modal must echo the SAME
+      // full name the organizer sees on the row they tapped.
+      delBtn.dataset.name    = bestName(r);
       delBtn.dataset.persons = String((r.guest_names || []).filter(Boolean).length);
       delBtn.dataset.attend  = r.attending || '';
       delBtn.dataset.ts      = r.updated_at || r.submitted_at || '';
@@ -398,58 +435,78 @@ function renderOvernight(overnight) {
   }
 }
 
+/* In-flight guard: overlapping loads (double-tap «Відкрити», retry racing
+   a delete-triggered refresh) let whichever response lands LAST win — a
+   stale failure could overwrite a fresh successful render. */
+let statsInFlight = false;
+
 async function loadStats(token) {
-  setSub('Завантаження…');
-  let cfg;
+  if (statsInFlight) return;
+  statsInFlight = true;
   try {
-    cfg = await fetchEventConfig();
-  } catch (err) {
-    renderError('Не вдалось прочитати конфіг (data/event.json).');
-    return;
-  }
-  if (!cfg.appsScriptUrl) {
-    renderError('У data/event.json не задано appsScriptUrl.');
-    return;
-  }
-  // Cache config + token so the delete-modal confirm handler can re-POST
-  // without re-running this whole bootstrap flow.
-  lastConfig = cfg;
-  lastToken  = token;
+    setSub('Завантаження…');
+    let cfg;
+    try {
+      cfg = await fetchEventConfig();
+    } catch (err) {
+      renderError('Не вдалось прочитати конфіг (data/event.json).');
+      return;
+    }
+    if (!cfg.appsScriptUrl) {
+      renderError('У data/event.json не задано appsScriptUrl.');
+      return;
+    }
+    // Cache config + token so the delete-modal confirm handler can re-POST
+    // without re-running this whole bootstrap flow.
+    lastConfig = cfg;
+    lastToken  = token;
 
-  let data;
-  try {
-    data = await fetchStats(cfg.appsScriptUrl, token);
-  } catch (err) {
-    renderError('Не вдалось зʼєднатись з сервером.');
-    return;
-  }
+    let data;
+    try {
+      data = await fetchStats(cfg.appsScriptUrl, token);
+    } catch (err) {
+      renderError('Не вдалось зʼєднатись з сервером.');
+      return;
+    }
 
-  if (data && data.ok && data.stats) {
-    setTokenInUrl(token);
-    try { sessionStorage.setItem('v-y:admin-token', token); } catch { /* ignore */ }
-    renderStats(data.stats);
-    return;
-  }
+    if (data && data.ok && data.stats) {
+      setTokenInUrl(token);
+      try { sessionStorage.setItem('v-y:admin-token', token); } catch { /* ignore */ }
+      renderStats(data.stats);
+      return;
+    }
 
-  if (data && data.error === 'unauthorized') {
-    setTokenInUrl('');
-    try { sessionStorage.removeItem('v-y:admin-token'); } catch { /* ignore */ }
-    renderLocked('Невірний токен. Спробуйте ще раз.');
-    return;
-  }
+    if (data && data.error === 'unauthorized') {
+      setTokenInUrl('');
+      try { sessionStorage.removeItem('v-y:admin-token'); } catch { /* ignore */ }
+      renderLocked('Невірний токен. Спробуйте ще раз.');
+      return;
+    }
 
-  renderError('Сервер повернув помилку.');
+    renderError('Сервер повернув помилку.');
+  } finally {
+    statsInFlight = false;
+  }
 }
 
 function wireTokenForm() {
   const form = $('adminTokenForm');
   if (!form) return;
-  form.addEventListener('submit', (e) => {
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const input = $('adminTokenInput');
     const token = (input && input.value || '').trim();
     if (!token) return;
-    loadStats(token);
+    // Pending feedback on the submit button itself — «Завантаження…» in
+    // the header alone was easy to miss on a phone.
+    const btn = form.querySelector('.admin-btn');
+    const original = btn ? btn.textContent : '';
+    if (btn) { btn.disabled = true; btn.textContent = 'Відкриваємо…'; }
+    try {
+      await loadStats(token);
+    } finally {
+      if (btn) { btn.disabled = false; btn.textContent = original; }
+    }
   });
 }
 
@@ -457,7 +514,13 @@ function wireRetry() {
   const btn = $('adminRetry');
   if (!btn) return;
   btn.addEventListener('click', () => {
-    const token = getTokenFromUrl();
+    // Fall back to the cached/session token: when the token came from the
+    // form (not the URL) and the FIRST load failed, the URL has no token
+    // yet — retry used to dump the organizer back to the locked screen.
+    let token = getTokenFromUrl() || lastToken;
+    if (!token) {
+      try { token = sessionStorage.getItem('v-y:admin-token') || ''; } catch { /* ignore */ }
+    }
     if (token) loadStats(token);
     else renderLocked();
   });
@@ -497,7 +560,6 @@ function makeRowActionBtn(type, slug) {
     ? 'Скопіювати лінк для ' + slug
     : 'Відкрити лінк ' + slug + ' у новій вкладці';
   btn.setAttribute('aria-label', label);
-  btn.title = label;
   btn.innerHTML = type === 'copy'
     ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
         '<rect x="8" y="8" width="12" height="12" rx="2"/>' +
@@ -552,6 +614,10 @@ function openDeleteModal(payload) {
   $('deleteConfirmBtn').textContent = 'Так, видалити';
   const errEl = $('deleteModalError');
   if (errEl) { errEl.hidden = true; errEl.textContent = ''; }
+  // Remember the trigger so close can put keyboard focus back where the
+  // organizer was in the (long) reply list; lock body scroll while open.
+  openDeleteModal._trigger = document.activeElement;
+  document.body.style.overflow = 'hidden';
   modal.hidden = false;
   // Defer focus so the modal is paint-stable before the cancel-button grabs
   // it — instant focus on a hidden-then-shown element occasionally jumps
@@ -563,6 +629,10 @@ function closeDeleteModal() {
   const modal = $('deleteModal');
   if (!modal) return;
   modal.hidden = true;
+  document.body.style.overflow = '';
+  const trigger = openDeleteModal._trigger;
+  openDeleteModal._trigger = null;
+  if (trigger && document.contains(trigger)) trigger.focus({ preventScroll: true });
 }
 
 function formatDeleteMeta({ name, persons, attend, ts }) {
@@ -609,6 +679,24 @@ function wireDeleteFlow() {
     modal.addEventListener('click', (e) => {
       if (e.target.closest('[data-modal-close]')) closeDeleteModal();
     });
+    // Two-element Tab trap: aria-modal=true hides the page from AT, so
+    // focus escaping into the dimmed background lands on elements screen
+    // readers cannot even see.
+    modal.addEventListener('keydown', (e) => {
+      if (e.key !== 'Tab') return;
+      const cancel  = $('deleteCancelBtn');
+      const confirm = $('deleteConfirmBtn');
+      if (!cancel || !confirm) return;
+      const first = cancel;
+      const last  = confirm.disabled ? cancel : confirm;
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
   }
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !$('deleteModal')?.hidden) closeDeleteModal();
@@ -652,6 +740,7 @@ function wireDeleteFlow() {
 
 function boot() {
   initTheme();
+  initUI();          // scroll-progress bar — same chrome as the invitation
   wireTokenForm();
   wireRetry();
   wireDeleteFlow();

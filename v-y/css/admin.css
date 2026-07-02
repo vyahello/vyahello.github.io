@@ -25,11 +25,14 @@
   transition: color 0.25s var(--easing), border-color 0.25s var(--easing),
               transform 0.25s var(--easing);
 }
-.admin-back:hover {
-  color: var(--ink);
-  border-color: var(--accent);
-  transform: translateX(-2px);
+@media (hover: hover) {
+  .admin-back:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+    transform: translateX(-2px);
+  }
 }
+.admin-back:active { border-color: var(--accent); transform: scale(0.97); }
 .admin-back:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -171,7 +174,9 @@
   border: 1px solid var(--line-strong);
   color: var(--ink);
   font-family: var(--font-mono);
-  font-size: 14px;
+  /* 16px floor — anything smaller makes iOS Safari zoom the page on
+     focus and leave it zoomed after the token is typed. */
+  font-size: 16px;
   padding: 11px 14px;
   letter-spacing: 0.04em;
   border-radius: 2px;
@@ -198,17 +203,19 @@
   border-radius: 2px;
   transition: transform 0.2s var(--easing), box-shadow 0.2s var(--easing), background 0.2s var(--easing);
 }
-.admin-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px -16px var(--accent);
+@media (hover: hover) {
+  .admin-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -16px var(--accent);
+  }
 }
-.admin-btn-ghost {
-  background: transparent;
-  color: var(--accent);
+.admin-btn:active { transform: scale(0.97); }
+.admin-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
-.admin-btn-ghost:hover {
-  background: color-mix(in oklab, var(--accent) 14%, transparent);
-}
+/* Ghost variant is defined once, next to the modal styles below —
+   a second definition here used to silently lose the cascade fight. */
 
 /* ---- Dashboard grid (single column — every card is full width) ---- */
 .admin-grid {
@@ -618,7 +625,14 @@
 .admin-card-icon {
   font-size: 18px;
   line-height: 1;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  color: var(--accent);
+}
+.admin-card-icon svg {
+  width: 17px;
+  height: 17px;
+  display: block;
 }
 
 /* Hero-style headline: big number + soft sub-line «від X родин». */
@@ -680,6 +694,7 @@
 }
 .admin-row-action {
   appearance: none;
+  position: relative;
   background: transparent;
   border: 1px solid var(--line);
   border-radius: 2px;
@@ -694,6 +709,12 @@
   transition: color 0.2s var(--easing),
               background 0.2s var(--easing),
               border-color 0.2s var(--easing);
+}
+/* Invisible hit-area extension: 32px visual box, 44px touch target. */
+.admin-row-action::after {
+  content: '';
+  position: absolute;
+  inset: -6px;
 }
 @media (hover: hover) {
   .admin-row-action:hover {
@@ -719,10 +740,12 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 2px;
-  width: 28px;
-  height: 28px;
+  /* 44px touch target for a destructive control; negative margins keep
+     the row layout exactly where the old 28px box sat. */
+  width: 44px;
+  height: 44px;
   padding: 0;
-  margin-left: 6px;
+  margin: -8px -8px -8px -2px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -732,6 +755,10 @@
               background 0.2s var(--easing),
               border-color 0.2s var(--easing);
   flex: 0 0 auto;
+}
+.admin-row-delete:active {
+  color: #c44a2f;
+  background: color-mix(in oklab, #c44a2f 8%, transparent);
 }
 @media (hover: hover) {
   .admin-row-delete:hover {
@@ -779,10 +806,13 @@
   position: relative;
   background: var(--bg);
   border: 1px solid var(--line-strong);
-  border-radius: 4px;
+  border-radius: 2px;
   padding: 32px 28px 24px;
   max-width: 440px;
   width: 100%;
+  /* Phone landscape: keep the panel inside the visible viewport. */
+  max-height: calc(100dvh - 48px);
+  overflow-y: auto;
   box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.55);
   text-align: center;
   animation: adminModalPanelIn 0.3s var(--easing);
@@ -840,16 +870,24 @@
   color: var(--ink-soft);
   border: 1px solid var(--line-strong);
 }
-.admin-btn-ghost:hover { background: var(--bg-card); color: var(--ink); }
+@media (hover: hover) {
+  .admin-btn-ghost:hover { background: var(--bg-card); color: var(--ink); }
+}
+.admin-btn-ghost:active { background: var(--bg-card); color: var(--ink); }
 
 .admin-btn-danger {
   background: color-mix(in oklab, #c44a2f 14%, var(--bg));
   color: color-mix(in oklab, #c44a2f 85%, var(--ink));
   border: 1px solid color-mix(in oklab, #c44a2f 55%, transparent);
 }
-.admin-btn-danger:hover {
+@media (hover: hover) {
+  .admin-btn-danger:hover {
+    background: color-mix(in oklab, #c44a2f 22%, var(--bg));
+    border-color: color-mix(in oklab, #c44a2f 70%, transparent);
+  }
+}
+.admin-btn-danger:active {
   background: color-mix(in oklab, #c44a2f 22%, var(--bg));
-  border-color: color-mix(in oklab, #c44a2f 70%, transparent);
 }
 .admin-btn-danger:disabled {
   opacity: 0.5;
@@ -864,7 +902,8 @@
 .admin-toast {
   position: fixed;
   left: 50%;
-  bottom: 28px;
+  /* Clear the iOS home indicator (34px inset on notch iPhones). */
+  bottom: max(28px, calc(env(safe-area-inset-bottom, 0px) + 16px));
   transform: translateX(-50%);
   z-index: 110;
   background: var(--ink);
@@ -889,4 +928,14 @@
 
 @media (prefers-reduced-motion: reduce) {
   .admin-modal, .admin-modal-panel, .admin-toast { animation: none; }
+}
+
+/* Print / screenshot-to-PDF: data only, no floating chrome. */
+@media print {
+  .float-controls,
+  .admin-toast,
+  .admin-modal,
+  .admin-row-actions,
+  .admin-row-delete { display: none !important; }
+  .admin-main { padding-top: 24px; }
 }

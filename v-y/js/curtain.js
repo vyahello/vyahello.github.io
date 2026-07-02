@@ -41,6 +41,9 @@ function hideImmediately(curtain, hero) {
 function liftCurtain(curtain, hero) {
   if (!curtain || curtain.classList.contains('lift')) return;
   curtain.classList.add('lift');
+  // Leave the accessibility tree immediately — the visual slide-up takes
+  // another 1.5s but the overlay is already inert.
+  curtain.setAttribute('aria-hidden', 'true');
   if (hero) hero.classList.add('intro-done');
   markSeen();
   document.dispatchEvent(new CustomEvent('curtain:lifted'));

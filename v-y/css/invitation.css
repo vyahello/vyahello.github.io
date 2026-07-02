@@ -17,7 +17,8 @@
   grid-template-columns: 1fr;
   gap: 32px;
   align-items: center;
-  max-width: 880px;
+  /* No max-width here: the parent .section__inner already caps at
+     var(--maxw) 640px — an 880px value never applied and misled edits. */
   margin: 28px auto 0;
 }
 @media (min-width: 720px) {
@@ -43,6 +44,11 @@
      depth without a rectangular box-shadow halo around an invisible bg.
      Theme-agnostic: alpha lets page bg (cream or dark) show through. */
   filter: drop-shadow(0 18px 30px rgba(40, 25, 5, 0.32));
+}
+/* The warm-brown shadow above vanishes on the #15110c dark bg — restore
+   the painting-on-wall float with a deeper black ground shadow. */
+[data-theme="dark"] .letter-portrait img {
+  filter: drop-shadow(0 18px 30px rgba(0, 0, 0, 0.6));
 }
 
 .letter {
@@ -71,7 +77,7 @@
 .letter-body em {
   font-family: var(--font-italic);
   font-style: normal;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-size: 1.05em;
 }
 

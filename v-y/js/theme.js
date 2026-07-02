@@ -14,6 +14,12 @@ const THEMES = ['cream', 'dark'];
 const STORAGE_KEY = 'v-y:theme';
 const DEFAULT_THEME = 'cream';
 
+/* Browser-chrome tint per theme — mirrors the --bg tokens in theme.css.
+   The static <meta name="theme-color"> tags key off prefers-color-scheme,
+   which is independent of the user-picked site theme; JS must sync them
+   or Safari paints a cream toolbar around the dark page (and vice versa). */
+const THEME_COLORS = { cream: '#f0e8d8', dark: '#15110c' };
+
 function isValidTheme(t) {
   return typeof t === 'string' && THEMES.includes(t);
 }
@@ -38,6 +44,11 @@ export function applyTheme(theme) {
     const isActive = dot.dataset.themeDot === t;
     dot.classList.toggle('is-active', isActive);
     dot.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+  }
+  for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+    meta.setAttribute('content', THEME_COLORS[t]);
+    // One value now rules — the prefers-color-scheme split no longer applies.
+    meta.removeAttribute('media');
   }
   try { window.localStorage.setItem(STORAGE_KEY, t); } catch { /* ignore */ }
   document.dispatchEvent(new CustomEvent('theme:changed', { detail: { theme: t } }));

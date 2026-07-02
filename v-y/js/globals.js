@@ -88,25 +88,54 @@ function attachCursorGlow(glow) {
 
   document.addEventListener('mouseleave', () => glow.classList.remove('active'));
 
+  // The lerp loop idles once converged (a permanent 60fps rAF kept the
+  // compositor busy on laptops even with the pointer parked for minutes);
+  // any mousemove restarts it.
+  let running = false;
+
   function tick() {
     curX += (targetX - curX) * CURSOR_LERP;
     curY += (targetY - curY) * CURSOR_LERP;
+    if (Math.abs(targetX - curX) + Math.abs(targetY - curY) < 0.1) {
+      curX = targetX;
+      curY = targetY;
+      glow.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+      running = false;
+      return;
+    }
     glow.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
     requestAnimationFrame(tick);
   }
-  tick();
+
+  function wake() {
+    if (running) return;
+    running = true;
+    requestAnimationFrame(tick);
+  }
+
+  document.addEventListener('mousemove', wake, { passive: true });
+  wake();
 }
 
 /* ---- Floating monogram badge ----
    Visible once we've scrolled past most of the hero. */
 function attachFloatingMono(badge, hero) {
   if (!badge || !hero) return;
+  // Cache the hero geometry — reading offsetTop/offsetHeight inside the
+  // raw scroll handler forced a layout access per scroll event on iOS
+  // momentum scrolling. Recomputed on resize (and once after load, when
+  // web fonts may have shifted the hero's height).
+  let heroBottom = 0;
+  const measure = () => {
+    heroBottom = hero.offsetTop + hero.offsetHeight - HERO_BOTTOM_OFFSET;
+  };
   const onScroll = () => {
-    const heroBottom = hero.offsetTop + hero.offsetHeight - HERO_BOTTOM_OFFSET;
     badge.classList.toggle('show', window.scrollY > heroBottom);
   };
+  measure();
   window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', onScroll, { passive: true });
+  window.addEventListener('resize', () => { measure(); onScroll(); }, { passive: true });
+  window.addEventListener('load', () => { measure(); onScroll(); }, { once: true });
   onScroll();
 }
 

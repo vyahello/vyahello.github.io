@@ -47,7 +47,7 @@
   font-family: var(--font-mono);
   font-size: 13px;
   letter-spacing: 0.18em;
-  color: var(--accent);
+  color: var(--accent-ink);
   text-align: right;
   padding-right: 18px;
   font-weight: 500;
@@ -99,7 +99,7 @@
 .gifts p em {
   font-family: var(--font-italic);
   font-style: normal;
-  color: var(--accent);
+  color: var(--accent-ink);
 }
 
 /* ============================================================
@@ -131,7 +131,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.25em;
-  color: var(--accent);
+  color: var(--accent-ink);
   align-self: center;
   font-variant-numeric: lining-nums tabular-nums;
 }
@@ -232,7 +232,19 @@ details[open] .faq-toggle::after {
   border-bottom: 1px solid var(--accent);
   padding-bottom: 4px;
   display: inline-block;
+  position: relative;
   font-variant-numeric: lining-nums tabular-nums;
+}
+/* Invisible hit-area extension — the phone number is THE action of this
+   section; give it a 44px+ touch box without moving the underline. */
+.coord-card .tel::after {
+  content: '';
+  position: absolute;
+  inset: -12px -14px;
+}
+.coord-card .tel:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 
 /* ============================================================
@@ -252,6 +264,11 @@ details[open] .faq-toggle::after {
   color: var(--accent);
   line-height: 1;
   letter-spacing: 0.04em;
+  /* Shrink-wrap the glyphs: the breathing scale() on a full-width block
+     bled 1-2px past the viewport edge mid-animation. Centered as before. */
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
   /* Quiet breathing — monogram floats gently up-down (6s cycle). Combined
      with the audio-pulse glow on .amp-char (curtain.css), the closing
      reads as alive without being animated-to-death. */
@@ -300,6 +317,9 @@ details[open] .faq-toggle::after {
   vertical-align: middle;
   margin: 0 16px;
 }
+/* Absorb the trailing letter-space (0.4em) so both flanking rules sit at
+   an equal optical distance from the text. */
+.closing .sign::after { margin-left: calc(16px - 0.4em); }
 .closing .date-final {
   margin-top: 24px;
   font-family: var(--font-display);

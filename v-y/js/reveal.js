@@ -56,6 +56,10 @@ function insertSectionDividers() {
  */
 function splitTitleChars(title) {
   if (!title || title.dataset.charsSplit === '1') return;
+  // Pin the accessible name BEFORE shredding into per-letter inline-block
+  // spans — several SR/browser combos otherwise announce the title as
+  // spelled-out letters. (rsvp.js refreshes this when its verb swaps.)
+  title.setAttribute('aria-label', title.textContent.trim());
   let ci = 0;
 
   function processTextNode(text) {

@@ -22,10 +22,27 @@
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--ink-mute);
-  margin-bottom: 16px;
+  /* Full margin reset: the class sits on <label>, <legend> AND <p> —
+     a bare margin-bottom would let the <p>'s UA top margin through. */
+  margin: 0 0 16px;
   text-align: center;
+  /* Compensate the trailing letter-space for true optical centering. */
+  padding-left: 0.35em;
 }
 .field-label .req { color: var(--accent); }
+
+/* The attendance radios live in a fieldset/legend (real form semantics);
+   strip the UA chrome so it renders exactly like the other field blocks. */
+.rsvp-form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.rsvp-form legend.field-label {
+  width: 100%;
+  padding-left: 0.35em;
+}
 
 /* ============================================================
    ATTENDANCE — 2 pill cards (Так залюбки / На жаль не зможу).
@@ -69,13 +86,19 @@
   text-transform: none;
   color: var(--ink-mute);
 }
-.choice:hover .pill { border-color: var(--accent); }
+@media (hover: hover) {
+  .choice:hover .pill { border-color: var(--accent); }
+}
+.choice:active .pill { border-color: var(--accent); transform: scale(0.99); }
 .choice input:checked ~ .pill {
   background: var(--ink);
   color: var(--bg);
   border-color: var(--ink);
 }
 .choice input:checked ~ .pill .pill-sub { color: var(--accent-soft); }
+/* Dark theme: the checked pill inverts to a LIGHT card (--ink), where
+   --accent-soft #8a7142 reads at ~3.5:1. Deeper gold for the sub-line. */
+[data-theme="dark"] .choice input:checked ~ .pill .pill-sub { color: #6e5732; }
 .choice input:focus-visible ~ .pill { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* Inline hint shown when user submits without picking Так / На жаль —
@@ -111,7 +134,7 @@
 }
 .guest-row {
   display: grid;
-  grid-template-columns: 34px 1fr 28px;
+  grid-template-columns: 34px 1fr 36px;
   align-items: center;
   gap: 10px;
   padding: 6px 0;
@@ -135,7 +158,7 @@
   font-family: var(--font-mono);
   font-size: 11px;
   letter-spacing: 0.18em;
-  color: var(--accent);
+  color: var(--accent-ink);
   font-variant-numeric: lining-nums tabular-nums;
   text-align: right;
   padding-right: 4px;
@@ -156,7 +179,9 @@
 .guest-name::placeholder {
   color: var(--ink-mute);
   font-style: italic;
-  opacity: 0.6;
+  /* Was 0.6 — composited to ~1.9:1 on cream, invisible in sunlight.
+     The italic style alone already distinguishes placeholder from value. */
+  opacity: 1;
 }
 .guest-name:focus::placeholder { opacity: 0.3; }
 /* Flag set by JS when the submit handler finds a single-word value (no surname)
@@ -164,7 +189,7 @@
 .guest-name.is-invalid {
   animation: guestNameShake 0.42s var(--easing);
   background: color-mix(in oklab, #c44a2f 14%, transparent);
-  border-radius: 4px;
+  border-radius: 2px;
 }
 @keyframes guestNameShake {
   0%, 100% { transform: translateX(0); }
@@ -190,8 +215,11 @@
    "+" creates, trash destroys. Single-tap removes; the row's 320 ms
    slide-out gives a moment to register "ah, gone" before it commits. */
 .guest-remove {
-  width: 28px;
-  height: 28px;
+  /* 44px touch target (Apple HIG minimum) in a 36px grid column —
+     negative margins keep the visual footprint of the 15px icon. */
+  width: 44px;
+  height: 44px;
+  margin: -4px;
   border: 0;
   background: transparent;
   padding: 0;
@@ -203,6 +231,7 @@
   opacity: 0.75;
   transition: opacity 0.25s, color 0.25s, transform 0.2s;
 }
+.guest-remove:active { opacity: 1; transform: scale(0.92); }
 .guest-remove svg {
   width: 15px;
   height: 15px;
@@ -264,13 +293,19 @@
   font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-ink);
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  /* min-height brings the 10px-type button up to a 44px touch target
+     without changing the text's visual position. */
+  min-height: 44px;
   transition: color 0.3s, letter-spacing 0.3s;
 }
-.guest-add:hover { color: var(--ink); letter-spacing: 0.32em; }
+@media (hover: hover) {
+  .guest-add:hover { color: var(--ink); letter-spacing: 0.32em; }
+}
+.guest-add:active { color: var(--ink); }
 .guest-add .plus {
   display: inline-flex;
   width: 18px;
@@ -302,7 +337,13 @@
   line-height: 1.55;
   transition: border-color 0.3s;
 }
-.rsvp-form textarea:focus { outline: none; border-color: var(--accent); }
+.rsvp-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  /* Soft gold ring — a 1px border-color change alone is too subtle a
+     focus cue at arm's length on a phone. */
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent);
+}
 .rsvp-form textarea::placeholder { color: var(--ink-mute); font-style: italic; }
 
 /* ============================================================
@@ -452,7 +493,11 @@
   -webkit-appearance: none;             /* WebKit: hide arrows for cleaner look */
   margin: 0;
 }
-#overnightCount:focus { outline: none; border-color: var(--accent); }
+#overnightCount:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent) 18%, transparent);
+}
 
 /* Validation state — empty / 0 count while overnight is checked.
    Same red/shake pattern as .guest-name.is-invalid for visual
@@ -538,12 +583,20 @@
   background: radial-gradient(circle at 35% 30%, rgba(255, 220, 160, 0.2), transparent 60%);
   pointer-events: none;
 }
-.seal-btn:hover {
-  transform: scale(1.05) rotate(-4deg);
-  box-shadow:
-    0 14px 30px rgba(60, 30, 10, 0.5),
-    inset 0 -6px 12px rgba(0, 0, 0, 0.3),
-    inset 0 3px 6px rgba(255, 220, 160, 0.4);
+@media (hover: hover) {
+  .seal-btn:hover {
+    transform: scale(1.05) rotate(-4deg);
+    box-shadow:
+      0 14px 30px rgba(60, 30, 10, 0.5),
+      inset 0 -6px 12px rgba(0, 0, 0, 0.3),
+      inset 0 3px 6px rgba(255, 220, 160, 0.4);
+  }
+}
+/* Touch feedback: press-in, mirrors the wax being pushed into paper. */
+.seal-btn:active:not(:disabled) { transform: scale(0.96); }
+.seal-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
 }
 .seal-btn:disabled { opacity: 0.6; cursor: default; }
 .seal-btn span {
@@ -663,6 +716,10 @@
   filter: drop-shadow(0 12px 18px rgba(40, 25, 5, 0.18));
   animation: stickerPop 0.7s var(--easing) 0.15s backwards;
 }
+/* Same dark-theme correction as the invitation portrait. */
+[data-theme="dark"] .rsvp-confirm .confirm-sticker {
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.55));
+}
 @keyframes stickerPop {
   0%   { opacity: 0; transform: translateY(12px) scale(0.88); }
   60%  {              transform: translateY(-3px) scale(1.04); }
@@ -775,15 +832,23 @@
 
 .rsvp-confirm .edit-link {
   display: inline-block;
-  margin-top: 18px;
+  /* 6px + the 12px transparent padding-top = the original 18px gap. */
+  margin-top: 6px;
   font-family: var(--font-mono);
   font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-ink);
   cursor: pointer;
   border-bottom: 1px solid var(--accent);
-  padding-bottom: 2px;
+  /* Padding + negative margins: ~36px touch target, unchanged layout. */
+  padding: 12px 10px 2px;
+  margin-left: -10px;
+  margin-right: -10px;
+}
+.rsvp-confirm .edit-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 /* Reduced motion: kill pulses + bursts, keep state changes. */
