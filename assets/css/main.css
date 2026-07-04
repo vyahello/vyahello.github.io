@@ -618,7 +618,10 @@ a img {
     color: var(--accent-ink)
 }
 
+/* Fluid type scale: 16px on phones/tablets, growing to 18px on wide desktops.
+   All rem-based sizes below scale with it, so mobile stays untouched. */
 html {
+    font-size: clamp(1rem, 0.805rem + 0.305vw, 1.125rem);
     scrollbar-color: #1d3a1d var(--bg-page)
 }
 
@@ -881,7 +884,7 @@ main:focus {
 ═══════════════════════════════════ */
 #about,
 #projects {
-    width: min(92%, 980px);
+    width: min(92%, 1140px);
     margin: 0 auto
 }
 
@@ -891,12 +894,12 @@ main:focus {
     background: var(--bg-card);
     border: 1px solid var(--line);
     border-radius: 10px;
-    padding: clamp(22px, 4vw, 34px);
+    padding: clamp(22px, 3.5vw, 42px);
     box-shadow: 0 0 24px var(--glow-faint)
 }
 
 .section-card {
-    margin: 34px 0 0
+    margin: clamp(30px, 4vw, 44px) 0 0
 }
 
 .about-intro-card {
@@ -911,14 +914,14 @@ main:focus {
     padding: 0;
     font-family: var(--font-mono);
     letter-spacing: 2px;
-    font-size: clamp(1.6rem, 4.5vw, 2.1rem)
+    font-size: clamp(1.6rem, 4.5vw, 2.3rem)
 }
 
 .section-card > h3 {
-    margin: 0 0 16px;
+    margin: 0 0 18px;
     padding: 0;
     font-family: var(--font-mono);
-    font-size: 1.4rem
+    font-size: clamp(1.4rem, 1.2rem + 0.7vw, 1.7rem)
 }
 
 .about-intro-card h2::before,
@@ -945,8 +948,8 @@ main:focus {
 .about-intro-card p {
     color: var(--muted);
     line-height: 1.8;
-    font-size: 1rem;
-    max-width: 680px;
+    font-size: 1.02rem;
+    max-width: 72ch;
     margin: 0 auto 12px;
     text-align: left
 }
@@ -966,7 +969,7 @@ main:focus {
 /* ── Tech stack ── */
 .user {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: 1fr;
     gap: 18px;
     text-align: center
 }
@@ -1031,8 +1034,8 @@ main:focus {
 /* ── Professional highlights ── */
 .highlight-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 14px
+    grid-template-columns: 1fr;
+    gap: 16px
 }
 
 .highlight-item {
@@ -1046,7 +1049,7 @@ main:focus {
 .highlight-item h4 {
     margin: 0 0 8px;
     padding: 0;
-    font-size: 1.02rem;
+    font-size: 1.06rem;
     font-family: var(--font-mono);
     line-height: 1.45
 }
@@ -1073,10 +1076,11 @@ main:focus {
 }
 
 .experience-list li {
-    margin: 10px 0;
+    margin: 12px 0;
     padding-left: 22px;
     position: relative;
     color: var(--muted);
+    font-size: 1.02rem;
     line-height: 1.6
 }
 
@@ -1094,7 +1098,7 @@ main:focus {
 ═══════════════════════════════════ */
 .user-details {
     text-align: center;
-    margin: 48px auto 0
+    margin: clamp(48px, 6vw, 76px) auto 0
 }
 
 .user-details h2 {
@@ -1103,8 +1107,8 @@ main:focus {
 
 .projects-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: clamp(20px, 2.2vw, 28px);
     margin-top: 24px
 }
 
@@ -1149,13 +1153,13 @@ main:focus {
     padding: 0;
     color: var(--accent);
     font-family: var(--font-mono);
-    font-size: 0.98rem;
+    font-size: 1.02rem;
     line-height: 1.4
 }
 
 .project-card-body p {
     color: var(--muted);
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     line-height: 1.65;
     margin: 0;
     flex: 1
@@ -1188,6 +1192,41 @@ main:focus {
     background-color: var(--accent);
     color: var(--accent-ink);
     box-shadow: 0 0 16px rgba(0, 255, 65, 0.5)
+}
+
+/* ═══════════════════════════════════
+   Wider layouts — tablets and desktops
+═══════════════════════════════════ */
+@media (min-width: 640px) {
+    .user {
+        grid-template-columns: repeat(3, 1fr)
+    }
+
+    .highlight-grid {
+        grid-template-columns: repeat(2, 1fr)
+    }
+}
+
+@media (min-width: 1150px) {
+    .highlight-grid {
+        grid-template-columns: repeat(4, 1fr)
+    }
+}
+
+@media (min-width: 1200px) {
+    .about-avatar {
+        width: 170px;
+        height: 170px
+    }
+
+    .tech-icons {
+        font-size: 58px;
+        min-height: 66px
+    }
+
+    .pytest-mark {
+        font-size: 34px
+    }
 }
 
 /* ═══════════════════════════════════

@@ -17,6 +17,9 @@ _Release date: 04.07.2026_
 - Social sharing: Open Graph / Twitter card with generated og.jpg, JSON-LD
   person schema, canonical URL, SVG favicon + apple-touch-icon
 - Remove dead Universal Analytics snippet (empty tracking ID, service shut down)
+- Fluid desktop scaling: root type grows 16px (phone) to 18px (wide screens),
+  content column widened to 1140px, highlights 4-up on desktop, larger avatar,
+  tech icons, and card typography — phone layout unchanged
 
 1.0.0
 =========
