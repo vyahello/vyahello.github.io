@@ -1,284 +1,386 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Metadata of the Webpage -->
-    <!-- Character-set Metadata -->
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- Viewport Metadata -->
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Description Metadata-->
     <meta name="description" content="Portfolio of Volodymyr Yahello — Python SDET &amp; Automation Engineer (7 yrs) turned Cybersecurity Engineer (2 yrs). Specialising in test automation, ethical hacking, and penetration testing." />
-    <!-- Author Metadata -->
     <meta name="author" content="Volodymyr Yahello" />
-    <!-- Webpage Logo -->
-    <link rel="shortcut icon" href="./assets/img/favicon.ico" />
-    <!-- Webpage Title -->
-    <title>Volodymyr Yahello | Python SDET & Cybersecurity</title>
+    <meta name="theme-color" content="#020c02" />
+    <link rel="canonical" href="https://vyahello.pro/" />
 
-    <!-- Import CSS: Main Stylesheet -->
-    <link rel="stylesheet" href="./assets/css/main.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.11.0/devicon.min.css">
+    <!-- Social sharing cards -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://vyahello.pro/" />
+    <meta property="og:site_name" content="vyahello.pro" />
+    <meta property="og:title" content="Volodymyr Yahello | Python SDET &amp; Cybersecurity" />
+    <meta property="og:description" content="Python SDET &amp; Automation Engineer turned Cybersecurity Engineer — test automation ecosystems, ethical hacking, and penetration testing." />
+    <meta property="og:image" content="https://vyahello.pro/assets/img/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Volodymyr Yahello — Python SDET &amp; Automation Engineer, Cybersecurity" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@vyahello" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/svg+xml" href="./assets/img/favicon.svg" />
+    <link rel="shortcut icon" href="./assets/img/favicon.ico" />
+    <link rel="apple-touch-icon" href="./assets/img/apple-touch-icon.png" />
+
+    <title>Volodymyr Yahello | Python SDET &amp; Cybersecurity</title>
+
+    <!-- Fonts + styles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Nunito+Sans:wght@400;700&display=swap" />
+    <link rel="stylesheet" href="./assets/css/main.css?v=2" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.11.0/devicon.min.css" />
+
+    <!-- Structured data: person -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Volodymyr Yahello",
+      "url": "https://vyahello.pro/",
+      "image": "https://vyahello.pro/assets/img/me.jpg",
+      "jobTitle": "Python SDET & Cybersecurity Engineer",
+      "email": "mailto:vyahello@gmail.com",
+      "sameAs": [
+        "https://www.linkedin.com/in/volodymyr-yahello",
+        "https://github.com/vyahello",
+        "https://twitter.com/vyahello",
+        "https://stackoverflow.com/users/7636378/vladimir-yahello"
+      ]
+    }
+    </script>
   </head>
 
   <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <!-- Hero -->
     <div id="particles-js">
-      <div class="header">
-        <h1>
-          <span class="site-title">Volodymyr Yahello</span>
-          <span class="site-description"
-            >Python SDET &amp; Automation Engineer • Cybersecurity</span
-          >
-        </h1>
+      <header class="header">
+        <p class="hero-prompt" aria-hidden="true">~$ whoami</p>
+        <h1 class="site-title">Volodymyr Yahello</h1>
+        <p class="site-description">Python SDET &amp; Automation Engineer • Cybersecurity</p>
+
         <div class="header-icons">
           <a
-            aria-label="My LinkedIn Profile"
+            class="icon fa fa-linkedin"
+            aria-label="My LinkedIn profile"
+            title="LinkedIn"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="me noopener noreferrer"
             href="https://www.linkedin.com/in/volodymyr-yahello"
-          >
-            <i class="icon fa fa-linkedin" aria-hidden="true"></i>
-          </a>
+          ></a>
           <a
-            aria-label="My Github Profile"
+            class="icon fa fa-github-alt"
+            aria-label="My GitHub profile"
+            title="GitHub"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="me noopener noreferrer"
             href="https://github.com/vyahello"
-          >
-            <i class="icon fa fa-github-alt" aria-hidden="true"></i>
-          </a>
-
+          ></a>
           <a
-            aria-label="My Twitter Profile"
+            class="icon fa fa-twitter"
+            aria-label="My Twitter profile"
+            title="Twitter"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="me noopener noreferrer"
             href="https://twitter.com/vyahello"
-          >
-            <i class="icon fa fa-twitter" aria-hidden="true"></i>
-          </a>
+          ></a>
           <a
-            aria-label="My Stackoverflow Profile"
+            class="icon fa fa-stack-overflow"
+            aria-label="My Stack Overflow profile"
+            title="Stack Overflow"
             target="_blank"
-            rel="noopener noreferrer"
+            rel="me noopener noreferrer"
             href="https://stackoverflow.com/users/7636378/vladimir-yahello"
-          >
-            <i class="icon fa fa-stack-overflow" aria-hidden="true"></i>
-          </a>
+          ></a>
           <a
-            aria-label="Send Email"
+            class="icon fa fa-envelope"
+            aria-label="Send me an email"
+            title="vyahello@gmail.com"
             href="mailto:vyahello@gmail.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><i class="icon fa fa-envelope"></i
           ></a>
         </div>
-        <div class="header-links">
-          <a class="link" href="#about" data-scroll>About Me</a>
-          <a class="link" href="#highlights" data-scroll>Highlights</a>
-          <a class="link" href="#experience" data-scroll>Experience</a>
-          <a class="link" href="#projects" data-scroll>Pet projects</a>
-          <a class="link" href="./resume.pdf">Resume</a>
+
+        <nav class="header-links" aria-label="Site sections">
+          <a class="link" href="#about">About Me</a>
+          <a class="link" href="#highlights">Highlights</a>
+          <a class="link" href="#experience">Experience</a>
+          <a class="link" href="#projects">Pet projects</a>
+          <a class="link" href="./resume.pdf" target="_blank" rel="noopener">Resume</a>
           <!-- <a class="link" href="./blog/posts.html">Blog</a> -->
-        </div>
-      </div>
-      <a class="down" href="#about" data-scroll
+        </nav>
+      </header>
+      <a class="down" href="#about" aria-label="Scroll down to the About section"
         ><i class="icon fa fa-chevron-down" aria-hidden="true"></i
       ></a>
     </div>
 
-    <!-- About Section -->
-    <section id="about">
-
-      <!-- Intro card: photo + bio in a single frame -->
-      <div class="about-intro-card">
-        <img src="./assets/img/me.jpg" alt="Professional Me" class="about-avatar" />
-        <h1>About me</h1>
-        <p>
-          Hey there 👋 I am a passionate Python/SDET/QA engineer from Ukraine 🇺🇦 with over
-          9 years of commercial experience — 7 years in test automation &amp; quality engineering,
-          and the last 2 years as a Cybersecurity Engineer.
-        </p>
-        <p>
-          I help teams design reliable test automation ecosystems, improve release confidence,
-          and ship quality faster. In recent years I have been diving into ethical hacking and
-          penetration testing alongside my core automation work.
-        </p>
-        <p>
-          I enjoy solving complex problems across Python, Linux, Windows (security policies),
-          networking, CI/CD, and web backends 🛡️.
-        </p>
-      </div>
-
-      <!-- Tech stack card -->
-      <div class="section-card">
-        <h2>Tech stack</h2>
-        <div class="user">
-          <div class="tech">
-            <h2>Languages</h2>
-            <i class="devicon-python-plain-wordmark colored"></i>
-            <i class="devicon-bash-plain colored"></i>
-            <i class="devicon-groovy-plain colored"></i>
-            <p>Preferred languages for system programming and automation.</p>
-          </div>
-          <div class="tech">
-            <h2>Tools</h2>
-            <i class="devicon-linux-plain"></i>
-            <i class="devicon-windows8-original colored"></i>
-            <i class="devicon-docker-plain-wordmark colored"></i>
-            <i class="devicon-git-plain-wordmark colored"></i>
-            <i class="devicon-jenkins-line"></i>
-            <i style="font-size:30px"><b>py<span style="color: #00ff41">test</span></b></i>
-            <p>Preferred tools for system engineering, testing, and OS security.</p>
-          </div>
-          <div class="tech">
-            <h2>Security</h2>
-            <i class="fa fa-shield"></i>
-            <i class="fa fa-bug"></i>
-            <i class="fa fa-crosshairs"></i>
-            <i class="fa fa-lock"></i>
-            <p>Ethical hacking, penetration testing, SAST/DAST, vulnerability assessments.</p>
-          </div>
+    <main id="main" tabindex="-1">
+      <!-- About Section -->
+      <section id="about" aria-labelledby="about-title">
+        <!-- Intro card: photo + bio in a single frame -->
+        <div class="about-intro-card">
+          <img
+            src="./assets/img/me.webp"
+            alt="Portrait of Volodymyr Yahello"
+            class="about-avatar"
+            width="140"
+            height="140"
+            decoding="async"
+          />
+          <h2 id="about-title">About me</h2>
+          <p>
+            Hey there 👋 I am a passionate Python/SDET/QA engineer from Ukraine 🇺🇦 with over
+            9 years of commercial experience — 7 years in test automation &amp; quality engineering,
+            and the last 2 years as a Cybersecurity Engineer.
+          </p>
+          <p>
+            I help teams design reliable test automation ecosystems, improve release confidence,
+            and ship quality faster. In recent years I have been diving into ethical hacking and
+            penetration testing alongside my core automation work.
+          </p>
+          <p>
+            I enjoy solving complex problems across Python, Linux, Windows (security policies),
+            networking, CI/CD, and web backends 🛡️.
+          </p>
         </div>
-      </div>
 
-      <div id="highlights" class="section-card">
-        <h2>Professional highlights</h2>
-        <div class="highlight-grid">
-          <div class="highlight-item">
-            <h3>Test automation architecture</h3>
-            <p>Built scalable Pytest frameworks with API/UI abstractions and security-focused test coverage — 7 years hardening release confidence across Python projects.</p>
-          </div>
-          <div class="highlight-item">
-            <h3>CI/CD quality &amp; security gates</h3>
-            <p>Integrated static analysis, security checks, smart test selection, and release controls into pipelines to reduce risks and accelerate delivery.</p>
-          </div>
-          <div class="highlight-item">
-            <h3>Ethical hacking &amp; penetration testing</h3>
-            <p>Conducting web and network penetration tests, vulnerability assessments, and SAST/DAST integration as a Cybersecurity Engineer over the past 2 years.</p>
-          </div>
-          <div class="highlight-item">
-            <h3>OS security — Linux &amp; Windows</h3>
-            <p>Applying security policies, hardening configurations, and managing access controls across Linux and Windows environments.</p>
-          </div>
-        </div>
-      </div>
-
-      <div id="experience" class="section-card">
-        <h2>What I can help your team with</h2>
-        <ul class="experience-list">
-          <li>Designing end-to-end test strategies for web services and distributed systems, including security test scenarios.</li>
-          <li>Creating robust Python automation (API, integration, regression, and security testing).</li>
-          <li>Stabilizing flaky suites and improving quality/security feedback in CI pipelines.</li>
-          <li>Conducting penetration tests and vulnerability assessments for web and network targets.</li>
-          <li>Applying and auditing security policies on Linux and Windows environments.</li>
-          <li>Driving quality and security culture with actionable metrics and engineering collaboration.</li>
-        </ul>
-      </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects">
-      <div class="user-details">
-        <h1>Pet projects</h1>
-      </div>
-
-      <div class="projects-grid">
-
-        <div class="project-card">
-          <div class="project-card-image">
-            <img alt="Avoid debug functions" src="./assets/img/debug.jpg" />
-          </div>
-          <div class="project-card-body">
-            <h3>Avoid debug functions usage</h3>
-            <p>
-              A common issue for engineers is leaving debug calls in production code.
-              This <a href="https://flake8.pycqa.org/en/latest/">flake8</a> plugin forbids
-              <strong>print</strong>, <strong>breakpoint</strong>, and <strong>pdb.set_trace</strong>
-              from making it into production.
-            </p>
-            <a class="project-link" target="_blank" rel="noopener noreferrer"
-               href="https://vyahello.pro/flake8-debug">Check it out!</a>
+        <!-- Tech stack card -->
+        <div class="section-card">
+          <h3>Tech stack</h3>
+          <div class="user">
+            <div class="tech">
+              <h4>Languages</h4>
+              <div class="tech-icons">
+                <i class="devicon-python-plain-wordmark colored" title="Python" aria-hidden="true"></i>
+                <i class="devicon-bash-plain colored" title="Bash" aria-hidden="true"></i>
+                <i class="devicon-groovy-plain colored" title="Groovy" aria-hidden="true"></i>
+                <span class="sr-only">Python, Bash, Groovy</span>
+              </div>
+              <p>Preferred languages for system programming and automation.</p>
+            </div>
+            <div class="tech">
+              <h4>Tools</h4>
+              <div class="tech-icons">
+                <i class="devicon-linux-plain" title="Linux" aria-hidden="true"></i>
+                <i class="devicon-windows8-original colored" title="Windows" aria-hidden="true"></i>
+                <i class="devicon-docker-plain-wordmark colored" title="Docker" aria-hidden="true"></i>
+                <i class="devicon-git-plain-wordmark colored" title="Git" aria-hidden="true"></i>
+                <i class="devicon-jenkins-line" title="Jenkins" aria-hidden="true"></i>
+                <span class="pytest-mark" title="pytest">py<b>test</b></span>
+                <span class="sr-only">Linux, Windows, Docker, Git, Jenkins, pytest</span>
+              </div>
+              <p>Preferred tools for system engineering, testing, and OS security.</p>
+            </div>
+            <div class="tech">
+              <h4>Security</h4>
+              <div class="tech-icons">
+                <i class="fa fa-shield" title="Hardening" aria-hidden="true"></i>
+                <i class="fa fa-bug" title="Vulnerability assessment" aria-hidden="true"></i>
+                <i class="fa fa-crosshairs" title="Penetration testing" aria-hidden="true"></i>
+                <i class="fa fa-lock" title="Access control" aria-hidden="true"></i>
+                <span class="sr-only">Hardening, vulnerability assessment, penetration testing, access control</span>
+              </div>
+              <p>Ethical hacking, penetration testing, SAST/DAST, vulnerability assessments.</p>
+            </div>
           </div>
         </div>
 
-        <div class="project-card">
-          <div class="project-card-image">
-            <img alt="Manage class attribute order" src="./assets/img/flake8.jpg" />
-          </div>
-          <div class="project-card-body">
-            <h3>Manage order of class attributes</h3>
-            <p>
-              Tired of "please sort attributes alphabetically" review comments?
-              This <a href="https://flake8.pycqa.org/en/latest/">flake8</a> plugin
-              automates class attribute ordering checks via static analysis so no human
-              intervention is needed.
-            </p>
-            <a class="project-link" target="_blank" rel="noopener noreferrer"
-               href="https://vyahello.pro/flake8-cls-attr-order">Check it out!</a>
-          </div>
-        </div>
-
-        <div class="project-card">
-          <div class="project-card-image">
-            <img alt="Pytest emoji output" src="./assets/img/pytest.jpg" />
-          </div>
-          <div class="project-card-body">
-            <h3>Emoji output for pytest</h3>
-            <p>
-              <a href="https://docs.pytest.org/en/latest/contents.html">Pytest</a> supports
-              custom plugins that extend its CLI output. This plugin adds emoji support to
-              test results — a fun entry point for learning how pytest plugins work.
-            </p>
-            <a class="project-link" target="_blank" rel="noopener noreferrer"
-               href="https://utestpy.github.io/pytest-emoji-output">Check it out!</a>
+        <div id="highlights" class="section-card">
+          <h3>Professional highlights</h3>
+          <div class="highlight-grid">
+            <div class="highlight-item">
+              <h4>Test automation architecture</h4>
+              <p>Built scalable Pytest frameworks with API/UI abstractions and security-focused test coverage — 7 years hardening release confidence across Python projects.</p>
+            </div>
+            <div class="highlight-item">
+              <h4>CI/CD quality &amp; security gates</h4>
+              <p>Integrated static analysis, security checks, smart test selection, and release controls into pipelines to reduce risks and accelerate delivery.</p>
+            </div>
+            <div class="highlight-item">
+              <h4>Ethical hacking &amp; penetration testing</h4>
+              <p>Conducting web and network penetration tests, vulnerability assessments, and SAST/DAST integration as a Cybersecurity Engineer over the past 2 years.</p>
+            </div>
+            <div class="highlight-item">
+              <h4>OS security — Linux &amp; Windows</h4>
+              <p>Applying security policies, hardening configurations, and managing access controls across Linux and Windows environments.</p>
+            </div>
           </div>
         </div>
 
-        <div class="project-card">
-          <div class="project-card-image">
-            <img alt="Enforce PEP-8" src="./assets/img/enforce.jpg" />
-          </div>
-          <div class="project-card-body">
-            <h3>Punishment for bad Python code</h3>
-            <p>
-              Developers coming from Java or JavaScript often write non-pythonic code.
-              <strong>enforce-pep8</strong> diagnoses Python style violations against
-              <a href="https://www.python.org/dev/peps/pep-0008">PEP-8</a> conventions
-              and enforces clean, idiomatic Python.
-            </p>
-            <a class="project-link" target="_blank" rel="noopener noreferrer"
-               href="https://upymake.github.io/enforce-pep8">Check it out!</a>
-          </div>
+        <div id="experience" class="section-card">
+          <h3>What I can help your team with</h3>
+          <ul class="experience-list">
+            <li>Designing end-to-end test strategies for web services and distributed systems, including security test scenarios.</li>
+            <li>Creating robust Python automation (API, integration, regression, and security testing).</li>
+            <li>Stabilizing flaky suites and improving quality/security feedback in CI pipelines.</li>
+            <li>Conducting penetration tests and vulnerability assessments for web and network targets.</li>
+            <li>Applying and auditing security policies on Linux and Windows environments.</li>
+            <li>Driving quality and security culture with actionable metrics and engineering collaboration.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Projects Section -->
+      <section id="projects" aria-labelledby="projects-title">
+        <div class="user-details">
+          <h2 id="projects-title">Pet projects</h2>
         </div>
 
-        <div class="project-card">
-          <div class="project-card-image">
-            <img alt="Object-oriented HTTP requests" src="./assets/img/urequest.jpg" />
-          </div>
-          <div class="project-card-body">
-            <h3>Object-oriented requests library</h3>
-            <p>
-              The popular <a href="https://docs.python-requests.org">requests</a> library
-              exposes a procedural API. <strong>urequest</strong> wraps it with a pure
-              object-oriented HTTP client interface for cleaner, testable abstractions.
-            </p>
-            <a class="project-link" target="_blank" rel="noopener noreferrer"
-               href="https://upymake.github.io/urequest">Check it out!</a>
-          </div>
-        </div>
+        <div class="projects-grid">
 
-      </div>
-    </section>
-    <!-- Import JS: Particles Theme -->
-    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-    <!-- Import JS: Sweet Scroll -->
-    <script src="./assets/js/sweet-scroll.min.js"></script>
-    <!-- Import JS: Google Analytics -->
-    <script src="./assets/js/google-analytics.js"></script>
-    <!-- Import JS: Main Script -->
-    <script src="./assets/js/main.js"></script>
-  </body>
+          <div class="project-card">
+            <div class="project-card-image">
+              <img
+                alt="CyberAlertX landing page — cyber threats, before they hit you"
+                src="./assets/img/cyberalertx.webp"
+                width="1200" height="600" loading="lazy" decoding="async"
+              />
+            </div>
+            <div class="project-card-body">
+              <h3>CyberAlertX — live threat intel</h3>
+              <p>
+                Cybersecurity intelligence platform: RSS ingestion, AI-powered editorial
+                analysis, and calm, scannable threat updates in English and Ukrainian —
+                what happened, who's hit, what to do. FastAPI + Next.js, with auto-published
+                Telegram channels; source on
+                <a href="https://github.com/vyahello/cyberalertx" target="_blank" rel="noopener noreferrer">GitHub</a>.
+              </p>
+              <a class="project-link" target="_blank" rel="noopener noreferrer"
+                 aria-label="Open CyberAlertX live site"
+                 href="https://cyberalertx.com">Check it out! <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-card-image">
+              <img
+                alt="Terminal output of the flake8-debug plugin"
+                src="./assets/img/debug.webp"
+                width="1000" height="342" loading="lazy" decoding="async"
+              />
+            </div>
+            <div class="project-card-body">
+              <h3>Avoid debug functions usage</h3>
+              <p>
+                A common issue for engineers is leaving debug calls in production code.
+                This <a href="https://flake8.pycqa.org/en/latest/">flake8</a> plugin forbids
+                <strong>print</strong>, <strong>breakpoint</strong>, and <strong>pdb.set_trace</strong>
+                from making it into production.
+              </p>
+              <a class="project-link" target="_blank" rel="noopener noreferrer"
+                 aria-label="Open the flake8-debug project"
+                 href="https://vyahello.pro/flake8-debug">Check it out! <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-card-image">
+              <img
+                alt="Code sample checked by the flake8 class attribute order plugin"
+                src="./assets/img/flake8.webp"
+                width="387" height="190" loading="lazy" decoding="async"
+              />
+            </div>
+            <div class="project-card-body">
+              <h3>Manage order of class attributes</h3>
+              <p>
+                Tired of "please sort attributes alphabetically" review comments?
+                This <a href="https://flake8.pycqa.org/en/latest/">flake8</a> plugin
+                automates class attribute ordering checks via static analysis so no human
+                intervention is needed.
+              </p>
+              <a class="project-link" target="_blank" rel="noopener noreferrer"
+                 aria-label="Open the flake8-cls-attr-order project"
+                 href="https://vyahello.pro/flake8-cls-attr-order">Check it out! <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-card-image">
+              <img
+                alt="Pytest run with emoji test-result output"
+                src="./assets/img/pytest.webp"
+                width="1000" height="533" loading="lazy" decoding="async"
+              />
+            </div>
+            <div class="project-card-body">
+              <h3>Emoji output for pytest</h3>
+              <p>
+                <a href="https://docs.pytest.org/en/latest/contents.html">Pytest</a> supports
+                custom plugins that extend its CLI output. This plugin adds emoji support to
+                test results — a fun entry point for learning how pytest plugins work.
+              </p>
+              <a class="project-link" target="_blank" rel="noopener noreferrer"
+                 aria-label="Open the pytest-emoji-output project"
+                 href="https://utestpy.github.io/pytest-emoji-output">Check it out! <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-card-image">
+              <img
+                alt="Diagram of PEP-8 checks enforced by enforce-pep8"
+                src="./assets/img/enforce.webp"
+                width="1000" height="459" loading="lazy" decoding="async"
+              />
+            </div>
+            <div class="project-card-body">
+              <h3>Punishment for bad Python code</h3>
+              <p>
+                Developers coming from Java or JavaScript often write non-pythonic code.
+                <strong>enforce-pep8</strong> diagnoses Python style violations against
+                <a href="https://www.python.org/dev/peps/pep-0008">PEP-8</a> conventions
+                and enforces clean, idiomatic Python.
+              </p>
+              <a class="project-link" target="_blank" rel="noopener noreferrer"
+                 aria-label="Open the enforce-pep8 project"
+                 href="https://upymake.github.io/enforce-pep8">Check it out! <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            </div>
+          </div>
+
+          <div class="project-card">
+            <div class="project-card-image">
+              <img
+                alt="Code sample using the urequest object-oriented HTTP client"
+                src="./assets/img/urequest.webp"
+                width="1000" height="525" loading="lazy" decoding="async"
+              />
+            </div>
+            <div class="project-card-body">
+              <h3>Object-oriented requests library</h3>
+              <p>
+                The popular <a href="https://docs.python-requests.org">requests</a> library
+                exposes a procedural API. <strong>urequest</strong> wraps it with a pure
+                object-oriented HTTP client interface for cleaner, testable abstractions.
+              </p>
+              <a class="project-link" target="_blank" rel="noopener noreferrer"
+                 aria-label="Open the urequest project"
+                 href="https://upymake.github.io/urequest">Check it out! <i class="fa fa-external-link" aria-hidden="true"></i></a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
     <footer class="footer">
-      <p>&copy; Volodymyr Yahello, 2026</p>
+      <p>&copy; Volodymyr Yahello, <span id="footer-year">2026</span> · <a href="mailto:vyahello@gmail.com">vyahello@gmail.com</a></p>
     </footer>
+
+    <button class="to-top" id="to-top" type="button" aria-label="Back to top">
+      <i class="fa fa-chevron-up" aria-hidden="true"></i>
+    </button>
+
+    <!-- Import JS: Particles Theme -->
+    <script defer src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <!-- Import JS: Main Script -->
+    <script defer src="./assets/js/main.js?v=2"></script>
+  </body>
 </html>

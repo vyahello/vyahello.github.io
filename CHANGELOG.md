@@ -1,6 +1,23 @@
 Versions
 ========
 
+1.1.0
+=========
+
+_Release date: 04.07.2026_
+
+- Add CyberAlertX pet project (https://cyberalertx.com)
+- UI/UX enhancement pass: semantic landmarks, keyboard focus states, skip link,
+  fluid hero typography, terminal-style hero prompt, back-to-top button
+- Accessibility: reduced-motion support, 44px+ touch targets, fixed heading
+  hierarchy, descriptive alt texts, hover effects gated to pointer devices
+- Performance: images converted to WebP (~12x lighter), CSS slimmed from 82KB
+  to 24KB (unused icon-font glyphs and duplicated devicon bundle removed),
+  deferred scripts, lazy-loaded project images
+- Social sharing: Open Graph / Twitter card with generated og.jpg, JSON-LD
+  person schema, canonical URL, SVG favicon + apple-touch-icon
+- Remove dead Universal Analytics snippet (empty tracking ID, service shut down)
+
 1.0.0
 =========
 
