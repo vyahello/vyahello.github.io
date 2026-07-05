@@ -3,15 +3,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Animated particle background — skipped for users who prefer reduced motion
     if (!reduceMotion && window.particlesJS) {
+        // Phones get a finer, calmer mesh: desktop values (size-3 shapes,
+        // 150px links) span almost half a ~390px screen and read as huge
+        // triangles; high-DPR phones also over-densify in particles.js
+        var phone = Math.min(window.innerWidth, window.innerHeight) < 600;
         particlesJS('particles-js', {
             particles: {
-                number: { value: 30, density: { enable: true, value_area: 800 } },
+                number: { value: phone ? 16 : 30, density: { enable: true, value_area: 800 } },
                 color: { value: '#00ff41' },
                 shape: { type: 'polygon', stroke: { width: 0, color: '#000000' }, polygon: { nb_sides: 5 } },
                 opacity: { value: 0.5, random: false },
-                size: { value: 3, random: true },
-                line_linked: { enable: true, distance: 150, color: '#00ff41', opacity: 0.4, width: 1 },
-                move: { enable: true, speed: 4, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+                size: { value: phone ? 2 : 3, random: true },
+                line_linked: { enable: true, distance: phone ? 85 : 150, color: '#00ff41', opacity: phone ? 0.3 : 0.4, width: 1 },
+                move: { enable: true, speed: phone ? 1.6 : 4, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
             },
             interactivity: {
                 detect_on: 'canvas',

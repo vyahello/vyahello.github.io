@@ -20,6 +20,9 @@ _Release date: 04.07.2026_
 - Fluid desktop scaling: root type grows 16px (phone) to 18px (wide screens),
   content column widened to 1140px, highlights 4-up on desktop, larger avatar,
   tech icons, and card typography — phone layout unchanged
+- Calmer particle background on phones: smaller shapes, shorter link lines,
+  fewer particles, slower drift (desktop values span half a phone screen and
+  read as huge triangles); desktop config unchanged
 
 1.0.0
 =========
