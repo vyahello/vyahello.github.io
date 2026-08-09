@@ -784,6 +784,14 @@ main:focus {
     transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease
 }
 
+/* Inline SVG marks (TikTok) sized and coloured like the icon-font glyphs */
+.header-icons .icon svg {
+    display: block;
+    width: 0.95em;
+    height: 0.95em;
+    fill: currentColor
+}
+
 .header-icons .icon:active {
     color: var(--accent-ink);
     background: var(--accent);
